@@ -40,7 +40,3 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 The gem is inspired by [schwab-py](https://pypi.org/project/schwab-py).
 The original implementation can be found [here](https://github.com/alexgolec/schwab-py).
-
-This project is licensed under the MIT License, and the original MIT license for [Original Project Name] is included in this repository.
-
-Disclaimer: `schwab_rb` is an unofficial API wrapper. It is not affiliated with Charles Schwab. Please refer to the terms of service of the underlying API before using this gem. The authors accept no responsibility for any damage that might stem from use of this package. See the LICENSE for more details.
