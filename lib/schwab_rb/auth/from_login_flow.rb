@@ -173,7 +173,7 @@ module SchwabRb::Auth
 
     token = oauth.auth_code.get_token(authorization_code, redirect_uri: auth_context.callback_url)
 
-    metadata_manager = SchwabRb::Auth::TokenMetadata.new(
+    metadata_manager = SchwabRb::Auth::TokenManager.new(
       token,
       Time.now.to_i,
       token_path: token_path
