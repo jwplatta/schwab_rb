@@ -3,6 +3,9 @@ Bundler.setup
 
 require "schwab_rb"
 require "pry"
+require "dotenv"
+
+Dotenv.load
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"
