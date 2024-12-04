@@ -49,26 +49,7 @@ module SchwabRb::Auth
     callback_port = parsed.port || 4567
     callback_path = parsed.path.empty? ? "/" : parsed.path
 
-    # NOTE: create a self-signed certificate
-    key = OpenSSL::PKey::RSA.new(2048)
-    cert = OpenSSL::X509::Certificate.new
-
-    cert.subject = OpenSSL::X509::Name.parse("/CN=127.0.0.1")
-    cert.issuer = cert.subject
-    cert.public_key = key.public_key
-    cert.not_before = Time.now
-    cert.not_after = Time.now + (60 * 60 * 24) # 1 day
-    cert.serial = 0x0
-    cert.version = 2
-    cert.sign(key, OpenSSL::Digest::SHA256.new)
-
-    cert_file = Tempfile.new("cert.pem")
-    cert_file.write(cert.to_pem)
-    cert_file.close
-
-    key_file = Tempfile.new("key.pem")
-    key_file.write(key.to_pem)
-    key_file.close
+    cert_file, key_file = self.create_ssl_certificate
 
     server_thread = SchwabRb::Auth::LoginFlowServer.run_in_thread(
       callback_port: callback_port,
@@ -83,8 +64,6 @@ module SchwabRb::Auth
       while true
         begin
           uri = URI("https://127.0.0.1:#{callback_port}/status")
-          # resp = Net::HTTP.get_response(uri)
-
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
           http.ca_file = cert_file.path
@@ -142,6 +121,30 @@ module SchwabRb::Auth
     end
   end
 
+  def self.create_ssl_certificate
+    key = OpenSSL::PKey::RSA.new(2048)
+    cert = OpenSSL::X509::Certificate.new
+
+    cert.subject = OpenSSL::X509::Name.parse("/CN=127.0.0.1")
+    cert.issuer = cert.subject
+    cert.public_key = key.public_key
+    cert.not_before = Time.now
+    cert.not_after = Time.now + (60 * 60 * 24) # 1 day
+    cert.serial = 0x0
+    cert.version = 2
+    cert.sign(key, OpenSSL::Digest::SHA256.new)
+
+    cert_file = Tempfile.new("cert.pem")
+    cert_file.write(cert.to_pem)
+    cert_file.close
+
+    key_file = Tempfile.new("key.pem")
+    key_file.write(key.to_pem)
+    key_file.close
+
+    return cert_file, key_file
+  end
+
   def self.build_auth_context(api_key, callback_url, state: nil)
     oauth = OAuth2::Client.new(
       api_key,
@@ -173,7 +176,7 @@ module SchwabRb::Auth
 
     token = oauth.auth_code.get_token(authorization_code, redirect_uri: auth_context.callback_url)
 
-    metadata_manager = SchwabRb::Auth::TokenManager.new(
+    metadata_manager = SchwabRb::Auth::TokenManager.from_oauth2_token(
       token,
       Time.now.to_i,
       token_path: token_path
