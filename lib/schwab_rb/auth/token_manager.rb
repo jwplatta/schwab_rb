@@ -1,5 +1,38 @@
+require 'json'
+
 module SchwabRb::Auth
   class TokenManager
+    class << self
+      def from_file(token_path)
+        token_data = JSON.parse(File.read(token_path))
+        token = SchwabRb::Auth::Token.new(
+          token: token_data["token"]["access_token"],
+          expires_in: token_data["token"]["expires_in"],
+          token_type: token_data["token"]["token_type"],
+          scope: token_data["token"]["scope"],
+          refresh_token: token_data["token"]["refresh_token"],
+          id_token: token_data["token"]["id_token"],
+          expires_at: token_data["token"]["expires_at"]
+        )
+
+        TokenManager.new(token, token_data["timestamp"], token_path: token_path)
+      end
+
+      def from_oauth2_token(oauth2_token, timestamp, token_path: "./schwab_token.json")
+        token = SchwabRb::Auth::Token.new(
+          token: oauth2_token.token,
+          expires_in: oauth2_token.expires_in,
+          token_type: oauth2_token.params["token_type"] || "Bearer",
+          scope: oauth2_token.params["scope"],
+          refresh_token: oauth2_token.refresh_token,
+          id_token: oauth2_token.params["id_token"],
+          expires_at: oauth2_token.expires_at
+        )
+
+        TokenManager.new(token, timestamp, token_path: token_path)
+      end
+    end
+
     def initialize(token, timestamp, token_path: "./schwab_token.json")
       @token = token
       @timestamp = timestamp
@@ -23,11 +56,11 @@ module SchwabRb::Auth
         timestamp: timestamp,
         token: {
           expires_in: token.expires_in,
-          token_type: token.params["token_type"] || "Bearer",
-          scope: token.params["scope"],
+          token_type: token.token_type,
+          scope: token.scope,
           refresh_token: token.refresh_token,
           access_token: token.token,
-          id_token: token.params["id_token"],
+          id_token: token.id_token,
           expires_at: token.expires_at
         }
       }
