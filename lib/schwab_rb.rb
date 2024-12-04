@@ -3,6 +3,7 @@
 require_relative "schwab_rb/version"
 require_relative "schwab_rb/schwab"
 require_relative "schwab_rb/auth/token_manager"
+require_relative "schwab_rb/auth/token"
 require_relative "schwab_rb/auth/from_login_flow"
 require_relative "schwab_rb/auth/from_token_file"
 require_relative "schwab_rb/auth/auth_context"
