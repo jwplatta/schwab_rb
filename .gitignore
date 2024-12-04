@@ -7,3 +7,6 @@
 /spec/reports/
 /tmp/
 .env
+*.crt
+*.key
+*.json
