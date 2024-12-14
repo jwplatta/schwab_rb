@@ -34,6 +34,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "async", "~> 2.18"
+  spec.add_dependency "sinatra", "~> 4.1.1"
+  spec.add_dependency "oauth2", "~> 2.0", ">= 2.0.9"
+  spec.add_dependency "puma", "~> 6.5"
+  spec.add_dependency "rackup", "~> 2.2"
+  spec.add_dependency "openssl", "~> 3.1"
+  spec.add_dependency "dotenv"
   spec.add_development_dependency "rspec", "~> 3.13"
   spec.add_development_dependency "rubocop", "~> 1.21"
   spec.add_development_dependency "pry", "~> 0.14.2"
