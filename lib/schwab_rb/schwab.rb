@@ -1,7 +1,8 @@
 class Schwab
   # Will wrap the client and auth workflows
+  DEFAULT_TOKEN_PATH = './tmp/token.json'
   class << self
-    def build(auth, api_key, redirect_uri, token_path: '/tmp/token.json', async: false)
+    def build(auth, api_key, redirect_uri, token_path: DEFAULT_TOKEN_PATH, async: false)
       ClientBuilder.build()
 
       self.new(auth, api_key, redirect_uri, token_path: token_path, async: async)
