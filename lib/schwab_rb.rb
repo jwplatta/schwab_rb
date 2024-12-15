@@ -15,6 +15,7 @@ require_relative "schwab_rb/account"
 require_relative "schwab_rb/transaction"
 require_relative "schwab_rb/quote"
 require_relative "schwab_rb/option"
+require_relative "schwab_rb/instrument"
 
 module SchwabRb
   class Error < StandardError; end
