@@ -13,6 +13,7 @@ require_relative "schwab_rb/constants"
 require_relative "schwab_rb/orders/order"
 require_relative "schwab_rb/account"
 require_relative "schwab_rb/transaction"
+require_relative "schwab_rb/quote"
 
 module SchwabRb
   class Error < StandardError; end
