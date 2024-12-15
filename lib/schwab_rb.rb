@@ -12,6 +12,7 @@ require_relative "schwab_rb/auth/login_flow_server"
 require_relative "schwab_rb/constants"
 require_relative "schwab_rb/orders/order"
 require_relative "schwab_rb/account"
+require_relative "schwab_rb/transaction"
 
 module SchwabRb
   class Error < StandardError; end
