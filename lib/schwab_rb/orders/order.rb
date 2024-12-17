@@ -23,8 +23,8 @@ module SchwabRb
       PENDING_RECALL = 'PENDING_RECALL'
       UNKNOWN = 'UNKNOWN'
 
-      def self.all
-        constants.map { |const| const_get(const) }
+      def self.fields
+        Status.constants.map { |const| Status.const_get(const) }
       end
     end
   end
