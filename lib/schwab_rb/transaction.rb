@@ -17,8 +17,8 @@ module SchwabRb
       MONEY_MARKET = 'MONEY_MARKET'
       SMA_ADJUSTMENT = 'SMA_ADJUSTMENT'
 
-      def self.all
-        constants.map { |const| const_get(const) }
+      def self.types
+        Type.constants.map { |const| const_get(const) }
       end
     end
   end
