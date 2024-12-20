@@ -18,7 +18,7 @@ module SchwabRb::Auth
         TokenManager.new(token, token_data["timestamp"], token_path: token_path)
       end
 
-      def from_oauth2_token(oauth2_token, timestamp, token_path: "./schwab_token.json")
+      def from_oauth2_token(oauth2_token, timestamp, token_path: SchwabRb::Constants::DEFAULT_TOKEN_PATH)
         token = SchwabRb::Auth::Token.new(
           token: oauth2_token.token,
           expires_in: oauth2_token.expires_in,
@@ -33,7 +33,7 @@ module SchwabRb::Auth
       end
     end
 
-    def initialize(token, timestamp, token_path: "./schwab_token.json")
+    def initialize(token, timestamp, token_path: SchwabRb::Constants::DEFAULT_TOKEN_PATH)
       @token = token
       @timestamp = timestamp
       @token_path = token_path
