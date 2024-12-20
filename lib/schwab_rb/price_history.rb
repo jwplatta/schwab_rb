@@ -49,5 +49,20 @@ module SchwabRb
       WEEKLY = 1
       MONTHLY = 1
     end
+
+    def self.periods
+      Period.constants.map { |const| Period.const_get(const) }
+    end
+
+    def self.period_types
+      PeriodType.constants.map { |const| PeriodType.const_get(const) }
+    end
+
+    def self.frequencies
+      Frequency.constants.map { |const| Frequency.const_get(const) }
+    end
+
+    def self.frequency_types
+      FrequencyType.constants.map { |const| FrequencyType.const_get(const) }
   end
 end
