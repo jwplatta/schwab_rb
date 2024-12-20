@@ -58,5 +58,29 @@ module SchwabRb
       NON_PRO = 'NP'
       NON_PAYING_PRO = 'PN'
     end
+
+    def self.entitlements
+      Entitlement.constants.map { |const| Entitlement.const_get(const) }
+    end
+
+    def self.expiration_months
+      ExpirationMonth.constants.map { |const| ExpirationMonth.const_get(const) }
+    end
+
+    def self.types
+      Type.constants.map { |const| Type.const_get(const) }
+    end
+
+    def self.strike_ranges
+      StrikeRange.constants.map { |const| StrikeRange.const_get(const) }
+    end
+
+    def self.strategies
+      Strategy.constants.map { |const| Strategy.const_get(const) }
+    end
+
+    def self.contract_types
+      ContractType.constants.map { |const| ContractType.const_get(const) }
+    end
   end
 end
