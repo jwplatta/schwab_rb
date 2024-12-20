@@ -7,7 +7,7 @@ module SchwabRb
       REFERENCE = 'reference'
       REGULAR = 'regular'
 
-      def self.all
+      def self.fields
         constants.map { |const| const_get(const) }
       end
     end
