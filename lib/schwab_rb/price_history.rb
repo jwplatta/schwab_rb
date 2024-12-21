@@ -64,5 +64,6 @@ module SchwabRb
 
     def self.frequency_types
       FrequencyType.constants.map { |const| FrequencyType.const_get(const) }
+    end
   end
 end
