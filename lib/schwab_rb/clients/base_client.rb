@@ -31,7 +31,7 @@ module SchwabRb
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
 
-      fields = convert_enum_iterable(fields, Account::Fields)
+      fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
 
       params = {}
       params[:fields] = fields.join(",") if fields
@@ -251,7 +251,7 @@ module SchwabRb
       # @param fields [Array] Fields to request. If unset, return all available
       #                       data (i.e., all fields). See `GetQuote::Field` for options.
 
-      fields = convert_enum_iterable(fields, SchwabRb::Quote.fields) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Quote.types) if fields
       params = fields ? { 'fields' => fields.join(',') } : {}
       path = "/marketdata/v1/#{symbol}/quotes"
       get(path, params)
@@ -597,7 +597,7 @@ module SchwabRb
       # @param projection [String] Search mode or "FUNDAMENTAL" for instrument fundamentals.
 
       symbols = [symbols] unless symbols.is_a?(Array)
-      projection = convert_enum(projection, SchwabRb::Instrument.projections)
+      projection = convert_enum(projection, SchwabRb::Orders::Instrument.projections)
       params = {
         'symbol' => symbols.join(','),
         'projection' => projection
@@ -626,7 +626,7 @@ module SchwabRb
       to_entered_datetime: nil,
       status: nil
     )
-      status = convert_enum(status, Order::Status) if status
+      status = convert_enum(status, SchwabRb::Order.statuses) if status
 
       from_entered_datetime ||= (DateTime.now.new_offset(0) - 60) # 60 days ago (UTC)
       to_entered_datetime ||= DateTime.now.new_offset(0)          # Current UTC time
