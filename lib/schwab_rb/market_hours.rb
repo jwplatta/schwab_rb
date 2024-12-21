@@ -7,5 +7,9 @@ module SchwabRb
       FUTURE = 'future'
       FOREX = 'forex'
     end
+
+    def self.markets
+      Market.constants.map { |const| Market.const_get(const) }
+    end
   end
 end
