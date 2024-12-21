@@ -6,10 +6,10 @@ module SchwabRb
       EXTENDED = 'extended'
       REFERENCE = 'reference'
       REGULAR = 'regular'
+    end
 
-      def self.fields
-        constants.map { |const| const_get(const) }
-      end
+    def self.types
+      Type.constants.map { |const| Type.const_get(const) }
     end
   end
 end
