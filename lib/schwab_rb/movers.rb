@@ -39,6 +39,7 @@ module SchwabRb
     end
 
     def self.frequencies
-      Frequency.constants.map { |const| Frequency.const_get
+      Frequency.constants.map { |const| Frequency.const_get(const) }
+    end
   end
 end
