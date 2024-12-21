@@ -4,7 +4,7 @@ module SchwabRb
       POSITIONS = 'positions'
     end
 
-    def self.fields
+    def self.statuses
       Status.constants.map { |const| Status.const_get(const) }
     end
   end
