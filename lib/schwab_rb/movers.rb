@@ -29,5 +29,16 @@ module SchwabRb
       THIRTY = 30
       SIXTY = 60
     end
+
+    def self.indexes
+      Index.constants.map { |const| Index.const_get(const) }
+    end
+
+    def self.sort_orders
+      SortOrder.constants.map { |const| SortOrder.const_get(const) }
+    end
+
+    def self.frequencies
+      Frequency.constants.map { |const| Frequency.const_get
   end
 end
