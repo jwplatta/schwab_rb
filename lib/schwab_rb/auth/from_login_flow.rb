@@ -193,7 +193,7 @@ module SchwabRb::Auth
     SchwabRb::Client.new(
       api_key,
       session,
-      token_metadata: metadata_manager,
+      token_manager: metadata_manager,
       enforce_enums: enforce_enums
     )
   end
