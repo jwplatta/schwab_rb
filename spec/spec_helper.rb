@@ -4,6 +4,7 @@ Bundler.setup
 require "schwab_rb"
 require "pry"
 require "dotenv"
+require_relative "./factories/accounts"
 
 Dotenv.load
 
