@@ -15,8 +15,9 @@ module SchwabRb
 
       req_num = req_num()
       log_request('GET', req_num, dest, params)
+      request = Net::HTTP::Get.new(dest).then { |req| authorize_request(req) }
+      response = Net::HTTP.start(dest.hostname, dest.port, use_ssl: true) { |http| http.request(request) }
 
-      response = Net::HTTP.get_response(dest)
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
