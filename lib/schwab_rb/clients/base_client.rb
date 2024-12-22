@@ -48,7 +48,7 @@ module SchwabRb
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
 
-      fields = convert_enum_iterable(fields, SchwabRb::Account.fields) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
 
       params = {}
       params[:fields] = fields.join(',') if fields
@@ -174,7 +174,6 @@ module SchwabRb
       path = "/trader/v1/accounts/#{account_hash}/previewOrder"
       post(path, order_spec)
     end
-
 
     def get_transactions(
       account_hash,
@@ -653,6 +652,11 @@ module SchwabRb
       end_datetime ||= DateTime.now + 7
 
       [start_datetime, end_datetime]
+    end
+
+    def authorize_request(request)
+      request['Authorization'] = "Bearer #{@session.token}"
+      request
     end
   end
 end
