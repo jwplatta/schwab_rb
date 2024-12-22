@@ -15,8 +15,7 @@ module SchwabRb
 
       req_num = req_num()
       log_request('GET', req_num, dest, params)
-      request = Net::HTTP::Get.new(dest).then { |req| authorize_request(req) }
-      response = Net::HTTP.start(dest.hostname, dest.port, use_ssl: true) { |http| http.request(request) }
+      response = session.get(dest)
 
       log_response(response, req_num)
       register_redactions_from_response(response)
@@ -29,7 +28,8 @@ module SchwabRb
       req_num = req_num()
       log_request('POST', req_num, dest, data)
 
-      response = Net::HTTP.post(dest, data.to_json, { 'Content-Type' => 'application/json' })
+      # response = Net::HTTP.post(dest, data.to_json, { 'Content-Type' => 'application/json' })
+      response = session.post(dest, data.to_json, { 'Content-Type' => 'application/json' })
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
@@ -43,7 +43,6 @@ module SchwabRb
 
       request = Net::HTTP::Put.new(dest, { 'Content-Type' => 'application/json' })
       request.body = data.to_json
-
       response = Net::HTTP.start(dest.hostname, dest.port, use_ssl: true) { |http| http.request(request) }
       log_response(response, req_num)
       register_redactions_from_response(response)
@@ -70,7 +69,7 @@ module SchwabRb
     end
 
     def log_response(response, req_num)
-      puts "Resp #{req_num}: Status #{response.code}"
+      puts "Resp #{req_num}: Status #{response.status}"
     end
 
     def req_num
