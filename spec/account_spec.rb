@@ -5,6 +5,6 @@ describe SchwabRb::Account do
     expect { described_class.new }.not_to raise_error
   end
   it "returns correct fields" do
-    expect(described_class.fields).to eq(["positions"])
+    expect(described_class.statuses).to eq(["positions"])
   end
 end
