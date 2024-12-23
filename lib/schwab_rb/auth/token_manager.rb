@@ -1,3 +1,4 @@
+require 'oauth2'
 require 'json'
 
 module SchwabRb::Auth
@@ -40,6 +41,37 @@ module SchwabRb::Auth
     end
 
     attr_reader :token, :timestamp, :token_path
+
+    def refresh_token(client)
+      new_token = client.session.refresh!
+
+      @token = SchwabRb::Auth::Token.new(
+        token: new_token.token,
+        expires_in: new_token.expires_in,
+        token_type: new_token.params["token_type"] || "Bearer",
+        scope: new_token.params["scope"],
+        refresh_token: new_token.refresh_token,
+        id_token: new_token.params["id_token"],
+        expires_at: new_token.expires_at
+      )
+      @timestamp = Time.now.to_i
+
+      to_file
+
+      oauth = OAuth2::Client.new(
+        client.api_key,
+        client.app_secret,
+        site: SchwabRb::Constants::SCHWAB_BASE_URL,
+        token_url: "/v1/oauth/token"
+      )
+
+      OAuth2::AccessToken.new(
+        oauth,
+        token.token,
+        refresh_token: token.refresh_token,
+        expires_at: token.expires_at
+      )
+    end
 
     def to_file
       File.open(token_path, "w") do |f|
