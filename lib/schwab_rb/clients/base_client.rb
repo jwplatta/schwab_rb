@@ -1,14 +1,15 @@
-require "date"
-require_relative "../utils/enum_enforcer"
+require 'date'
+require_relative '../utils/enum_enforcer'
 
 module SchwabRb
   class BaseClient
-    include  EnumEnforcer
+    include EnumEnforcer
 
-    attr_reader :api_key, :session, :token_manager, :enforce_enums
+    attr_reader :api_key, :app_secret, :session, :token_manager, :enforce_enums
 
-    def initialize(api_key, session, token_manager:, enforce_enums: true)
+    def initialize(api_key, app_secret, session, token_manager:, enforce_enums: true)
       @api_key = api_key
+      @app_secret = app_secret
       @session = session
       @token_manager = token_manager
       @enforce_enums = enforce_enums
@@ -30,6 +31,7 @@ module SchwabRb
       #
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
+      refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
 
@@ -47,6 +49,7 @@ module SchwabRb
       #
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
+      refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
 
@@ -61,6 +64,7 @@ module SchwabRb
       # Returns a mapping from account IDs available to this token to the
       # account hash that should be passed whenever referring to that account
       # in API calls.
+      refresh_token_if_needed
 
       path = '/trader/v1/accounts/accountNumbers'
       get(path, {})
@@ -81,6 +85,7 @@ module SchwabRb
       #
       # @param order_id [String] The order ID.
       # @param account_hash [String] The account hash.
+      refresh_token_if_needed
 
       path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
       delete(path)
@@ -99,6 +104,7 @@ module SchwabRb
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
+      refresh_token_if_needed
 
       path = "/trader/v1/accounts/#{account_hash}/orders"
       params = make_order_query(
@@ -123,6 +129,8 @@ module SchwabRb
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
+      refresh_token_if_needed
+
       path = '/trader/v1/orders'
       params = make_order_query(
         max_results: max_results,
@@ -140,11 +148,9 @@ module SchwabRb
       #
       # Note: Unlike most methods in this library, successful responses typically
       # do not contain JSON data, and attempting to extract it may raise an exception.
+      refresh_token_if_needed
 
-      # Build the order_spec if it is an instance of OrderBuilder
-
-      # TODO: Implement OrderBuilder
-      # order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
 
       path = "/trader/v1/accounts/#{account_hash}/orders"
       post(path, order_spec)
@@ -154,10 +160,9 @@ module SchwabRb
       # Replace an existing order for an account.
       # The existing order will be replaced by the new order.
       # Once replaced, the old order will be canceled and a new order will be created.
+      refresh_token_if_needed
 
-      # Build the order_spec if it is an instance of OrderBuilder
-      # TODO: Implement OrderBuilder
-      # order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
 
       path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
       put(path, order_spec)
@@ -166,10 +171,9 @@ module SchwabRb
     def preview_order(account_hash, order_spec)
       # Preview an order, i.e., test whether an order would be accepted by the
       # API and see the structure it would result in.
+      refresh_token_if_needed
 
-      # Build the order_spec if it is an instance of OrderBuilder
-      # TODO: Implement OrderBuilder
-      # order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
 
       path = "/trader/v1/accounts/#{account_hash}/previewOrder"
       post(path, order_spec)
@@ -189,29 +193,26 @@ module SchwabRb
       # @param end_date [Date, DateTime] End date for transactions (default: now).
       # @param transaction_types [Array] List of transaction types to filter by.
       # @param symbol [String] Filter transactions by the specified symbol.
+      refresh_token_if_needed
 
-      # Handle transaction types
       transaction_types = if transaction_types
         convert_enum_iterable(transaction_types, SchwabRb::Transaction.types)
       else
         SchwabRb::Transaction.types
       end
 
-      # Handle start_date
       if start_date.nil?
         start_date = format_date_as_iso('start_date', DateTime.now.new_offset(0) - 60)
       else
         start_date = format_date_as_iso('start_date', start_date)
       end
 
-      # Handle end_date
       if end_date.nil?
         end_date = format_date_as_iso('end_date', DateTime.now.new_offset(0))
       else
         end_date = format_date_as_iso('end_date', end_date)
       end
 
-      # Build query parameters
       params = {
         'types' => transaction_types.join(','),
         'startDate' => start_date,
@@ -219,7 +220,6 @@ module SchwabRb
       }
       params['symbol'] = symbol unless symbol.nil?
 
-      # Build path and make the GET request
       path = "/trader/v1/accounts/#{account_hash}/transactions"
       get(path, params)
     end
@@ -230,12 +230,14 @@ module SchwabRb
       # @param account_hash [String] Account hash corresponding to the account whose
       #                              transactions should be returned.
       # @param transaction_id [String] ID of the transaction for which to return data.
+      refresh_token_if_needed
 
       path = "/trader/v1/accounts/#{account_hash}/transactions/#{transaction_id}"
       get(path, {})
     end
 
     def get_user_preferences
+      refresh_token_if_needed
       path = '/trader/v1/userPreference'
       get(path, {})
     end
@@ -249,6 +251,7 @@ module SchwabRb
       # @param symbol [String] Single symbol to fetch.
       # @param fields [Array] Fields to request. If unset, return all available
       #                       data (i.e., all fields). See `GetQuote::Field` for options.
+      refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Quote.types) if fields
       params = fields ? { 'fields' => fields.join(',') } : {}
@@ -264,6 +267,7 @@ module SchwabRb
       # @param fields [Array] Fields to request. If unset, return all available data.
       #                       See `GetQuote::Field` for options.
       # @param indicative [Boolean] If set, fetch indicative quotes. Must be true or false.
+      refresh_token_if_needed
 
       symbols = [symbols] if symbols.is_a?(String)
       params = { 'symbols' => symbols.join(',') }
@@ -277,7 +281,7 @@ module SchwabRb
         params['indicative'] = indicative ? 'true' : 'false'
       end
 
-      path = "/marketdata/v1/quotes"
+      path = '/marketdata/v1/quotes'
       get(path, params)
     end
 
@@ -320,15 +324,15 @@ module SchwabRb
       # @param option_type [String] Type of options to include in the chain.
       # @param entitlement [String] Client entitlement.
 
-      # Convert enums
-      contract_type = convert_enum(contract_type, SchwabRb::Options.contract_types)
-      strategy = convert_enum(strategy, SchwabRb::Options.strategies)
-      strike_range = convert_enum(strike_range, SchwabRb::Options.strike_ranges)
-      option_type = convert_enum(option_type, SchwabRb::Options.types)
-      exp_month = convert_enum(exp_month, SchwabRb::Options.expiration_months)
-      entitlement = convert_enum(entitlement, SchwabRb::Options.entitlements)
+      refresh_token_if_needed
 
-      # Build query parameters
+      contract_type = convert_enum(contract_type, SchwabRb::Option.contract_types)
+      strategy = convert_enum(strategy, SchwabRb::Option.strategies)
+      strike_range = convert_enum(strike_range, SchwabRb::Option.strike_ranges)
+      option_type = convert_enum(option_type, SchwabRb::Option.types)
+      exp_month = convert_enum(exp_month, SchwabRb::Option.expiration_months)
+      entitlement = convert_enum(entitlement, SchwabRb::Option.entitlements)
+
       params = { 'symbol' => symbol }
       params['contractType'] = contract_type if contract_type
       params['strikeCount'] = strike_count if strike_count
@@ -347,12 +351,12 @@ module SchwabRb
       params['optionType'] = option_type if option_type
       params['entitlement'] = entitlement if entitlement
 
-      # Construct the path and make the request
       path = '/marketdata/v1/chains'
       get(path, params)
     end
 
     def get_option_expiration_chain(symbol)
+      refresh_token_if_needed
       path = '/marketdata/v1/expirationchain'
       get(path, {'symbol': symbol})
     end
@@ -368,6 +372,8 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
+
       period_type = convert_enum(period_type, SchwabRb::PriceHistory.period_types) if period_type
       period = convert_enum(period, SchwabRb::PriceHistory.periods) if period
       frequency_type = convert_enum(frequency_type, SchwabRb::PriceHistory.frequency_types) if frequency_type
@@ -394,6 +400,7 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
@@ -418,6 +425,7 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
@@ -442,6 +450,8 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
+
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
       )
@@ -465,6 +475,7 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
@@ -489,6 +500,7 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
@@ -513,6 +525,8 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
+
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
       )
@@ -536,6 +550,8 @@ module SchwabRb
       need_extended_hours_data: nil,
       need_previous_close: nil
     )
+      refresh_token_if_needed
+
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
         start_datetime, end_datetime
       )
@@ -559,6 +575,7 @@ module SchwabRb
       # @param index [String] Category of mover. See Movers::Index for valid values.
       # @param sort_order [String] Order in which to return values. See Movers::SortOrder for valid values.
       # @param frequency [String] Only return movers that saw this magnitude or greater. See Movers::Frequency for valid values.
+      refresh_token_if_needed
 
       index = convert_enum(index, SchwabRb::Movers.indexes)
       sort_order = convert_enum(sort_order, SchwabRb::Movers.sort_orders) if sort_order
@@ -579,6 +596,8 @@ module SchwabRb
       # @param markets [Array, String] Markets for which to return trading hours.
       # @param date [Date] Date for which to return market hours. Accepts values up to
       #                    one year from today.
+      refresh_token_if_needed
+
       markets = convert_enum_iterable(markets, SchwabRb::MarketHours.markets)
 
       params = { 'markets' => markets.join(',') }
@@ -594,6 +613,7 @@ module SchwabRb
       # @param symbols [String, Array] For "FUNDAMENTAL" projection, the symbols to fetch.
       #                                For other projections, a search term.
       # @param projection [String] Search mode or "FUNDAMENTAL" for instrument fundamentals.
+      refresh_token_if_needed
 
       symbols = [symbols] unless symbols.is_a?(Array)
       projection = convert_enum(projection, SchwabRb::Orders::Instrument.projections)
@@ -609,6 +629,7 @@ module SchwabRb
       # Get instrument information for a single instrument by CUSIP.
       #
       # @param cusip [String] CUSIP of the instrument to fetch. Leading zeroes must be preserved.
+      refresh_token_if_needed
 
       unless cusip.is_a?(String)
         raise ArgumentError, 'cusip must be passed as a string'
@@ -657,6 +678,13 @@ module SchwabRb
     def authorize_request(request)
       request['Authorization'] = "Bearer #{@session.token}"
       request
+    end
+
+    def refresh_token_if_needed
+      if session.expired?
+        new_session = token_manager.refresh_token(self)
+        @session = new_session
+      end
     end
   end
 end
