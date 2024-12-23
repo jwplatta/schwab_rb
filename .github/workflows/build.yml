@@ -1,0 +1,70 @@
+name: Package Gem
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
+
+    - name: Install dependencies
+      run: bundle install
+
+    - name: Build the gem
+      run: gem build schwab_rb.gemspec
+
+    - name: Upload gem artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: schwab_rb-gem
+        path: schwab_rb-*.gem
+
+    - name: Bump version
+      id: bump_version
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        echo "Bumping version..."
+        current_version=$(git describe --tags --abbrev=0)
+        new_version=$(echo $current_version | awk -F. -v OFS=. '{$NF++;print}')
+        echo "Current version: $current_version"
+        echo "New version: $new_version"
+        sed -i "s/VERSION = \".*\"/VERSION = \"$new_version\"/" lib/schwab_rb/version.rb
+        git commit -am "Bump version to $new_version"
+        git tag $new_version
+        git push origin main --tags
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.bump_version.outputs.new_version }}
+        release_name: Release ${{ steps.bump_version.outputs.new_version }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: schwab_rb-*.gem
+        asset_name: schwab_rb-${{ github.run_number }}.gem
+        asset_content_type: application/octet-stream
