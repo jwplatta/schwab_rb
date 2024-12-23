@@ -37,7 +37,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: schwab_rb-gem
-        path: schwab_rb-*.gem
+        path: schwab_rb-0.1.0-dev.gem
 
     - name: Create Release
       id: create_release
@@ -56,6 +56,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: schwab_rb-*.gem
-        asset_name: schwab_rb-${{ github.run_number }}.gem
+        asset_path: schwab_rb-0.1.0-dev.gem
+        asset_name: schwab_rb-0.1.0-dev.gem
         asset_content_type: application/octet-stream

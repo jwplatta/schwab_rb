@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module SchwabRb
-  VERSION = `git describe --tags`.strip
+  VERSION = "0.1.0-dev"
 end
