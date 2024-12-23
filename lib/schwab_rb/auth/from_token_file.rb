@@ -1,4 +1,4 @@
-require 'oauth2'
+require "oauth2"
 
 module SchwabRb::Auth
   def self.from_token_file(api_key, app_secret, token_path, enforce_enums: true)
@@ -21,6 +21,7 @@ module SchwabRb::Auth
 
     SchwabRb::Client.new(
       api_key,
+      app_secret,
       session,
       token_manager: metadata_manager,
       enforce_enums: enforce_enums
