@@ -15,15 +15,21 @@ module SchwabRb::Auth
     requested_browser: nil)
 
     begin
-      client = SchwabRb::Auth::init_client_token_file(
-        api_key,
-        app_secret,
-        token_path,
-        enforce_enums: enforce_enums
-      )
-      raise OAuth2::Error.new("Token expired") if client.session.expired?
+      if File.exist?(token_path)
+        SchwabRb::Auth::init_client_token_file(
+          api_key,
+          app_secret,
+          token_path,
+          enforce_enums: enforce_enums
+        )
+        client.refresh! if client.session.expired?
+        raise OAuth2::Error.new("Token expired") if client.session.expired?
+        client
+      else
+        raise OAuth2::Error.new("No token found")
+      end
     rescue
-      client = SchwabRb::Auth::init_client_login(
+      SchwabRb::Auth::init_client_login(
         api_key,
         app_secret,
         callback_url,
@@ -35,7 +41,5 @@ module SchwabRb::Auth
         requested_browser: requested_browser
       )
     end
-
-    client
   end
 end
