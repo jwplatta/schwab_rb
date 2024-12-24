@@ -19,7 +19,7 @@ module SchwabRb::Auth
   # end
   class InvalidHostname < ArgumentError
     def initialize(hostname)
-      msg = "Disallowed hostname #{hostname}. from_login_flow only allows callback URLs with hostname 127.0.0.1."
+      msg = "Disallowed hostname #{hostname}. init_client_login only allows callback URLs with hostname 127.0.0.1."
       super(msg)
     end
   end
