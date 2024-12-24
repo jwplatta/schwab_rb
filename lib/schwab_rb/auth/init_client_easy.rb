@@ -16,7 +16,7 @@ module SchwabRb::Auth
 
     begin
       if File.exist?(token_path)
-        SchwabRb::Auth::init_client_token_file(
+        client = SchwabRb::Auth::init_client_token_file(
           api_key,
           app_secret,
           token_path,
