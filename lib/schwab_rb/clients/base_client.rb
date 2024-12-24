@@ -15,6 +15,10 @@ module SchwabRb
       @enforce_enums = enforce_enums
     end
 
+    def refresh!
+      refresh_token_if_needed
+    end
+
     def set_timeout(timeout)
       # Sets the timeout for the client session.
       #
@@ -243,10 +247,7 @@ module SchwabRb
     end
 
     def get_quote(symbol, fields: nil)
-      # Get quote for a symbol. Note: Due to limitations in URL encoding, this
-      # method is not recommended for instruments with symbols containing
-      # non-alphanumeric characters, such as futures like `/ES`.
-      # To get quotes for those symbols, use `Client.get_quotes`.
+      # Get quote for a symbol.
       #
       # @param symbol [String] Single symbol to fetch.
       # @param fields [Array] Fields to request. If unset, return all available
