@@ -24,7 +24,7 @@ module SchwabRb::Auth
     end
   end
 
-  def self.from_login_flow(
+  def self.init_client_login(
     api_key,
     app_secret,
     callback_url,
