@@ -27,11 +27,11 @@ module EnumEnforcer
     raise ArgumentError, "expected type \"#{required_enum_type}\", got type \"#{value.class}\". #{possible_members_message}(initialize with enforce_enums: false to disable this checking)"
   end
 
-  def convert_enum(value, required_enum_type)
+  def convert_enum(value, valid_enum_types)
     return nil if value.nil?
 
-    if value.is_a?(required_enum_type)
-      value.value
+    if valid_enum_types.include? value
+      value
     elsif enforce_enums
       type_error(value, required_enum_type)
     else
@@ -39,17 +39,17 @@ module EnumEnforcer
     end
   end
 
-  def convert_enum_iterable(iterable, required_enum_type)
+  def convert_enum_iterable(iterable, valid_enum_types)
     return nil if iterable.nil?
 
-    if iterable.is_a?(required_enum_type)
-      return [iterable.value]
+    if valid_enum_types.include? iterable
+      return [iterable]
     end
 
     values = []
     iterable.each do |value|
-      if value.is_a?(required_enum_type)
-        values << value.value
+      if valid_enum_types.include? value
+        values << value
       elsif enforce_enums
         type_error(value, required_enum_type)
       else
