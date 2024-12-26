@@ -80,12 +80,90 @@ module SchwabRb
       LIMIT_ON_CLOSE = 'LIMIT_ON_CLOSE'
     end
 
+    module ComplexOrderStrategyType
+      # Explicit order strategies for executing multi-leg options orders.
+
+      # No complex order strategy. This is the default.
+      NONE = 'NONE'
+
+      # `Covered call <https://tickertape.tdameritrade.com/trading/
+      # selling-covered-call-options-strategy-income-hedging-15135>`__
+      COVERED = 'COVERED'
+
+      # `Vertical spread <https://tickertape.tdameritrade.com/trading/
+      # vertical-credit-spreads-high-probability-15846>`__
+      VERTICAL = 'VERTICAL'
+
+      # `Ratio backspread <https://tickertape.tdameritrade.com/trading/
+      # pricey-stocks-ratio-spreads-15306>`__
+      BACK_RATIO = 'BACK_RATIO'
+
+      # `Calendar spread <https://tickertape.tdameritrade.com/trading/
+      # calendar-spreads-trading-primer-15095>`__
+      CALENDAR = 'CALENDAR'
+
+      # `Diagonal spread <https://tickertape.tdameritrade.com/trading/
+      # love-your-diagonal-spread-15030>`__
+      DIAGONAL = 'DIAGONAL'
+
+      # `Straddle spread <https://tickertape.tdameritrade.com/trading/
+      # straddle-strangle-option-volatility-16208>`__
+      STRADDLE = 'STRADDLE'
+
+      # `Strandle spread <https://tickertape.tdameritrade.com/trading/
+      # straddle-strangle-option-volatility-16208>`__
+      STRANGLE = 'STRANGLE'
+
+      COLLAR_SYNTHETIC = 'COLLAR_SYNTHETIC'
+
+      # `Butterfly spread <https://tickertape.tdameritrade.com/trading/
+      # butterfly-spread-options-15976>`__
+      BUTTERFLY = 'BUTTERFLY'
+
+      # `Condor spread <https://www.investopedia.com/terms/c/
+      # condorspread.asp>`__
+      CONDOR = 'CONDOR'
+
+      # `Iron condor spread <https://tickertape.tdameritrade.com/trading/
+      # iron-condor-options-spread-your-trading-wings-15948>`__
+      IRON_CONDOR = 'IRON_CONDOR'
+
+      # `Roll a vertical spread <https://tickertape.tdameritrade.com/trading/
+      # exit-winning-losing-trades-16685>`__
+      VERTICAL_ROLL = 'VERTICAL_ROLL'
+
+      # `Collar strategy <https://tickertape.tdameritrade.com/trading/
+      # stock-hedge-options-collars-15529>`__
+      COLLAR_WITH_STOCK = 'COLLAR_WITH_STOCK'
+
+      # `Double diagonal spread <https://optionstradingiq.com/
+      # the-ultimate-guide-to-double-diagonal-spreads/>`__
+      DOUBLE_DIAGONAL = 'DOUBLE_DIAGONAL'
+
+      # `Unbalanced butterfy spread  <https://tickertape.tdameritrade.com/
+      # trading/unbalanced-butterfly-strong-directional-bias-15913>`__
+      UNBALANCED_BUTTERFLY = 'UNBALANCED_BUTTERFLY'
+      UNBALANCED_CONDOR = 'UNBALANCED_CONDOR'
+      UNBALANCED_IRON_CONDOR = 'UNBALANCED_IRON_CONDOR'
+      UNBALANCED_VERTICAL_ROLL = 'UNBALANCED_VERTICAL_ROLL'
+
+      # Mutual fund swap
+      MUTUAL_FUND_SWAP = 'MUTUAL_FUND_SWAP'
+
+      # A custom multi-leg order strategy.
+      CUSTOM = 'CUSTOM'
+    end
+
     def self.statuses
       Status.constants.map { |const| Status.const_get(const) }
     end
 
     def self.types
       Type.constants.map { |const| Type.const_get(const) }
+    end
+
+    def self.complex_order_strategy_types
+      ComplexOrderStrategyType.constants.map { |const| ComplexOrderStrategyType.const_get(const) }
     end
   end
 end
