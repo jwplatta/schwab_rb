@@ -46,6 +46,28 @@ jobs:
         name: schwab_rb-gem
         path: ${{ env.GEM_FILE }}
 
+    - name: Check if tag exists
+      id: check_tag
+      run: |
+        if git rev-parse refs/tags/${{ github.ref_name }} >/dev/null 2>&1
+        then
+          echo "TAG_EXISTS=true" >> $GITHUB_ENV
+        else
+          echo "TAG_EXISTS=false" >> $GITHUB_ENV
+        fi
+
+    - name: Delete existing release
+      if: env.TAG_EXISTS == 'true'
+      run: |
+        RELEASE_ID=$(curl -s \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/tags/${{ github.ref_name }} \
+          | jq -r '.id')
+        curl -s \
+          -X DELETE \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
