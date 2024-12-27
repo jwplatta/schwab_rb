@@ -1,13 +1,13 @@
 module SchwabRb
   class PriceHistory
-    module PeriodType
+    module PeriodTypes
       DAY = 'day'
       MONTH = 'month'
       YEAR = 'year'
       YEAR_TO_DATE = 'ytd'
     end
 
-    module Period
+    module Periods
       ONE_DAY = 1
       TWO_DAYS = 2
       THREE_DAYS = 3
@@ -31,14 +31,14 @@ module SchwabRb
       YEAR_TO_DATE = 1
     end
 
-    module FrequencyType
+    module FrequencyTypes
       MINUTE = 'minute'
       DAILY = 'daily'
       WEEKLY = 'weekly'
       MONTHLY = 'monthly'
     end
 
-    module Frequency
+    module Frequencies
       EVERY_MINUTE = 1
       EVERY_FIVE_MINUTES = 5
       EVERY_TEN_MINUTES = 10
@@ -48,22 +48,6 @@ module SchwabRb
       DAILY = 1
       WEEKLY = 1
       MONTHLY = 1
-    end
-
-    def self.periods
-      Period.constants.map { |const| Period.const_get(const) }
-    end
-
-    def self.period_types
-      PeriodType.constants.map { |const| PeriodType.const_get(const) }
-    end
-
-    def self.frequencies
-      Frequency.constants.map { |const| Frequency.const_get(const) }
-    end
-
-    def self.frequency_types
-      FrequencyType.constants.map { |const| FrequencyType.const_get(const) }
     end
   end
 end

@@ -1,6 +1,6 @@
 module SchwabRb
   class Order
-    module Status
+    module Statuses
       AWAITING_PARENT_ORDER = 'AWAITING_PARENT_ORDER'
       AWAITING_CONDITION = 'AWAITING_CONDITION'
       AWAITING_STOP_CONDITION = 'AWAITING_STOP_CONDITION'
@@ -24,7 +24,7 @@ module SchwabRb
       UNKNOWN = 'UNKNOWN'
     end
 
-    module Type
+    module Types
       # Execute the order immediately at the best-available price.
       # More Info <https://www.investopedia.com/terms/m/marketorder.asp>
       MARKET = 'MARKET'
@@ -80,7 +80,7 @@ module SchwabRb
       LIMIT_ON_CLOSE = 'LIMIT_ON_CLOSE'
     end
 
-    module ComplexOrderStrategyType
+    module ComplexOrderStrategyTypes
       # Explicit order strategies for executing multi-leg options orders.
 
       # No complex order strategy. This is the default.

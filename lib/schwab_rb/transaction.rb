@@ -16,10 +16,6 @@ module SchwabRb
       MARGIN_CALL = 'MARGIN_CALL'
       MONEY_MARKET = 'MONEY_MARKET'
       SMA_ADJUSTMENT = 'SMA_ADJUSTMENT'
-
-      def self.types
-        Type.constants.map { |const| const_get(const) }
-      end
     end
   end
 end

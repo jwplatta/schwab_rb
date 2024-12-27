@@ -1,11 +1,7 @@
 module SchwabRb
   class Account
-    module Status
+    module Statuses
       POSITIONS = 'positions'
-    end
-
-    def self.statuses
-      Status.constants.map { |const| Status.const_get(const) }
     end
   end
 end

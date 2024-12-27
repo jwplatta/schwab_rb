@@ -1,12 +1,12 @@
 module SchwabRb
   class Option
-    module ContractType
+    module ContractTypes
       CALL = 'CALL'
       PUT = 'PUT'
       ALL = 'ALL'
     end
 
-    module Strategy
+    module Strategies
       SINGLE = 'SINGLE'
       ANALYTICAL = 'ANALYTICAL'
       COVERED = 'COVERED'
@@ -21,7 +21,7 @@ module SchwabRb
       ROLL = 'ROLL'
     end
 
-    module StrikeRange
+    module StrikeRanges
       IN_THE_MONEY = 'ITM'
       NEAR_THE_MONEY = 'NTM'
       OUT_OF_THE_MONEY = 'OTM'
@@ -31,13 +31,13 @@ module SchwabRb
       ALL = 'ALL'
     end
 
-    module Type
+    module Types
       STANDARD = 'S'
       NON_STANDARD = 'NS'
       ALL = 'ALL'
     end
 
-    module ExpirationMonth
+    module ExpirationMonths
       JANUARY = 'JAN'
       FEBRUARY = 'FEB'
       MARCH = 'MAR'
@@ -53,34 +53,10 @@ module SchwabRb
       ALL = 'ALL'
     end
 
-    module Entitlement
+    module Entitlements
       PAYING_PRO = 'PP'
       NON_PRO = 'NP'
       NON_PAYING_PRO = 'PN'
-    end
-
-    def self.entitlements
-      Entitlement.constants.map { |const| Entitlement.const_get(const) }
-    end
-
-    def self.expiration_months
-      ExpirationMonth.constants.map { |const| ExpirationMonth.const_get(const) }
-    end
-
-    def self.types
-      Type.constants.map { |const| Type.const_get(const) }
-    end
-
-    def self.strike_ranges
-      StrikeRange.constants.map { |const| StrikeRange.const_get(const) }
-    end
-
-    def self.strategies
-      Strategy.constants.map { |const| Strategy.const_get(const) }
-    end
-
-    def self.contract_types
-      ContractType.constants.map { |const| ContractType.const_get(const) }
     end
   end
 end
