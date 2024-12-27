@@ -46,13 +46,13 @@ jobs:
     - name: Check if tag exists
       id: check_tag
       run: |
-        if git rev-parse refs/tags/${{ github.ref_name }} >/dev/null 2>&1
-        then
+        if git rev-parse --verify "refs/tags/${{ github.ref_name }}" >/dev/null 2>&1; then
+          echo "tag exists..."
           echo "TAG_EXISTS=true" >> $GITHUB_ENV
         else
+        echo "tag does not exists..."
           echo "TAG_EXISTS=false" >> $GITHUB_ENV
         fi
-        echo $TAG_EXISTS
 
     - name: Delete existing release
       if: env.TAG_EXISTS == 'true'
