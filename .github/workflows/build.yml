@@ -46,11 +46,11 @@ jobs:
     - name: Check if tag exists
       id: check_tag
       run: |
-        if git rev-parse --verify "refs/tags/${{ github.ref_name }}" >/dev/null 2>&1; then
+        if git show-ref --tags --verify --quiet "refs/tags/main"; then
           echo "tag exists..."
           echo "TAG_EXISTS=true" >> $GITHUB_ENV
         else
-        echo "tag does not exists..."
+          echo "tag does not exists..."
           echo "TAG_EXISTS=false" >> $GITHUB_ENV
         fi
 
