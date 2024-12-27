@@ -37,7 +37,7 @@ module SchwabRb
       # added here by adding values from Account.fields.
       refresh_token_if_needed
 
-      fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
 
       params = {}
       params[:fields] = fields.join(",") if fields
@@ -55,7 +55,7 @@ module SchwabRb
       # added here by adding values from Account.fields.
       refresh_token_if_needed
 
-      fields = convert_enum_iterable(fields, SchwabRb::Account.statuses) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
 
       params = {}
       params[:fields] = fields.join(',') if fields
@@ -200,7 +200,7 @@ module SchwabRb
       refresh_token_if_needed
 
       transaction_types = if transaction_types
-        convert_enum_iterable(transaction_types, SchwabRb::Transaction.types)
+        convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
       else
         SchwabRb::Transaction.types
       end
@@ -254,7 +254,7 @@ module SchwabRb
       #                       data (i.e., all fields). See `GetQuote::Field` for options.
       refresh_token_if_needed
 
-      fields = convert_enum_iterable(fields, SchwabRb::Quote.types) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Quote::Types) if fields
       params = fields ? { 'fields' => fields.join(',') } : {}
       path = "/marketdata/v1/#{symbol}/quotes"
       get(path, params)
@@ -272,7 +272,7 @@ module SchwabRb
 
       symbols = [symbols] if symbols.is_a?(String)
       params = { 'symbols' => symbols.join(',') }
-      fields = convert_enum_iterable(fields, Schwab::Quote.fields) if fields
+      fields = convert_enum_iterable(fields, Schwab::Quote::Types) if fields
       params['fields'] = fields.join(',') if fields
 
       unless indicative.nil?
@@ -327,12 +327,12 @@ module SchwabRb
 
       refresh_token_if_needed
 
-      contract_type = convert_enum(contract_type, SchwabRb::Option.contract_types)
-      strategy = convert_enum(strategy, SchwabRb::Option.strategies)
-      strike_range = convert_enum(strike_range, SchwabRb::Option.strike_ranges)
-      option_type = convert_enum(option_type, SchwabRb::Option.types)
-      exp_month = convert_enum(exp_month, SchwabRb::Option.expiration_months)
-      entitlement = convert_enum(entitlement, SchwabRb::Option.entitlements)
+      contract_type = convert_enum(contract_type, SchwabRb::Option::ContractTypes)
+      strategy = convert_enum(strategy, SchwabRb::Option::Strategies)
+      strike_range = convert_enum(strike_range, SchwabRb::Option::StrikeRanges)
+      option_type = convert_enum(option_type, SchwabRb::Option::Types)
+      exp_month = convert_enum(exp_month, SchwabRb::Option::ExpirationMonths)
+      entitlement = convert_enum(entitlement, SchwabRb::Option::Entitlements)
 
       params = { 'symbol' => symbol }
       params['contractType'] = contract_type if contract_type
@@ -375,10 +375,10 @@ module SchwabRb
     )
       refresh_token_if_needed
 
-      period_type = convert_enum(period_type, SchwabRb::PriceHistory.period_types) if period_type
-      period = convert_enum(period, SchwabRb::PriceHistory.periods) if period
-      frequency_type = convert_enum(frequency_type, SchwabRb::PriceHistory.frequency_types) if frequency_type
-      frequency = convert_enum(frequency, SchwabRb::PriceHistory.frequencies) if frequency
+      period_type = convert_enum(period_type, SchwabRb::PriceHistory::PeriodTypes) if period_type
+      period = convert_enum(period, SchwabRb::PriceHistory::Periods) if period
+      frequency_type = convert_enum(frequency_type, SchwabRb::PriceHistory::FrequencyTypes) if frequency_type
+      frequency = convert_enum(frequency, SchwabRb::PriceHistory::Frequencies) if frequency
 
       params = { 'symbol' => symbol }
 
@@ -578,9 +578,9 @@ module SchwabRb
       # @param frequency [String] Only return movers that saw this magnitude or greater. See Movers::Frequency for valid values.
       refresh_token_if_needed
 
-      index = convert_enum(index, SchwabRb::Movers.indexes)
-      sort_order = convert_enum(sort_order, SchwabRb::Movers.sort_orders) if sort_order
-      frequency = convert_enum(frequency, SchwabRb::Movers.frequencies) if frequency
+      index = convert_enum(index, SchwabRb::Movers::Indexes)
+      sort_order = convert_enum(sort_order, SchwabRb::Movers::SortOrders) if sort_order
+      frequency = convert_enum(frequency, SchwabRb::Movers::Frequencies) if frequency
 
       path = "/marketdata/v1/movers/#{index}"
 
@@ -599,7 +599,7 @@ module SchwabRb
       #                    one year from today.
       refresh_token_if_needed
 
-      markets = convert_enum_iterable(markets, SchwabRb::MarketHours.markets)
+      markets = convert_enum_iterable(markets, SchwabRb::MarketHours::Markets)
 
       params = { 'markets' => markets.join(',') }
       params['date'] = format_date_as_day('date', date) if date
@@ -617,7 +617,7 @@ module SchwabRb
       refresh_token_if_needed
 
       symbols = [symbols] unless symbols.is_a?(Array)
-      projection = convert_enum(projection, SchwabRb::Orders::Instrument.projections)
+      projection = convert_enum(projection, SchwabRb::Orders::Instrument::Projections)
       params = {
         'symbol' => symbols.join(','),
         'projection' => projection
@@ -647,7 +647,7 @@ module SchwabRb
       to_entered_datetime: nil,
       status: nil
     )
-      status = convert_enum(status, SchwabRb::Order.statuses) if status
+      status = convert_enum(status, SchwabRb::Order::Statuses) if status
 
       from_entered_datetime ||= (DateTime.now.new_offset(0) - 60) # 60 days ago (UTC)
       to_entered_datetime ||= DateTime.now.new_offset(0)          # Current UTC time
