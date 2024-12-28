@@ -77,7 +77,7 @@ module SchwabRb::Orders
     end
 
     def set_order_type(order_type)
-      @order_type = convert_enum(order_type, SchwabRb::Order.types)
+      @order_type = convert_enum(order_type, SchwabRb::Order::Types)
       self
     end
 
@@ -131,8 +131,8 @@ module SchwabRb::Orders
 
       @order_leg_collection ||= []
       @order_leg_collection << {
-        instruction: convert_enum(instruction, Common::EquityInstruction),
-        instrument: Common::EquityInstrument.new(symbol),
+        instruction: convert_enum(instruction, SchwabRb::Orders::EquityInstruction),
+        instrument: SchwabRb::Orders::EquityInstrument.new(symbol),
         quantity: quantity
       }
       self
@@ -144,7 +144,7 @@ module SchwabRb::Orders
     end
 
     def build
-      OrderBuilder.build(self)
+      Builder.build(self)
     end
 
     private
