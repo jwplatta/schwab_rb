@@ -17,16 +17,16 @@ module SchwabRb::Orders
         when String, Integer, Float
           obj
         when Hash
-          obj. { |value| build(value) }
+          obj.each_with_object({}) { |(key, val), acc| acc[key] = build(val) }
         when Array
           obj.map { |i| build(i) }
         else
           ret = {}
           obj.instance_variables.each do |var|
             value = obj.instance_variable_get(var)
-            next if value.nil? || var.to_s[1] != '_'
+            next if value.nil?
 
-            name = var.to_s[2..-1]
+            name = var.to_s[1..-1]
             ret[name] = build(value)
           end
           ret
@@ -131,7 +131,7 @@ module SchwabRb::Orders
 
       @order_leg_collection ||= []
       @order_leg_collection << {
-        instruction: convert_enum(instruction, SchwabRb::Orders::EquityInstruction),
+        instruction: convert_enum(instruction, SchwabRb::Orders::EquityInstructions),
         instrument: SchwabRb::Orders::EquityInstrument.new(symbol),
         quantity: quantity
       }
