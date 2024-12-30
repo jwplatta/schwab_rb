@@ -20,6 +20,10 @@ require_relative "schwab_rb/orders/instruments"
 require_relative "schwab_rb/market_hours"
 require_relative "schwab_rb/price_history"
 require_relative "schwab_rb/movers"
+require_relative "schwab_rb/orders/builder"
+require_relative "schwab_rb/orders/session"
+require_relative "schwab_rb/orders/duration"
+require_relative "schwab_rb/orders/equity_instructions"
 
 module SchwabRb
   class Error < StandardError; end
