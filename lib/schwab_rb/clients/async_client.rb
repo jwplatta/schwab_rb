@@ -3,75 +3,79 @@ require 'async/http'
 require 'json'
 require_relative 'base_client'
 
-class AsyncClient < BaseClient
-  BASE_URL = 'https://api.schwabapi.com'
-
-  def initialize
-    super
-    @endpoint = Async::HTTP::Endpoint.parse(BASE_URL)
-    @client = Async::HTTP::Client.new(@endpoint)
-  end
-
-  def close_async_session
-    @client.close
-  end
-
-  def _get_request(path, params)
-    Async do
-      dest = "#{BASE_URL}#{path}"
-      req_num = _req_num
-      # @logger.debug("Req #{req_num}: GET to #{dest}, params=#{LazyLog.new { JSON.pretty_generate(params) }}")
-
-      query = URI.encode_www_form(params)
-      response = @client.get("#{dest}?#{query}")
-      # _log_response(response, req_num)
-      # register_redactions_from_response(response)
-      response
+module SchwabRb
+  class AsyncClient < BaseClient
+    def initialize(api_key, app_secret, session, token_manager:, enforce_enums: true)
+      super
+      @endpoint = Async::HTTP::Endpoint.parse(SchwabRb::Constants::SCHWAB_BASE_URL)
+      @client = Async::HTTP::Client.new(@endpoint)
     end
-  end
 
-  def _post_request(path, data)
-    Async do
-      dest = "#{BASE_URL}#{path}"
-      req_num = _req_num
-      # @logger.debug("Req #{req_num}: POST to #{dest}, json=#{LazyLog.new { JSON.pretty_generate(data) }}")
-
-      response = @client.post(dest, {}, JSON.dump(data))
-      # _log_response(response, req_num)
-      # register_redactions_from_response(response)
-      response
+    def close_async_session
+      @client.close
     end
-  end
 
-  def _put_request(path, data)
-    Async do
-      dest = "#{BASE_URL}#{path}"
-      req_num = _req_num
-      # @logger.debug("Req #{req_num}: PUT to #{dest}, json=#{LazyLog.new { JSON.pretty_generate(data) }}")
+    private
 
-      response = @client.put(dest, {}, JSON.dump(data))
-      # _log_response(response, req_num)
-      # register_redactions_from_response(response)
-      response
+    def get(path, params)
+      Async do
+        dest = "#{BASE_URL}#{path}"
+        req_num = req_num()
+        log_request('GET', req_num, dest, params)
+
+        query = URI.encode_www_form(params)
+        response = @client.get("#{dest}?#{query}")
+
+        log_response(response, req_num)
+        register_redactions_from_response(response)
+        response
+      end
     end
-  end
 
-  def _delete_request(path)
-    Async do
-      dest = "#{BASE_URL}#{path}"
-      req_num = _req_num
-      # @logger.debug("Req #{req_num}: DELETE to #{dest}")
+    def post(path, data)
+      Async do
+        dest = "#{BASE_URL}#{path}"
+        req_num = req_num()
+        log_request('POST', req_num, dest, data)
 
-      response = @client.delete(dest)
-      # _log_response(response, req_num)
-      # register_redactions_from_response(response)
-      response
+        response = @client.post(dest, {}, JSON.dump(data))
+
+        log_response(response, req_num)
+        register_redactions_from_response(response)
+        response
+      end
     end
-  end
 
-  private
+    def put(path, data)
+      Async do
+        dest = "#{BASE_URL}#{path}"
+        req_num = req_num()
+        log_request('PUT', req_num, dest, data)
 
-  def register_redactions_from_response(response)
-    # Implement the redaction logic here
+        response = @client.put(dest, {}, JSON.dump(data))
+
+        log_response(response, req_num)
+        register_redactions_from_response(response)
+        response
+      end
+    end
+
+    def delete(path)
+      Async do
+        dest = "#{BASE_URL}#{path}"
+        req_num = req_num()
+        log_request('DELETE', req_num, dest)
+
+        response = @client.delete(dest)
+
+        log_response(response, req_num)
+        register_redactions_from_response(response)
+        response
+      end
+    end
+
+    def register_redactions_from_response(response)
+      # Implement the redaction logic here
+    end
   end
 end
