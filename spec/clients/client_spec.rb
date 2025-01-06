@@ -99,15 +99,15 @@ describe SchwabRb::Client do
         allow(session).to receive(:get).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::OrderResponse.body,
-            status: ResponseFactory::OrderResponse.status
+            body: ResponseFactory.OrderResponse.body,
+            status: ResponseFactory.OrderResponse.status
           )
         )
         order_id = "12345"
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         resp = client.get_order(order_id, account_hash)
-        expect(resp.status).to eq(ResponseFactory::OrderResponse.status)
-        expect(resp.body).to eq(ResponseFactory::OrderResponse.body)
+        expect(resp.status).to eq(ResponseFactory.OrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.OrderResponse.body)
       end
     end
 
@@ -116,15 +116,15 @@ describe SchwabRb::Client do
         allow(session).to receive(:delete).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::CancelOrderResponse.body,
-            status: ResponseFactory::CancelOrderResponse.status
+            body: ResponseFactory.CancelOrderResponse.body,
+            status: ResponseFactory.CancelOrderResponse.status
           )
         )
         order_id = "12345"
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         resp = client.cancel_order(order_id, account_hash)
-        expect(resp.status).to eq(ResponseFactory::CancelOrderResponse.status)
-        expect(resp.body).to eq(ResponseFactory::CancelOrderResponse.body)
+        expect(resp.status).to eq(ResponseFactory.CancelOrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.CancelOrderResponse.body)
       end
     end
 
@@ -133,14 +133,14 @@ describe SchwabRb::Client do
         allow(session).to receive(:get).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::AccountOrdersResponse.body,
-            status: ResponseFactory::AccountOrdersResponse.status
+            body: ResponseFactory.AccountOrdersResponse.body,
+            status: ResponseFactory.AccountOrdersResponse.status
           )
         )
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         resp = client.get_account_orders(account_hash)
-        expect(resp.status).to eq(ResponseFactory::AccountOrdersResponse.status)
-        expect(resp.body).to eq(ResponseFactory::AccountOrdersResponse.body)
+        expect(resp.status).to eq(ResponseFactory.AccountOrdersResponse.status)
+        expect(resp.body).to eq(ResponseFactory.AccountOrdersResponse.body)
       end
     end
 
@@ -149,13 +149,13 @@ describe SchwabRb::Client do
         allow(session).to receive(:get).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::AllLinkedAccountOrdersResponse.body,
-            status: ResponseFactory::AllLinkedAccountOrdersResponse.status
+            body: ResponseFactory.AllLinkedAccountOrdersResponse.body,
+            status: ResponseFactory.AllLinkedAccountOrdersResponse.status
           )
         )
         resp = client.get_all_linked_account_orders
-        expect(resp.status).to eq(ResponseFactory::AllLinkedAccountOrdersResponse.status)
-        expect(resp.body).to eq(ResponseFactory::AllLinkedAccountOrdersResponse.body)
+        expect(resp.status).to eq(ResponseFactory.AllLinkedAccountOrdersResponse.status)
+        expect(resp.body).to eq(ResponseFactory.AllLinkedAccountOrdersResponse.body)
       end
     end
 
@@ -164,33 +164,33 @@ describe SchwabRb::Client do
         allow(session).to receive(:post).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::PlaceOrderResponse.body,
-            status: ResponseFactory::PlaceOrderResponse.status
+            body: ResponseFactory.PlaceOrderResponse.body,
+            status: ResponseFactory.PlaceOrderResponse.status
           )
         )
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         order_spec = double("OrderSpec", build: {})
         resp = client.place_order(account_hash, order_spec)
-        expect(resp.status).to eq(ResponseFactory::PlaceOrderResponse.status)
-        expect(resp.body).to eq(ResponseFactory::PlaceOrderResponse.body)
+        expect(resp.status).to eq(ResponseFactory.PlaceOrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.PlaceOrderResponse.body)
       end
     end
 
     describe "#replace_order" do
-      it "replaces an existing order for an account" do
+      fit "replaces an existing order for an account" do
         allow(session).to receive(:put).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::ReplaceOrderResponse.body,
-            status: ResponseFactory::ReplaceOrderResponse.status
+            body: ResponseFactory.ReplaceOrderResponse.body,
+            status: ResponseFactory.ReplaceOrderResponse.status
           )
         )
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         order_id = "12345"
         order_spec = double("OrderSpec", build: {})
         resp = client.replace_order(account_hash, order_id, order_spec)
-        expect(resp.status).to eq(ResponseFactory::ReplaceOrderResponse.status)
-        expect(resp.body).to eq(ResponseFactory::ReplaceOrderResponse.body)
+        expect(resp.status).to eq(ResponseFactory.ReplaceOrderResponse.status)
+        expect(resp.body). to eq(ResponseFactory.ReplaceOrderResponse.body)
       end
     end
 
@@ -199,15 +199,15 @@ describe SchwabRb::Client do
         allow(session).to receive(:post).and_return(
           instance_double(
             OAuth2::Response,
-            body: ResponseFactory::PreviewOrderResponse.body,
-            status: ResponseFactory::PreviewOrderResponse.status
+            body: ResponseFactory.PreviewOrderResponse.body,
+            status: ResponseFactory.PreviewOrderResponse.status
           )
         )
         account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
         order_spec = double("OrderSpec", build: {})
         resp = client.preview_order(account_hash, order_spec)
-        expect(resp.status).to eq(ResponseFactory::PreviewOrderResponse.status)
-        expect(resp.body).to eq(ResponseFactory::PreviewOrderResponse.body)
+        expect(resp.status).to eq(ResponseFactory.PreviewOrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.PreviewOrderResponse.body)
       end
     end
   end
@@ -224,7 +224,6 @@ describe SchwabRb::Client do
       token_path = ENV["TOKEN_PATH"]
       client = SchwabRb::Auth.from_token_file(api_key, app_secret, token_path)
       resp = client.get_option_chain('PCOR', exp_month: SchwabRb::Option::ExpirationMonth::JANUARY)
-      binding.pry
     end
   end
 
@@ -477,7 +476,7 @@ describe SchwabRb::BaseClient do
       projection = "FUNDAMENTAL"
       resp = client.get_instruments(symbols, projection)
       expect(resp.status).to eq(ResponseFactory::InstrumentsResponse.status)
-      expect(resp.body).to eq(ResponseFactory::InstrumentsResponse.body)
+      expect(resp.body). to eq(ResponseFactory::InstrumentsResponse.body)
     end
   end
 
@@ -494,6 +493,125 @@ describe SchwabRb::BaseClient do
       resp = client.get_instrument_by_cusip(cusip)
       expect(resp.status).to eq(ResponseFactory::InstrumentByCusipResponse.status)
       expect(resp.body).to eq(ResponseFactory::InstrumentByCusipResponse.body)
+    end
+  end
+
+  describe "orders" do
+    describe "#get_order" do
+      it "returns a specific order" do
+        allow(session).to receive(:get).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.OrderResponse.body,
+            status: ResponseFactory.OrderResponse.status
+          )
+        )
+        order_id = "12345"
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        resp = client.get_order(order_id, account_hash)
+        expect(resp.status).to eq(ResponseFactory.OrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.OrderResponse.body)
+      end
+    end
+
+    describe "#cancel_order" do
+      it "cancels a specific order" do
+        allow(session).to receive(:delete).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.CancelOrderResponse.body,
+            status: ResponseFactory.CancelOrderResponse.status
+          )
+        )
+        order_id = "12345"
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        resp = client.cancel_order(order_id, account_hash)
+        expect(resp.status).to eq(ResponseFactory.CancelOrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.CancelOrderResponse.body)
+      end
+    end
+
+    describe "#get_account_orders" do
+      it "returns orders for a specific account" do
+        allow(session).to receive(:get).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.AccountOrdersResponse.body,
+            status: ResponseFactory.AccountOrdersResponse.status
+          )
+        )
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        resp = client.get_account_orders(account_hash)
+        expect(resp.status).to eq(ResponseFactory.AccountOrdersResponse.status)
+        expect(resp.body).to eq(ResponseFactory.AccountOrdersResponse.body)
+      end
+    end
+
+    describe "#get_all_linked_account_orders" do
+      it "returns orders for all linked accounts" do
+        allow(session).to receive(:get).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.AllLinkedAccountOrdersResponse.body,
+            status: ResponseFactory.AllLinkedAccountOrdersResponse.status
+          )
+        )
+        resp = client.get_all_linked_account_orders
+        expect(resp.status).to eq(ResponseFactory.AllLinkedAccountOrdersResponse.status)
+        expect(resp.body).to eq(ResponseFactory.AllLinkedAccountOrdersResponse.body)
+      end
+    end
+
+    describe "#place_order" do
+      it "places an order for a specific account" do
+        allow(session).to receive(:post).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.PlaceOrderResponse.body,
+            status: ResponseFactory.PlaceOrderResponse.status
+          )
+        )
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        order_spec = double("OrderSpec", build: {})
+        resp = client.place_order(account_hash, order_spec)
+        expect(resp.status).to eq(ResponseFactory.PlaceOrderResponse.status)
+        expect(resp.body).to eq(ResponseFactory.PlaceOrderResponse.body)
+      end
+    end
+
+    describe "#replace_order" do
+      it "replaces an existing order for an account" do
+        allow(session).to receive(:put).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.ReplaceOrderResponse.body,
+            status: ResponseFactory.ReplaceOrderResponse.status
+          )
+        )
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        order_id = "12345"
+        order_spec = double("OrderSpec", build: {})
+        resp = client.replace_order(account_hash, order_id, order_spec)
+        expect(resp.status).to eq(ResponseFactory.ReplaceOrderResponse.status)
+        expect(resp.body). to eq(ResponseFactory.ReplaceOrderResponse.body)
+      end
+    end
+
+    describe "#preview_order" do
+      it "previews an order" do
+        allow(session).to receive(:post).and_return(
+          instance_double(
+            OAuth2::Response,
+            body: ResponseFactory.PreviewOrderResponse.body,
+            status: ResponseFactory.PreviewOrderResponse.status
+          )
+        )
+        account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
+        order_spec = double("OrderSpec", build: {})
+        resp = client.preview_order(account_hash, order_spec)
+        expect(resp.status). to eq(ResponseFactory.PreviewOrderResponse.status)
+        expect(resp.body). to eq(ResponseFactory.PreviewOrderResponse.body)
+      end
     end
   end
 end
