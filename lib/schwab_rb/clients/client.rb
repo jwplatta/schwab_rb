@@ -28,7 +28,6 @@ module SchwabRb
       req_num = req_num()
       log_request('POST', req_num, dest, data)
 
-      # response = Net::HTTP.post(dest, data.to_json, { 'Content-Type' => 'application/json' })
       response = session.post(dest, data.to_json, { 'Content-Type' => 'application/json' })
       log_response(response, req_num)
       register_redactions_from_response(response)
@@ -41,9 +40,7 @@ module SchwabRb
       req_num = req_num()
       log_request('PUT', req_num, dest, data)
 
-      request = Net::HTTP::Put.new(dest, { 'Content-Type' => 'application/json' })
-      request.body = data.to_json
-      response = Net::HTTP.start(dest.hostname, dest.port, use_ssl: true) { |http| http.request(request) }
+      response = session.put(dest, data.to_json, { 'Content-Type' => 'application/json' })
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
@@ -55,8 +52,7 @@ module SchwabRb
       req_num = req_num()
       log_request('DELETE', req_num, dest)
 
-      request = Net::HTTP::Delete.new(dest)
-      response = Net::HTTP.start(dest.hostname, dest.port, use_ssl: true) { |http| http.request(request) }
+      response = session.delete(dest)
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
