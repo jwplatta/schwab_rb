@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe SchwabRb::Client do
+fdescribe SchwabRb::Client do
   let(:api_key) { "test_api_key" }
   let(:app_secret) { "test_app_secret" }
   let(:token_manager) do
@@ -177,7 +177,7 @@ describe SchwabRb::Client do
     end
 
     describe "#replace_order" do
-      fit "replaces an existing order for an account" do
+      it "replaces an existing order for an account" do
         allow(session).to receive(:put).and_return(
           instance_double(
             OAuth2::Response,
@@ -218,13 +218,13 @@ describe SchwabRb::Client do
   describe "quotes" do
   end
   describe "options" do
-    it do
-      api_key = ENV["SCHWAB_API_KEY"]
-      app_secret = ENV["SCHWAB_APP_SECRET"]
-      token_path = ENV["TOKEN_PATH"]
-      client = SchwabRb::Auth.from_token_file(api_key, app_secret, token_path)
-      resp = client.get_option_chain('PCOR', exp_month: SchwabRb::Option::ExpirationMonth::JANUARY)
-    end
+    # it do
+    #   api_key = ENV["SCHWAB_API_KEY"]
+    #   app_secret = ENV["SCHWAB_APP_SECRET"]
+    #   token_path = ENV["TOKEN_PATH"]
+    #   client = SchwabRb::Auth.from_token_file(api_key, app_secret, token_path)
+    #   resp = client.get_option_chain('PCOR', exp_month: SchwabRb::Option::ExpirationMonth::JANUARY)
+    # end
   end
 
   describe "price history" do
