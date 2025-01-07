@@ -19,11 +19,17 @@ module SchwabRb
       refresh_token_if_needed
     end
 
+    def timeout
+      @session.options[:connection_opts][:request][:timeout]
+    end
+
     def set_timeout(timeout)
       # Sets the timeout for the client session.
       #
       # @param timeout [Integer] The timeout value in seconds.
-      @session.timeout = timeout
+      @session.options[:connection_opts] ||= {}
+      @session.options[:connection_opts][:request] ||= {}
+      @session.options[:connection_opts][:request][:timeout] = timeout
     end
 
     def token_age
@@ -154,7 +160,7 @@ module SchwabRb
       # do not contain JSON data, and attempting to extract it may raise an exception.
       refresh_token_if_needed
 
-      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
 
       path = "/trader/v1/accounts/#{account_hash}/orders"
       post(path, order_spec)
@@ -166,7 +172,7 @@ module SchwabRb
       # Once replaced, the old order will be canceled and a new order will be created.
       refresh_token_if_needed
 
-      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
 
       path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
       put(path, order_spec)
@@ -177,7 +183,7 @@ module SchwabRb
       # API and see the structure it would result in.
       refresh_token_if_needed
 
-      order_spec = order_spec.build if order_spec.is_a?(OrderBuilder)
+      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
 
       path = "/trader/v1/accounts/#{account_hash}/previewOrder"
       post(path, order_spec)
@@ -685,6 +691,12 @@ module SchwabRb
       if session.expired?
         new_session = token_manager.refresh_token(self)
         @session = new_session
+      end
+    end
+
+    def assert_type(var_name, value, types)
+      unless types.any? { |type| value.is_a?(type) }
+        raise ArgumentError, "#{var_name} must be one of #{types.join(', ')}"
       end
     end
   end
