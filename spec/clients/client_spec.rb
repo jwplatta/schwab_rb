@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-fdescribe SchwabRb::Client do
+describe SchwabRb::Client do
   let(:api_key) { "test_api_key" }
   let(:app_secret) { "test_app_secret" }
   let(:token_manager) do
