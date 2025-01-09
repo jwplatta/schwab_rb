@@ -675,6 +675,12 @@ module SchwabRb
       dt.strftime('%Y-%m-%dT%H:%M:%S.%LZ')
     end
 
+    def format_date_as_day(var_name, date)
+      assert_type(var_name, date, [Date, DateTime])
+      date = Date.new(date.year, date.month, date.day) unless date.is_a?(Date)
+      date.strftime('%Y-%m-%d')
+    end
+
     def normalize_start_and_end_datetimes(start_datetime, end_datetime)
       start_datetime ||= DateTime.new(1971, 1, 1)
       end_datetime ||= DateTime.now + 7
