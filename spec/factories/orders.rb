@@ -1,6 +1,8 @@
+require_relative 'mock_response'
+
 module ResponseFactory
-  def self.OrderResponse
-    OpenStruct.new(
+  def self.order_response
+    MockResponse.new(
       body: {
         "orderId" => "12345",
         "status" => "FILLED",
@@ -12,8 +14,8 @@ module ResponseFactory
     )
   end
 
-  def self.CancelOrderResponse
-    OpenStruct.new(
+  def self.cancel_order_response
+    MockResponse.new(
       body: {
         "orderId" => "12345",
         "status" => "CANCELLED"
@@ -22,8 +24,8 @@ module ResponseFactory
     )
   end
 
-  def self.AccountOrdersResponse
-    OpenStruct.new(
+  def self.account_orders_response
+    MockResponse.new(
       body: [
         {
           "orderId" => "12345",
@@ -44,8 +46,8 @@ module ResponseFactory
     )
   end
 
-  def self.AllLinkedAccountOrdersResponse
-    OpenStruct.new(
+  def self.all_linked_account_orders_response
+    MockResponse.new(
       body: [
         {
           "orderId" => "12345",
@@ -66,8 +68,8 @@ module ResponseFactory
     )
   end
 
-  def self.PlaceOrderResponse
-    OpenStruct.new(
+  def self.place_order_response
+    MockResponse.new(
       body: {
         "orderId" => "12345",
         "status" => "PENDING"
@@ -76,8 +78,8 @@ module ResponseFactory
     )
   end
 
-  def self.ReplaceOrderResponse
-    OpenStruct.new(
+  def self.replace_order_response
+    MockResponse.new(
       body: {
         "orderId" => "12345",
         "status" => "REPLACED"
@@ -86,8 +88,8 @@ module ResponseFactory
     )
   end
 
-  def self.PreviewOrderResponse
-    OpenStruct.new(
+  def self.preview_order_response
+    MockResponse.new(
       body: {
         "orderId" => "12345",
         "status" => "PREVIEW"
@@ -98,7 +100,7 @@ module ResponseFactory
 end
 
 module OrderStatus
-  PENDING = 'pending'
-  COMPLETED = 'completed'
-  CANCELLED = 'cancelled'
+  PENDING = "pending"
+  COMPLETED = "completed"
+  CANCELLED = "cancelled"
 end
