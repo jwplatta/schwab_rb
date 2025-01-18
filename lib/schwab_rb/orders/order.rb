@@ -153,17 +153,5 @@ module SchwabRb
       # A custom multi-leg order strategy.
       CUSTOM = "CUSTOM"
     end
-
-    def self.statuses
-      Statuses.constants.map { |const| Status.const_get(const) }
-    end
-
-    def self.types
-      Types.constants.map { |const| Type.const_get(const) }
-    end
-
-    def self.complex_order_strategy_types
-      ComplexOrderStrategyType.constants.map { |const| ComplexOrderStrategyType.const_get(const) }
-    end
   end
 end

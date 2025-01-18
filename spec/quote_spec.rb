@@ -6,6 +6,7 @@ describe SchwabRb::Quote do
   end
 
   it "returns types" do
-    expect(described_class.types).to match_array(%w(quote fundamental extended reference regular))
+    types = SchwabRb::Quote::Types.constants.map { |const| SchwabRb::Quote::Types.const_get(const) }
+    expect(types).to match_array(%w(quote fundamental extended reference regular))
   end
 end

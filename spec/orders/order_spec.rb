@@ -6,12 +6,49 @@ describe SchwabRb::Order do
   end
   describe 'constants' do
     it 'returns correct statuses' do
-      statuses = SchwabRb::Order::Status.constants.map { |const| SchwabRb::Order::Status.const_get(const) }
-      expect(described_class.statuses).to match_array(statuses)
+      statuses = SchwabRb::Order::Statuses.constants.map { |const| SchwabRb::Order::Statuses.const_get(const) }
+      expect(statuses).to match_array([
+        "AWAITING_PARENT_ORDER",
+        "AWAITING_CONDITION",
+        "AWAITING_STOP_CONDITION",
+        "AWAITING_MANUAL_REVIEW",
+        "ACCEPTED",
+        "AWAITING_UR_OUT",
+        "PENDING_ACTIVATION",
+        "QUEUED",
+        "WORKING",
+        "REJECTED",
+        "PENDING_CANCEL",
+        "CANCELED",
+        "PENDING_REPLACE",
+        "REPLACED",
+        "FILLED",
+        "EXPIRED",
+        "NEW",
+        "AWAITING_RELEASE_TIME",
+        "PENDING_ACKNOWLEDGEMENT",
+        "PENDING_RECALL",
+        "UNKNOWN"
+      ])
     end
     it 'returns correct types' do
-      types = SchwabRb::Order::Type.constants.map { |const| SchwabRb::Order::Type.const_get(const) }
-      expect(described_class.types).to match_array(types)
+      types = SchwabRb::Order::Types.constants.map { |const| SchwabRb::Order::Types.const_get(const) }
+      expect(types).to match_array([
+        "TRAILING_STOP_LIMIT",
+        "NET_DEBIT",
+        "NET_CREDIT",
+        "NET_ZERO",
+        "LIMIT_ON_CLOSE",
+        "MARKET",
+        "LIMIT",
+        "STOP",
+        "STOP_LIMIT",
+        "TRAILING_STOP",
+        "CABINET",
+        "NON_MARKETABLE",
+        "MARKET_ON_CLOSE",
+        "EXERCISE"
+      ])
     end
   end
 end
