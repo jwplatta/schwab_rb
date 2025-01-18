@@ -1,5 +1,5 @@
-require 'date'
-require_relative '../utils/enum_enforcer'
+require "date"
+require_relative "../utils/enum_enforcer"
 
 module SchwabRb
   class BaseClient
@@ -64,9 +64,9 @@ module SchwabRb
       fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
 
       params = {}
-      params[:fields] = fields.join(',') if fields
+      params[:fields] = fields.join(",") if fields
 
-      path = '/trader/v1/accounts'
+      path = "/trader/v1/accounts"
       get(path, params)
     end
 
@@ -76,7 +76,7 @@ module SchwabRb
       # in API calls.
       refresh_token_if_needed
 
-      path = '/trader/v1/accounts/accountNumbers'
+      path = "/trader/v1/accounts/accountNumbers"
       get(path, {})
     end
 
@@ -141,7 +141,7 @@ module SchwabRb
       # @param status [String] Restrict query to orders with this status.
       refresh_token_if_needed
 
-      path = '/trader/v1/orders'
+      path = "/trader/v1/orders"
       params = make_order_query(
         max_results: max_results,
         from_entered_datetime: from_entered_datetime,
@@ -208,47 +208,47 @@ module SchwabRb
       transaction_types = if transaction_types
         convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
       else
-        SchwabRb::Transaction.types
+        get_valid_enum_values(SchwabRb::Transaction::Types)
       end
 
-      if start_date.nil?
-        start_date = format_date_as_iso('start_date', DateTime.now.new_offset(0) - 60)
+      start_date = if start_date.nil?
+        format_date_as_iso("start_date", DateTime.now.new_offset(0) - 60)
       else
-        start_date = format_date_as_iso('start_date', start_date)
+        format_date_as_iso("start_date", start_date)
       end
 
-      if end_date.nil?
-        end_date = format_date_as_iso('end_date', DateTime.now.new_offset(0))
+      end_date = if end_date.nil?
+        format_date_as_iso("end_date", DateTime.now.new_offset(0))
       else
-        end_date = format_date_as_iso('end_date', end_date)
+        format_date_as_iso("end_date", end_date)
       end
 
       params = {
-        'types' => transaction_types.join(','),
-        'startDate' => start_date,
-        'endDate' => end_date
+        "types" => transaction_types.sort.join(","),
+        "startDate" => start_date,
+        "endDate" => end_date
       }
-      params['symbol'] = symbol unless symbol.nil?
+      params["symbol"] = symbol unless symbol.nil?
 
       path = "/trader/v1/accounts/#{account_hash}/transactions"
       get(path, params)
     end
 
-    def get_transaction(account_hash, transaction_id)
+    def get_transaction(account_hash, order_id)
       # Transaction for a specific account.
       #
       # @param account_hash [String] Account hash corresponding to the account whose
       #                              transactions should be returned.
-      # @param transaction_id [String] ID of the transaction for which to return data.
+      # @param order_id [String] ID of the order for which to return data.
       refresh_token_if_needed
 
-      path = "/trader/v1/accounts/#{account_hash}/transactions/#{transaction_id}"
+      path = "/trader/v1/accounts/#{account_hash}/transactions/#{order_id}"
       get(path, {})
     end
 
     def get_user_preferences
       refresh_token_if_needed
-      path = '/trader/v1/userPreference'
+      path = "/trader/v1/userPreference"
       get(path, {})
     end
 
@@ -261,7 +261,7 @@ module SchwabRb
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Quote::Types) if fields
-      params = fields ? { 'fields' => fields.join(',') } : {}
+      params = fields ? { "fields" => fields.join(",") } : {}
       path = "/marketdata/v1/#{symbol}/quotes"
       get(path, params)
     end
@@ -277,18 +277,19 @@ module SchwabRb
       refresh_token_if_needed
 
       symbols = [symbols] if symbols.is_a?(String)
-      params = { 'symbols' => symbols.join(',') }
+      params = { "symbols" => symbols.join(",") }
       fields = convert_enum_iterable(fields, Schwab::Quote::Types) if fields
-      params['fields'] = fields.join(',') if fields
+      params["fields"] = fields.join(",") if fields
 
       unless indicative.nil?
         unless [true, false].include?(indicative)
           raise ArgumentError, "value of 'indicative' must be either true or false"
         end
-        params['indicative'] = indicative ? 'true' : 'false'
+
+        params["indicative"] = indicative ? "true" : "false"
       end
 
-      path = '/marketdata/v1/quotes'
+      path = "/marketdata/v1/quotes"
       get(path, params)
     end
 
@@ -340,32 +341,32 @@ module SchwabRb
       exp_month = convert_enum(exp_month, SchwabRb::Option::ExpirationMonths)
       entitlement = convert_enum(entitlement, SchwabRb::Option::Entitlements)
 
-      params = { 'symbol' => symbol }
-      params['contractType'] = contract_type if contract_type
-      params['strikeCount'] = strike_count if strike_count
-      params['includeUnderlyingQuote'] = include_underlying_quote if include_underlying_quote
-      params['strategy'] = strategy if strategy
-      params['interval'] = interval if interval
-      params['strike'] = strike if strike
-      params['range'] = strike_range if strike_range
-      params['fromDate'] = format_date_as_day('from_date', from_date) if from_date
-      params['toDate'] = format_date_as_day('to_date', to_date) if to_date
-      params['volatility'] = volatility if volatility
-      params['underlyingPrice'] = underlying_price if underlying_price
-      params['interestRate'] = interest_rate if interest_rate
-      params['daysToExpiration'] = days_to_expiration if days_to_expiration
-      params['expMonth'] = exp_month if exp_month
-      params['optionType'] = option_type if option_type
-      params['entitlement'] = entitlement if entitlement
+      params = { "symbol" => symbol }
+      params["contractType"] = contract_type if contract_type
+      params["strikeCount"] = strike_count if strike_count
+      params["includeUnderlyingQuote"] = include_underlying_quote if include_underlying_quote
+      params["strategy"] = strategy if strategy
+      params["interval"] = interval if interval
+      params["strike"] = strike if strike
+      params["range"] = strike_range if strike_range
+      params["fromDate"] = format_date_as_day("from_date", from_date) if from_date
+      params["toDate"] = format_date_as_day("to_date", to_date) if to_date
+      params["volatility"] = volatility if volatility
+      params["underlyingPrice"] = underlying_price if underlying_price
+      params["interestRate"] = interest_rate if interest_rate
+      params["daysToExpiration"] = days_to_expiration if days_to_expiration
+      params["expMonth"] = exp_month if exp_month
+      params["optionType"] = option_type if option_type
+      params["entitlement"] = entitlement if entitlement
 
-      path = '/marketdata/v1/chains'
+      path = "/marketdata/v1/chains"
       get(path, params)
     end
 
     def get_option_expiration_chain(symbol)
       refresh_token_if_needed
-      path = '/marketdata/v1/expirationchain'
-      get(path, {'symbol': symbol})
+      path = "/marketdata/v1/expirationchain"
+      get(path, { symbol: symbol })
     end
 
     def get_price_history(
@@ -386,27 +387,26 @@ module SchwabRb
       frequency_type = convert_enum(frequency_type, SchwabRb::PriceHistory::FrequencyTypes) if frequency_type
       frequency = convert_enum(frequency, SchwabRb::PriceHistory::Frequencies) if frequency
 
-      params = { 'symbol' => symbol }
+      params = { "symbol" => symbol }
 
-      params['periodType'] = period_type if period_type
-      params['period'] = period if period
-      params['frequencyType'] = frequency_type if frequency_type
-      params['frequency'] = frequency if frequency
-      params['startDate'] = format_date_as_millis('start_datetime', start_datetime) if start_datetime
-      params['endDate'] = format_date_as_millis('end_datetime', end_datetime) if end_datetime
-      params['needExtendedHoursData'] = need_extended_hours_data unless need_extended_hours_data.nil?
-      params['needPreviousClose'] = need_previous_close unless need_previous_close.nil?
+      params["periodType"] = period_type if period_type
+      params["period"] = period if period
+      params["frequencyType"] = frequency_type if frequency_type
+      params["frequency"] = frequency if frequency
+      params["startDate"] = format_date_as_millis("start_datetime", start_datetime) if start_datetime
+      params["endDate"] = format_date_as_millis("end_datetime", end_datetime) if end_datetime
+      params["needExtendedHoursData"] = need_extended_hours_data unless need_extended_hours_data.nil?
+      params["needPreviousClose"] = need_previous_close unless need_previous_close.nil?
       path = "/marketdata/v1/pricehistory"
 
       get(path, params)
     end
 
     def get_price_history_every_minute(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                       start_datetime: nil,
+                                       end_datetime: nil,
+                                       need_extended_hours_data: nil,
+                                       need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -427,11 +427,10 @@ module SchwabRb
     end
 
     def get_price_history_every_five_minutes(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                             start_datetime: nil,
+                                             end_datetime: nil,
+                                             need_extended_hours_data: nil,
+                                             need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -452,11 +451,10 @@ module SchwabRb
     end
 
     def get_price_history_every_ten_minutes(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                            start_datetime: nil,
+                                            end_datetime: nil,
+                                            need_extended_hours_data: nil,
+                                            need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -477,11 +475,10 @@ module SchwabRb
     end
 
     def get_price_history_every_fifteen_minutes(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                                start_datetime: nil,
+                                                end_datetime: nil,
+                                                need_extended_hours_data: nil,
+                                                need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -502,11 +499,10 @@ module SchwabRb
     end
 
     def get_price_history_every_thirty_minutes(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                               start_datetime: nil,
+                                               end_datetime: nil,
+                                               need_extended_hours_data: nil,
+                                               need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -527,11 +523,10 @@ module SchwabRb
     end
 
     def get_price_history_every_day(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                    start_datetime: nil,
+                                    end_datetime: nil,
+                                    need_extended_hours_data: nil,
+                                    need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -552,11 +547,10 @@ module SchwabRb
     end
 
     def get_price_history_every_week(symbol,
-      start_datetime: nil,
-      end_datetime: nil,
-      need_extended_hours_data: nil,
-      need_previous_close: nil
-    )
+                                     start_datetime: nil,
+                                     end_datetime: nil,
+                                     need_extended_hours_data: nil,
+                                     need_previous_close: nil)
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -591,8 +585,8 @@ module SchwabRb
       path = "/marketdata/v1/movers/#{index}"
 
       params = {}
-      params['sort'] = sort_order if sort_order
-      params['frequency'] = frequency.to_s if frequency
+      params["sort"] = sort_order if sort_order
+      params["frequency"] = frequency.to_s if frequency
 
       get(path, params)
     end
@@ -607,10 +601,10 @@ module SchwabRb
 
       markets = convert_enum_iterable(markets, SchwabRb::MarketHours::Markets)
 
-      params = { 'markets' => markets.join(',') }
-      params['date'] = format_date_as_day('date', date) if date
+      params = { "markets" => markets.join(",") }
+      params["date"] = format_date_as_day("date", date) if date
 
-      get('/marketdata/v1/markets', params)
+      get("/marketdata/v1/markets", params)
     end
 
     def get_instruments(symbols, projection)
@@ -625,11 +619,11 @@ module SchwabRb
       symbols = [symbols] unless symbols.is_a?(Array)
       projection = convert_enum(projection, SchwabRb::Orders::Instrument::Projections)
       params = {
-        'symbol' => symbols.join(','),
-        'projection' => projection
+        "symbol" => symbols.join(","),
+        "projection" => projection
       }
 
-      get('/marketdata/v1/instruments', params)
+      get("/marketdata/v1/instruments", params)
     end
 
     def get_instrument_by_cusip(cusip)
@@ -638,9 +632,7 @@ module SchwabRb
       # @param cusip [String] CUSIP of the instrument to fetch. Leading zeroes must be preserved.
       refresh_token_if_needed
 
-      unless cusip.is_a?(String)
-        raise ArgumentError, 'cusip must be passed as a string'
-      end
+      raise ArgumentError, "cusip must be passed as a string" unless cusip.is_a?(String)
 
       get("/marketdata/v1/instruments/#{cusip}", {})
     end
@@ -672,13 +664,13 @@ module SchwabRb
     def format_date_as_iso(var_name, dt)
       assert_type(var_name, dt, [Date, DateTime])
       dt = DateTime.new(dt.year, dt.month, dt.day) unless dt.is_a?(DateTime)
-      dt.strftime('%Y-%m-%dT%H:%M:%S.%LZ')
+      dt.strftime("%Y-%m-%dT%H:%M:%S.%LZ")
     end
 
     def format_date_as_day(var_name, date)
       assert_type(var_name, date, [Date, DateTime])
       date = Date.new(date.year, date.month, date.day) unless date.is_a?(Date)
-      date.strftime('%Y-%m-%d')
+      date.strftime("%Y-%m-%d")
     end
 
     def normalize_start_and_end_datetimes(start_datetime, end_datetime)
@@ -689,21 +681,21 @@ module SchwabRb
     end
 
     def authorize_request(request)
-      request['Authorization'] = "Bearer #{@session.token}"
+      request["Authorization"] = "Bearer #{@session.token}"
       request
     end
 
     def refresh_token_if_needed
-      if session.expired?
-        new_session = token_manager.refresh_token(self)
-        @session = new_session
-      end
+      return unless session.expired?
+
+      new_session = token_manager.refresh_token(self)
+      @session = new_session
     end
 
     def assert_type(var_name, value, types)
-      unless types.any? { |type| value.is_a?(type) }
-        raise ArgumentError, "#{var_name} must be one of #{types.join(', ')}"
-      end
+      return if types.any? { |type| value.is_a?(type) }
+
+      raise ArgumentError, "#{var_name} must be one of #{types.join(', ')}"
     end
   end
 end
