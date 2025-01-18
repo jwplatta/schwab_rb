@@ -1,0 +1,96 @@
+{
+  "session": "NORMAL",
+  "duration": "DAY",
+  "orderType": "NET_CREDIT",
+  "complexOrderStrategyType": "VERTICAL",
+  "quantity": 1,
+  "filledQuantity": 1,
+  "remainingQuantity": 0,
+  "requestedDestination": "AUTO",
+  "destinationLinkName": "WEXM",
+  "price": 1.26,
+  "orderLegCollection": [
+    {
+      "orderLegType": "OPTION",
+      "legId": 1,
+      "instrument": {
+        "assetType": "OPTION",
+        "cusip": "0MRVL.OL50090000",
+        "symbol": "MRVL  250321P00090000",
+        "description": "MARVELL TECHNOLOGY INC 03/21/2025 $90 Put",
+        "instrumentId": 216976019,
+        "type": "VANILLA",
+        "putCall": "PUT",
+        "underlyingSymbol": "MRVL",
+        "optionDeliverables": [
+          {
+            "symbol": "MRVL",
+            "deliverableUnits": 100
+          }
+        ]
+      },
+      "instruction": "SELL_TO_OPEN",
+      "positionEffect": "OPENING",
+      "quantity": 1
+    },
+    {
+      "orderLegType": "OPTION",
+      "legId": 2,
+      "instrument": {
+        "assetType": "OPTION",
+        "cusip": "0MRVL.OL50080000",
+        "symbol": "MRVL  250321P00080000",
+        "description": "MARVELL TECHNOLOGY INC 03/21/2025 $80 Put",
+        "instrumentId": 217118015,
+        "type": "VANILLA",
+        "putCall": "PUT",
+        "underlyingSymbol": "MRVL",
+        "optionDeliverables": [
+          {
+            "symbol": "MRVL",
+            "deliverableUnits": 100
+          }
+        ]
+      },
+      "instruction": "BUY_TO_OPEN",
+      "positionEffect": "OPENING",
+      "quantity": 1
+    }
+  ],
+  "orderStrategyType": "SINGLE",
+  "orderId": 1002581898359,
+  "cancelable": false,
+  "editable": false,
+  "status": "FILLED",
+  "enteredTime": "2025-01-13T16:54:15+0000",
+  "closeTime": "2025-01-13T16:56:17+0000",
+  "tag": "API_TOS:TRADE_ALL",
+  "accountNumber": 11613762,
+  "orderActivityCollection": [
+    {
+      "activityType": "EXECUTION",
+      "activityId": 90933359941,
+      "executionType": "FILL",
+      "quantity": 1,
+      "orderRemainingQuantity": 0,
+      "executionLegs": [
+        {
+          "legId": 2,
+          "quantity": 1,
+          "mismarkedQuantity": 0,
+          "price": 0.94,
+          "time": "2025-01-13T16:56:17+0000",
+          "instrumentId": 217118015
+        },
+        {
+          "legId": 1,
+          "quantity": 1,
+          "mismarkedQuantity": 0,
+          "price": 2.2,
+          "time": "2025-01-13T16:56:17+0000",
+          "instrumentId": 216976019
+        }
+      ]
+    }
+  ]
+}

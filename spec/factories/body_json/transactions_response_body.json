@@ -1,0 +1,1222 @@
+[
+  {
+    "activityId": 90957056499,
+    "time": "2025-01-14T05:15:12+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-14T05:15:12+0000",
+    "positionId": 2709980218,
+    "orderId": 1111111111111,
+    "netAmount": -1052.82,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 2.25,
+        "cost": -2.25,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.55,
+        "cost": -0.55,
+        "feeType": "FUTURES_EXCHANGE_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.02,
+        "cost": -0.02
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "/ESH25_P5050:XCME",
+          "description": "/ESH25 Mar 21 2025 5050.0 Put",
+          "instrumentId": 215626295,
+          "closingPrice": 11.75,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "/ESH25:XCME",
+              "strikePercent": 0,
+              "deliverableNumber": 1,
+              "deliverableUnits": 1
+            }
+          ],
+          "optionPremiumMultiplier": 50,
+          "putCall": "PUT",
+          "strikePrice": 5050,
+          "type": "VANILLA",
+          "underlyingSymbol": ".ESH25:XCME"
+        },
+        "amount": 1,
+        "cost": -1050,
+        "price": 21,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 90933359945,
+    "time": "2025-01-13T16:56:17+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-13T16:56:17+0000",
+    "positionId": 2709195379,
+    "orderId": 1002581898359,
+    "netAmount": 219.33,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "MRVL  250321P00090000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $90 Put",
+          "instrumentId": 216976019,
+          "closingPrice": 1.37,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "MRVL",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 90,
+          "type": "VANILLA",
+          "underlyingSymbol": "MRVL"
+        },
+        "amount": -1,
+        "cost": 220,
+        "price": 2.2,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91103180936,
+    "time": "2025-01-16T15:35:47+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T15:35:47+0000",
+    "positionId": 2713547565,
+    "orderId": 1002603886223,
+    "netAmount": -174.66,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "META  250131P00510000",
+          "description": "META PLATFORMS INC 01/31/2025 $510 Put",
+          "instrumentId": 228215124,
+          "closingPrice": 1.5936,
+          "expirationDate": "2025-01-31T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "META",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 510,
+          "type": "VANILLA",
+          "underlyingSymbol": "META"
+        },
+        "amount": 1,
+        "cost": -174,
+        "price": 1.74,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 90957056498,
+    "time": "2025-01-14T05:15:12+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-14T05:15:12+0000",
+    "positionId": 2709980217,
+    "orderId": 1111111111111,
+    "netAmount": 1272.18,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 2.25,
+        "cost": -2.25,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.55,
+        "cost": -0.55,
+        "feeType": "FUTURES_EXCHANGE_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.02,
+        "cost": -0.02
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "/ESH25_P5150:XCME",
+          "description": "/ESH25 Mar 21 2025 5150.0 Put",
+          "instrumentId": 215642285,
+          "closingPrice": 14,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "/ESH25:XCME",
+              "strikePercent": 0,
+              "deliverableNumber": 1,
+              "deliverableUnits": 1
+            }
+          ],
+          "optionPremiumMultiplier": 50,
+          "putCall": "PUT",
+          "strikePrice": 5150,
+          "type": "VANILLA",
+          "underlyingSymbol": ".ESH25:XCME"
+        },
+        "amount": -1,
+        "cost": 1275,
+        "price": 25.5,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 90933359944,
+    "time": "2025-01-13T16:56:17+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-13T16:56:17+0000",
+    "positionId": 2709195378,
+    "orderId": 1002581898359,
+    "netAmount": -94.66,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "MRVL  250321P00080000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $80 Put",
+          "instrumentId": 217118015,
+          "closingPrice": 0.54,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "MRVL",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 80,
+          "type": "VANILLA",
+          "underlyingSymbol": "MRVL"
+        },
+        "amount": 1,
+        "cost": -94,
+        "price": 0.94,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91109332557,
+    "time": "2025-01-16T16:13:29+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T16:13:29+0000",
+    "positionId": 2713547728,
+    "orderId": 1002604357590,
+    "netAmount": -370.66,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "TSLA  250221P00320000",
+          "description": "TESLA INC 02/21/2025 $320 Put",
+          "instrumentId": 221372233,
+          "closingPrice": 3.8592,
+          "expirationDate": "2025-02-21T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "TSLA",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 320,
+          "type": "VANILLA",
+          "underlyingSymbol": "TSLA"
+        },
+        "amount": 1,
+        "cost": -370,
+        "price": 3.7,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91109332556,
+    "time": "2025-01-16T16:13:29+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T16:13:29+0000",
+    "positionId": 2713547727,
+    "orderId": 1002604357590,
+    "netAmount": 628.32,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.02,
+        "cost": -0.02,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "TSLA  250221P00340000",
+          "description": "TESLA INC 02/21/2025 $340 Put",
+          "instrumentId": 221175400,
+          "closingPrice": 6.6,
+          "expirationDate": "2025-02-21T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "TSLA",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 340,
+          "type": "VANILLA",
+          "underlyingSymbol": "TSLA"
+        },
+        "amount": -1,
+        "cost": 629,
+        "price": 6.29,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91176753939,
+    "time": "2025-01-17T17:19:49+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-17T17:19:49+0000",
+    "positionId": 2715812424,
+    "orderId": 1002613435352,
+    "netAmount": 205.33,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "MRVL  250321C00155000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $155 Call",
+          "instrumentId": 227784488,
+          "closingPrice": 1.3425,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "MRVL",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "CALL",
+          "strikePrice": 155,
+          "type": "VANILLA",
+          "underlyingSymbol": "MRVL"
+        },
+        "amount": -1,
+        "cost": 206,
+        "price": 2.06,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91106713849,
+    "time": "2025-01-16T15:58:02+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T15:58:02+0000",
+    "positionId": 2713547666,
+    "orderId": 1002604356269,
+    "netAmount": -39.66,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "NVDA  250228P00095000",
+          "description": "NVIDIA CORP 02/28/2025 $95 Put",
+          "instrumentId": 229481713,
+          "closingPrice": 0.4002,
+          "expirationDate": "2025-02-28T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "NVDA",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 95,
+          "type": "VANILLA",
+          "underlyingSymbol": "NVDA"
+        },
+        "amount": 1,
+        "cost": -39,
+        "price": 0.39,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91103180935,
+    "time": "2025-01-16T15:35:47+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T15:35:47+0000",
+    "positionId": 2713547564,
+    "orderId": 1002603886223,
+    "netAmount": 277.33,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "META  250131P00525000",
+          "description": "META PLATFORMS INC 01/31/2025 $525 Put",
+          "instrumentId": 228798252,
+          "closingPrice": 2.59,
+          "expirationDate": "2025-01-31T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "META",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 525,
+          "type": "VANILLA",
+          "underlyingSymbol": "META"
+        },
+        "amount": -1,
+        "cost": 278,
+        "price": 2.78,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91176753940,
+    "time": "2025-01-17T17:19:49+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-17T17:19:49+0000",
+    "positionId": 2715812425,
+    "orderId": 1002613435352,
+    "netAmount": -86.66,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "MRVL  250321C00170000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $170 Call",
+          "instrumentId": 227814638,
+          "closingPrice": 0.385,
+          "expirationDate": "2025-03-21T04:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "MRVL",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "CALL",
+          "strikePrice": 170,
+          "type": "VANILLA",
+          "underlyingSymbol": "MRVL"
+        },
+        "amount": 1,
+        "cost": -86,
+        "price": 0.86,
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  {
+    "activityId": 91106713848,
+    "time": "2025-01-16T15:58:02+0000",
+    "accountNumber": "111111111",
+    "type": "TRADE",
+    "status": "VALID",
+    "subAccount": "MARGIN",
+    "tradeDate": "2025-01-16T15:58:02+0000",
+    "positionId": 2713547665,
+    "orderId": 1002604356269,
+    "netAmount": 185.33,
+    "transferItems": [
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.65,
+        "cost": -0.65,
+        "feeType": "COMMISSION"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "SEC_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0.01,
+        "cost": -0.01,
+        "feeType": "OPT_REG_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "CURRENCY",
+          "status": "ACTIVE",
+          "symbol": "CURRENCY_USD",
+          "description": "USD currency",
+          "instrumentId": 1,
+          "closingPrice": 0
+        },
+        "amount": 0,
+        "cost": 0,
+        "feeType": "TAF_FEE"
+      },
+      {
+        "instrument": {
+          "assetType": "OPTION",
+          "status": "ACTIVE",
+          "symbol": "NVDA  250228P00115000",
+          "description": "NVIDIA CORP 02/28/2025 $115 Put",
+          "instrumentId": 229178904,
+          "closingPrice": 2.13,
+          "expirationDate": "2025-02-28T05:00:00+0000",
+          "optionDeliverables": [
+            {
+              "rootSymbol": "NVDA",
+              "strikePercent": 100,
+              "deliverableNumber": 1,
+              "deliverableUnits": 100
+            }
+          ],
+          "optionPremiumMultiplier": 100,
+          "putCall": "PUT",
+          "strikePrice": 115,
+          "type": "VANILLA",
+          "underlyingSymbol": "NVDA"
+        },
+        "amount": -1,
+        "cost": 186,
+        "price": 1.86,
+        "positionEffect": "OPENING"
+      }
+    ]
+  }
+]
