@@ -1,26 +1,20 @@
 # frozen_string_literal: true
+require_relative 'mock_response'
 
 module ResponseFactory
-  class AccountNumbersResponse
-    def self.status
-      200
-    end
-
-    def self.body
-      [{
+  def self.account_numbers_response
+    MockResponse.new(
+      body: [{
         "accountNumber" => "11111111",
         "hashValue" => "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
-      }].to_json
-    end
+      }].to_json,
+      status: 200
+    )
   end
 
-  class AccountResponse
-    def self.status
-      200
-    end
-
-    def self.body
-      {
+  def self.account_response
+    MockResponse.new(
+      body: {
         "securitiesAccount" =>
           {
             "type" => "MARGIN",
@@ -111,17 +105,15 @@ module ResponseFactory
         "aggregatedBalance" => {
           "currentLiquidationValue" => 1000.01, "liquidationValue" => 1000.01
         }
-      }
-    end
+      },
+      status: 200
+    )
   end
 
-  class AccountsResponse
-    def self.status
-      200
-    end
-
-    def self.body
-      [{
+  def self.accounts_response
+    MockResponse.new(
+      status: 200,
+      body: [{
         "securitiesAccount" => {
           "type" => "MARGIN",
           "accountNumber" => "11111111",
@@ -210,6 +202,6 @@ module ResponseFactory
           "liquidationValue" => 1000.01
         }
       }].to_json
-    end
+    )
   end
 end
