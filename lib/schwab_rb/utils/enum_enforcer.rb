@@ -8,7 +8,7 @@ module EnumEnforcer
   end
 
   def type_error(value, required_enum_type)
-    possible_members_message = ''
+    possible_members_message = ""
 
     if value.is_a? String
       possible_members = required_enum_type.constants.filter_map do |member|
@@ -17,14 +17,15 @@ module EnumEnforcer
       end
 
       if possible_members.any?
-        possible_members_message = 'Did you mean ' +
-          possible_members[0..-2].join(', ') +
-          (possible_members.size > 1 ? ' or ' : '') +
-          possible_members[-1].to_s + '? '
+        possible_members_message = "Did you mean " +
+                                   possible_members[0..-2].join(", ") +
+                                   (possible_members.size > 1 ? " or " : "") +
+                                   possible_members[-1].to_s + "? "
       end
     end
 
-    raise ArgumentError, "expected type \"#{required_enum_type}\", got type \"#{value.class}\". #{possible_members_message}(initialize with enforce_enums: false to disable this checking)"
+    raise ArgumentError,
+          "expected type \"#{required_enum_type}\", got type \"#{value.class}\". #{possible_members_message}(initialize with enforce_enums: false to disable this checking)"
   end
 
   def convert_enum(value, enum_type)
@@ -42,13 +43,11 @@ module EnumEnforcer
   end
 
   def convert_enum_iterable(iterable, enum_type)
-    return nil if iterable.nil?
+    return [] if iterable.nil?
 
     valid_values = get_valid_enum_values(enum_type)
 
-    if valid_values.include? iterable
-      return [iterable]
-    end
+    return [iterable] if valid_values.include? iterable
 
     values = []
     iterable.each do |value|
