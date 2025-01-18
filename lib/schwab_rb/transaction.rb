@@ -2,7 +2,7 @@
 
 module SchwabRb
   class Transaction
-    module Type
+    module Types
       TRADE = 'TRADE'
       RECEIVE_AND_DELIVER = 'RECEIVE_AND_DELIVER'
       DIVIDEND_OR_INTEREST = 'DIVIDEND_OR_INTEREST'
