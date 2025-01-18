@@ -1,5 +1,5 @@
-require 'spec_helper'
-require_relative '../../lib/schwab_rb/utils/enum_enforcer'
+require "spec_helper"
+require_relative "../../lib/schwab_rb/utils/enum_enforcer"
 
 class DummyClass
   include EnumEnforcer
@@ -15,8 +15,8 @@ describe EnumEnforcer do
   let(:dummy_enforce) { DummyClass.new(enforce_enums: true) }
   let(:dummy_ignore) { DummyClass.new(enforce_enums: false) }
 
-  describe '#convert_enum' do
-    it 'returns the value if it is a valid enum' do
+  describe "#convert_enum" do
+    it "returns the value if it is a valid enum" do
       expect(
         dummy_enforce.convert_enum(
           SchwabRb::Order::Statuses::WORKING,
@@ -25,22 +25,22 @@ describe EnumEnforcer do
       ).to eq(SchwabRb::Order::Statuses::WORKING)
     end
 
-    it 'raises an error if enforce_enums is true and value is invalid' do
-      expect {
-        dummy_enforce.convert_enum('invalid', SchwabRb::Order::Statuses)
-      }.to raise_error(ArgumentError)
+    it "raises an error if enforce_enums is true and value is invalid" do
+      expect do
+        dummy_enforce.convert_enum("invalid", SchwabRb::Order::Statuses)
+      end.to raise_error(ArgumentError)
     end
 
-    it 'returns the value if enforce_enums is false and value is invalid' do
+    it "returns the value if enforce_enums is false and value is invalid" do
       expect(dummy_ignore.convert_enum(
-        'invalid',
-        SchwabRb::Order::Statuses
-      )).to eq('invalid')
+               "invalid",
+               SchwabRb::Order::Statuses
+             )).to eq("invalid")
     end
   end
 
-  describe '#convert_enum_iterable' do
-    it 'returns an array with the value if it is a valid enum' do
+  describe "#convert_enum_iterable" do
+    it "returns an array with the value if it is a valid enum" do
       expect(
         dummy_enforce.convert_enum_iterable(
           [SchwabRb::Order::Statuses::WORKING],
@@ -49,22 +49,22 @@ describe EnumEnforcer do
       ).to eq([SchwabRb::Order::Statuses::WORKING])
     end
 
-    it 'raises an error if enforce_enums is true and any value is invalid' do
-      expect {
+    it "raises an error if enforce_enums is true and any value is invalid" do
+      expect do
         dummy_enforce.convert_enum_iterable(
-          ['invalid'],
+          ["invalid"],
           SchwabRb::Order::Statuses
         )
-      }.to raise_error(ArgumentError)
+      end.to raise_error(ArgumentError)
     end
 
-    it 'returns the values if enforce_enums is false and any value is invalid' do
+    it "returns the values if enforce_enums is false and any value is invalid" do
       expect(
         dummy_ignore.convert_enum_iterable(
-          ['invalid'],
+          ["invalid"],
           SchwabRb::Order::Statuses
         )
-      ).to eq(['invalid'])
+      ).to eq(["invalid"])
     end
   end
 end
