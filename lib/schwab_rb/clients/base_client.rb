@@ -116,6 +116,14 @@ module SchwabRb
       # @param status [String] Restrict query to orders with this status.
       refresh_token_if_needed
 
+      if from_entered_datetime.nil?
+        from_entered_datetime = DateTime.now.new_offset(0) - 60
+      end
+
+      if to_entered_datetime.nil?
+        to_entered_datetime = DateTime.now
+      end
+
       path = "/trader/v1/accounts/#{account_hash}/orders"
       params = make_order_query(
         max_results: max_results,
