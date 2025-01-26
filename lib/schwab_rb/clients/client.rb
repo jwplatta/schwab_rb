@@ -12,8 +12,7 @@ module SchwabRb
     private
 
     def get(path, params = {})
-      dest = URI("#{BASE_URL}#{path}")
-      encoded_dest = URI::DEFAULT_PARSER.escape(dest)
+      dest = URI(URI::DEFAULT_PARSER.escape("#{BASE_URL}#{path}"))
       dest.query = URI.encode_www_form(params) if params.any?
 
       req_num = req_num()
@@ -26,8 +25,7 @@ module SchwabRb
     end
 
     def post(path, data = {})
-      dest = URI("#{BASE_URL}#{path}")
-      encoded_dest = URI::DEFAULT_PARSER.escape(dest)
+      dest = URI(URI::DEFAULT_PARSER.escape("#{BASE_URL}#{path}"))
 
       req_num = req_num()
       log_request("POST", req_num, dest, data)
@@ -39,8 +37,7 @@ module SchwabRb
     end
 
     def put(path, data = {})
-      dest = URI("#{BASE_URL}#{path}")
-      encoded_dest = URI::DEFAULT_PARSER.escape(dest)
+      dest = URI(URI::DEFAULT_PARSER.escape("#{BASE_URL}#{path}"))
 
       req_num = req_num()
       log_request("PUT", req_num, dest, data)
@@ -52,8 +49,7 @@ module SchwabRb
     end
 
     def delete(path)
-      dest = URI("#{BASE_URL}#{path}")
-      encoded_dest = URI::DEFAULT_PARSER.escape(dest)
+      dest = URI(URI::DEFAULT_PARSER.escape("#{BASE_URL}#{path}"))
 
       req_num = req_num()
       log_request("DELETE", req_num, dest)
