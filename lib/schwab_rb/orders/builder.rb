@@ -113,7 +113,7 @@ module SchwabRb::Orders
     def set_complex_order_strategy_type(complex_order_strategy_type)
       @complex_order_strategy_type = convert_enum(
         complex_order_strategy_type,
-        SchwabRb::Orders::ComplexOrderStrategyTypes
+        SchwabRb::Order::ComplexOrderStrategyTypes
       )
     end
 
