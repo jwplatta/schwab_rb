@@ -58,36 +58,30 @@ module SchwabRb::Orders
 
     def set_session(session)
       @session = convert_enum(session, SchwabRb::Orders::Session)
-      self
     end
 
     def clear_session
       @session = nil
-      self
     end
 
     def set_duration(duration)
       @duration = convert_enum(duration, SchwabRb::Orders::Duration)
-      self
     end
 
     def clear_duration
       @duration = nil
-      self
     end
 
     def set_order_type(order_type)
       @order_type = convert_enum(order_type, SchwabRb::Order::Types)
-      self
     end
 
     def clear_order_type
       @order_type = nil
-      self
     end
 
     def set_quantity(quantity)
-      raise 'quantity must be positive' if quantity <= 0
+      raise "quantity must be positive" if quantity <= 0
 
       @quantity = quantity
     end
@@ -116,8 +110,15 @@ module SchwabRb::Orders
       @stop_price = nil
     end
 
+    def set_complex_order_strategy_type(complex_order_strategy_type)
+      @complex_order_strategy_type = convert_enum(
+        complex_order_strategy_type,
+        SchwabRb::Orders::ComplexOrderStrategyType
+      )
+    end
+
     def add_child_order_strategy(child_order_strategy)
-      raise 'child order must be OrderBuilder or Hash' unless [Builder, Hash].any? do |type|
+      raise "child order must be OrderBuilder or Hash" unless [Builder, Hash].any? do |type|
         child_order_strategy.is_a? type
       end
 
@@ -129,6 +130,17 @@ module SchwabRb::Orders
       @child_order_strategies = nil
     end
 
+    def add_option_leg(instruction, symbol, quantity)
+      raise "quantity must be positive" if quantity <= 0
+
+      @order_leg_collection ||= []
+      @order_leg_collection << {
+        instruction: convert_enum(instruction, SchwabRb::Orders::OptionInstruction),
+        instrument: SchwabRb::Orders::OptionInstrument.new(symbol),
+        quantity: quantity,
+      }
+    end
+
     def add_equity_leg(instruction, symbol, quantity)
       raise "quantity must be positive" if quantity <= 0
 
@@ -138,7 +150,6 @@ module SchwabRb::Orders
         instrument: SchwabRb::Orders::EquityInstrument.new(symbol),
         quantity: quantity
       }
-      self
     end
 
     def clear_order_legs
