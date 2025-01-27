@@ -30,7 +30,13 @@ module SchwabRb
       req_num = req_num()
       log_request("POST", req_num, dest, data)
 
-      response = session.post(dest, data.to_json, { "Content-Type" => "application/json" })
+      response = session.post(
+        dest,
+        {
+          :body => data.to_json,
+          :headers => { "Content-Type" => "application/json" }
+        }
+      )
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
@@ -42,7 +48,10 @@ module SchwabRb
       req_num = req_num()
       log_request("PUT", req_num, dest, data)
 
-      response = session.put(dest, data.to_json, { "Content-Type" => "application/json" })
+      response = session.put(
+        :body => data.to_json,
+        { :headers => { "Content-Type" => "application/json" } }
+      )
       log_response(response, req_num)
       register_redactions_from_response(response)
       response
