@@ -124,6 +124,8 @@ module SchwabRb
         to_entered_datetime = DateTime.now
       end
 
+      status = convert_enum_iterable(status, SchwabRb::Order::Statuses) if status 
+
       path = "/trader/v1/accounts/#{account_hash}/orders"
       params = make_order_query(
         max_results: max_results,
