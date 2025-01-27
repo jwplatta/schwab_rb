@@ -17,7 +17,9 @@ module SchwabRb::Orders
         when String, Integer, Float
           obj
         when Hash
-          obj.each_with_object({}) { |(key, val), acc| acc[key] = build(val) }
+          obj.each_with_object({}) do |(key, val), acc|
+            acc[camel_case(key)] = build(val)
+          end
         when Array
           obj.map { |i| build(i) }
         else
@@ -27,15 +29,21 @@ module SchwabRb::Orders
             next if value.nil?
 
             name = var.to_s[1..-1]
-            ret[name] = build(value)
+            ret[camel_case(name)] = build(value)
           end
           ret
         end
+      end
+
+      def camel_case(snake_str)
+        camel_case_str = snake_str.split('_').map(&:capitalize).join
+        camel_case_str[0].downcase + camel_case_str[1..]
       end
     end
 
     def initialize(enforce_enums: true)
       @session = nil
+      @account_number = nil
       @duration = nil
       @order_type = nil
       @complex_order_strategy_type = nil
@@ -62,6 +70,14 @@ module SchwabRb::Orders
 
     def clear_session
       @session = nil
+    end
+
+    def set_account_number(account_number)
+      @account_number = account_number
+    end
+
+    def clear_account_number
+      @account_number = nil
     end
 
     def set_duration(duration)
@@ -91,7 +107,7 @@ module SchwabRb::Orders
     end
 
     def set_price(price)
-      @price = price.is_a?(String) ? price : truncate_float(price)
+      @price = price
     end
 
     def clear_price
@@ -110,11 +126,23 @@ module SchwabRb::Orders
       @stop_price = nil
     end
 
+    def set_order_strategy_type(order_strategy_type = "SINGLE")
+      @order_strategy_type = order_strategy_type
+    end
+
+    def clear_order_strategy_type
+      @order_strategy_type = nil
+    end
+
     def set_complex_order_strategy_type(complex_order_strategy_type)
       @complex_order_strategy_type = convert_enum(
         complex_order_strategy_type,
         SchwabRb::Order::ComplexOrderStrategyTypes
       )
+    end
+
+    def clear_complex_order_strategy_type
+      @complex_order_strategy_type = nil
     end
 
     def add_child_order_strategy(child_order_strategy)
@@ -135,9 +163,9 @@ module SchwabRb::Orders
 
       @order_leg_collection ||= []
       @order_leg_collection << {
-        instruction: convert_enum(instruction, SchwabRb::Orders::OptionInstructions),
-        instrument: SchwabRb::Orders::OptionInstrument.new(symbol),
-        quantity: quantity,
+        "instruction" => convert_enum(instruction, SchwabRb::Orders::OptionInstructions),
+        "instrument" => SchwabRb::Orders::OptionInstrument.new(symbol),
+        "quantity" => quantity,
       }
     end
 
@@ -146,9 +174,9 @@ module SchwabRb::Orders
 
       @order_leg_collection ||= []
       @order_leg_collection << {
-        instruction: convert_enum(instruction, SchwabRb::Orders::EquityInstructions),
-        instrument: SchwabRb::Orders::EquityInstrument.new(symbol),
-        quantity: quantity
+        "instruction" => convert_enum(instruction, SchwabRb::Orders::EquityInstructions),
+        "instrument" => SchwabRb::Orders::EquityInstrument.new(symbol),
+        "quantity" => quantity
       }
     end
 

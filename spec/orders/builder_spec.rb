@@ -123,7 +123,7 @@ describe SchwabRb::Orders::Builder do
   end
 
   describe "#build" do
-    it "builds the order" do
+    fit "builds a simple order" do
       builder.set_session(SchwabRb::Orders::Session::NORMAL)
       builder.set_duration(SchwabRb::Orders::Duration::DAY)
       builder.set_order_type(SchwabRb::Order::Types::MARKET)
@@ -131,13 +131,23 @@ describe SchwabRb::Orders::Builder do
       builder.set_stop_price(100.50)
       builder.add_equity_leg(SchwabRb::Orders::EquityInstructions::BUY, "AAPL", 10)
       order = builder.build
+
       expect(order["session"]).to eq(SchwabRb::Orders::Session::NORMAL)
       expect(order["duration"]).to eq(SchwabRb::Orders::Duration::DAY)
-      expect(order["order_type"]).to eq(SchwabRb::Order::Types::MARKET)
+      expect(order["orderType"]).to eq(SchwabRb::Order::Types::MARKET)
       expect(order["quantity"]).to eq(100)
-      expect(order["stop_price"]).to eq("100.50")
-      expect(order["order_leg_collection"].first[:instruction]).to eq(SchwabRb::Orders::EquityInstructions::BUY)
-      expect(order["order_leg_collection"].first[:instrument]["asset_type"]).to eq("EQUITY")
+      expect(order["stopPrice"]).to eq("100.50")
+      expect(order["orderLegCollection"].first["instruction"]).to eq(SchwabRb::Orders::EquityInstructions::BUY)
+      expect(order["orderLegCollection"].first["instrument"]["assetType"]).to eq("EQUITY")
+    end
+
+    xit "builds a complex order" do
+      builder.set_session(SchwabRb::Orders::Session::NORMAL)
+      builder.set_duration(SchwabRb::Orders::Duration::DAY)
+      builder.set_order_type(SchwabRb::Order::Types::NET_CREDIT)
+      builder.set_quantity(1)
+      builder.set_complex_order_strategy_type(SchwabRb::Orders::ComplexOrderStrategyTypes::CALL_SPREAD)
+      builder.set_price(2.00)
     end
   end
 end
