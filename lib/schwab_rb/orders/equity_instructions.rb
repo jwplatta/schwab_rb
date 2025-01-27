@@ -1,7 +1,6 @@
 module SchwabRb
   module Orders
     module EquityInstructions
-      # Instructions for opening and closing equity positions.
       BUY = 'BUY'
       SELL = 'SELL'
       SELL_SHORT = 'SELL_SHORT'
