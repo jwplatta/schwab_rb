@@ -49,8 +49,11 @@ module SchwabRb
       log_request("PUT", req_num, dest, data)
 
       response = session.put(
-        :body => data.to_json,
-        { :headers => { "Content-Type" => "application/json" } }
+        dest,
+        {
+          :body => data.to_json,
+          :headers => { "Content-Type" => "application/json" }
+        }
       )
       log_response(response, req_num)
       register_redactions_from_response(response)
