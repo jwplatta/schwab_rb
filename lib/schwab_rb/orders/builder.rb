@@ -135,7 +135,7 @@ module SchwabRb::Orders
 
       @order_leg_collection ||= []
       @order_leg_collection << {
-        instruction: convert_enum(instruction, SchwabRb::Orders::OptionInstruction),
+        instruction: convert_enum(instruction, SchwabRb::Orders::OptionInstructions),
         instrument: SchwabRb::Orders::OptionInstrument.new(symbol),
         quantity: quantity,
       }
