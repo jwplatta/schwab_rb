@@ -90,44 +90,47 @@ module SchwabRb::Orders
       raise 'quantity must be positive' if quantity <= 0
 
       @quantity = quantity
-      self
     end
 
     def clear_quantity
       @quantity = nil
-      self
+    end
+
+    def set_price(price)
+      @price = price.is_a?(String) ? price : truncate_float(price)
+    end
+
+    def clear_price
+      @price = nil
     end
 
     def set_stop_price(stop_price)
       @stop_price = stop_price.is_a?(String) ? stop_price : truncate_float(stop_price)
-      self
     end
 
     def copy_stop_price(stop_price)
       @stop_price = stop_price
-      self
     end
 
     def clear_stop_price
       @stop_price = nil
-      self
     end
 
     def add_child_order_strategy(child_order_strategy)
-      raise 'child order must be OrderBuilder or Hash' unless [Builder, Hash].any? { |c| child_order_strategy.is_a?(c) }
+      raise 'child order must be OrderBuilder or Hash' unless [Builder, Hash].any? do |type|
+        child_order_strategy.is_a? type
+      end
 
       @child_order_strategies ||= []
       @child_order_strategies << child_order_strategy
-      self
     end
 
     def clear_child_order_strategies
       @child_order_strategies = nil
-      self
     end
 
     def add_equity_leg(instruction, symbol, quantity)
-      raise 'quantity must be positive' if quantity <= 0
+      raise "quantity must be positive" if quantity <= 0
 
       @order_leg_collection ||= []
       @order_leg_collection << {
