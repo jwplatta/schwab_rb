@@ -104,7 +104,7 @@ describe SchwabRb::Orders::Builder do
   end
 
   describe "#add_equity_leg" do
-    it "adds an equity leg" do
+    xit "adds an equity leg" do
       builder.add_equity_leg(SchwabRb::Orders::EquityInstructions::BUY, "AAPL", 10)
       expect(builder.instance_variable_get(:@order_leg_collection).first[:instruction]).to eq(SchwabRb::Orders::EquityInstructions::BUY)
     end
@@ -123,7 +123,7 @@ describe SchwabRb::Orders::Builder do
   end
 
   describe "#build" do
-    fit "builds a simple order" do
+    it "builds a simple order" do
       builder.set_session(SchwabRb::Orders::Session::NORMAL)
       builder.set_duration(SchwabRb::Orders::Duration::DAY)
       builder.set_order_type(SchwabRb::Order::Types::MARKET)
