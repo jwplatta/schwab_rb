@@ -124,7 +124,7 @@ module SchwabRb
         to_entered_datetime = DateTime.now
       end
 
-      status = convert_enum_iterable(status, SchwabRb::Order::Statuses) if status 
+      status = convert_enum_iterable(status, SchwabRb::Order::Statuses) if status
 
       path = "/trader/v1/accounts/#{account_hash}/orders"
       params = make_order_query(
@@ -244,15 +244,15 @@ module SchwabRb
       get(path, params)
     end
 
-    def get_transaction(account_hash, order_id)
+    def get_transaction(account_hash, activity_id)
       # Transaction for a specific account.
       #
       # @param account_hash [String] Account hash corresponding to the account whose
       #                              transactions should be returned.
-      # @param order_id [String] ID of the order for which to return data.
+      # @param activity_id [String] ID of the order for which to return data.
       refresh_token_if_needed
 
-      path = "/trader/v1/accounts/#{account_hash}/transactions/#{order_id}"
+      path = "/trader/v1/accounts/#{account_hash}/transactions/#{activity_id}"
       get(path, {})
     end
 
