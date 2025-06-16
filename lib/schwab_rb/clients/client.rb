@@ -4,6 +4,7 @@ require "json"
 require "net/http"
 require "uri"
 require_relative "base_client"
+require_relative "../utils/logger"
 
 module SchwabRb
   class Client < BaseClient
@@ -73,12 +74,12 @@ module SchwabRb
     end
 
     def log_request(method, req_num, dest, data = nil)
-      puts "Req #{req_num}: #{method} to #{dest}"
-      puts "Payload: #{JSON.pretty_generate(data)}" if data
+      SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{dest}")
+      SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(data)}") if data
     end
 
     def log_response(response, req_num)
-      puts "Resp #{req_num}: Status #{response.status}"
+      SchwabRb::Logger.logger.info("Resp #{req_num}: Status #{response.status}")
     end
 
     def req_num
