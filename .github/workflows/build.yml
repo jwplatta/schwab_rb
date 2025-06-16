@@ -41,7 +41,7 @@ jobs:
       run: echo "GEM_FILE=schwab_rb-$(ruby -r ./lib/schwab_rb/version -e 'puts SchwabRb::VERSION').gem" >> $GITHUB_ENV
 
     - name: Upload gem artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: schwab_rb-gem
         path: ${{ env.GEM_FILE }}
