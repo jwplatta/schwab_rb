@@ -1,28 +1,69 @@
-# SchwabRb
+# schwab_rb: Schwab API Ruby Client
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/schwab_rb`. To experiment with that code, run `bin/console` for an interactive prompt.
+The `schwab_rb` gem is a Ruby client for interacting with the Schwab API. It provides a simple and flexible interface for accessing Schwab account data, placing orders, retrieving quotes, and more.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+bundle add schwab_rb
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Or install it manually:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install schwab_rb
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Setting Up Environment Variables
+
+Before using the gem, ensure you have the following environment variables set:
+
+- `SCHWAB_API_KEY`: Your Schwab API key.
+- `SCHWAB_APP_SECRET`: Your Schwab application secret.
+- `APP_CALLBACK_URL`: The callback URL for your application.
+- `TOKEN_PATH`: Path to store the authentication token.
+- `SCHWAB_ACCOUNT_NUMBER`: Your Schwab account number.
+- `SCHWAB_LOGFILE`: (Optional) Path to the log file. Defaults to `STDOUT`.
+- `LOG_LEVEL`: (Optional) Log level for the logger. Defaults to `WARN`. Possible values: `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`.
+
+### Example Usage
+
+Here is an example of how to use the `schwab_rb` gem:
+
+```ruby
+require 'schwab_rb'
+
+# Initialize the client
+client = SchwabRb::Auth.init_client_easy(
+  ENV['SCHWAB_API_KEY'],
+  ENV['SCHWAB_APP_SECRET'],
+  ENV['APP_CALLBACK_URL'],
+  ENV['TOKEN_PATH']
+)
+
+# Fetch a quote
+quote = client.get_quote('AAPL')
+puts quote.body
+
+# Fetch account details
+account = client.get_account('account_hash')
+puts account.body
+
+# Place an order
+order = {
+  symbol: 'AAPL',
+  quantity: 10,
+  instruction: 'BUY'
+}
+response = client.place_order('account_hash', order)
+puts response.body
+```
+
+For more detailed examples, refer to the `examples/schwab.rb` file in the repository.
 
 ## Development
 
@@ -38,5 +79,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
-The gem is inspired by [schwab-py](https://pypi.org/project/schwab-py).
-The original implementation can be found [here](https://github.com/alexgolec/schwab-py).
+The gem is inspired by [schwab-py](https://pypi.org/project/schwab-py). The original implementation can be found [here](https://github.com/alexgolec/schwab-py).
