@@ -24,6 +24,7 @@ require_relative "schwab_rb/orders/session"
 require_relative "schwab_rb/orders/duration"
 require_relative "schwab_rb/orders/equity_instructions"
 require_relative "schwab_rb/orders/option_instructions"
+require_relative "schwab_rb/utils/logger"
 
 module SchwabRb
   class Error < StandardError; end
