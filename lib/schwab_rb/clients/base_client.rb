@@ -288,7 +288,7 @@ module SchwabRb
 
       symbols = [symbols] if symbols.is_a?(String)
       params = { "symbols" => symbols.join(",") }
-      fields = convert_enum_iterable(fields, Schwab::Quote::Types) if fields
+      fields = convert_enum_iterable(fields, SchwabRb::Quote::Types) if fields
       params["fields"] = fields.join(",") if fields
 
       unless indicative.nil?
