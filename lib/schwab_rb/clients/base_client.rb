@@ -683,6 +683,12 @@ module SchwabRb
       date.strftime("%Y-%m-%d")
     end
 
+    def format_date_as_millis(var_name, dt)
+      assert_type(var_name, dt, [Date, DateTime])
+      dt = DateTime.new(dt.year, dt.month, dt.day) unless dt.is_a?(DateTime)
+      (dt.to_time.to_f * 1000).to_i
+    end
+
     def normalize_start_and_end_datetimes(start_datetime, end_datetime)
       start_datetime ||= DateTime.new(1971, 1, 1)
       end_datetime ||= DateTime.now + 7
