@@ -3,7 +3,14 @@
 ## Analysis Date: July 20, 2025
 
 This document analyzes all API methods in `base_client.rb` to identify:
-1. Methods that don't return data objects (only raw JSON)
+1. ### 🚧 In Progress
+- [ ] **OptionExpirationChain** data object class
+  - [ ] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
+  - [ ] Create `spec/data_objects/option_expiration_chain_spec.rb`
+  - [ ] Use fixture: `spec/fixtures/option_expiration_chain.json`
+
+### 📋 Todo
+- [ ] **PriceHistory** data object class don't return data objects (only raw JSON)
 2. Methods that need data object classes to be created
 
 ## Methods NOT Currently Returning Data Objects
@@ -141,12 +148,16 @@ The following data object classes already exist and are being used:
   - [x] Create `lib/schwab_rb/data_objects/account_numbers.rb`
   - [x] Create `spec/data_objects/account_numbers_spec.rb`
   - [x] Use fixture: `spec/fixtures/account_numbers.json`
+- [x] **UserPreferences** data object class
+  - [x] Create `lib/schwab_rb/data_objects/user_preferences.rb`
+  - [x] Create `spec/data_objects/user_preferences_spec.rb` 
+  - [x] Use fixture: `spec/fixtures/user_preferences.json`
 
 ### � In Progress
-- [ ] **UserPreferences** data object class
-  - [ ] Create `lib/schwab_rb/data_objects/user_preferences.rb`
-  - [ ] Create `spec/data_objects/user_preferences_spec.rb` 
-  - [ ] Use fixture: `spec/fixtures/user_preferences.json`
+- [x] **UserPreferences** data object class
+  - [x] Create `lib/schwab_rb/data_objects/user_preferences.rb`
+  - [x] Create `spec/data_objects/user_preferences_spec.rb` 
+  - [x] Use fixture: `spec/fixtures/user_preferences.json`
 
 - [ ] **OptionExpirationChain** data object class
   - [ ] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
