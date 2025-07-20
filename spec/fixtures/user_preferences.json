@@ -1,0 +1,39 @@
+{
+  "accounts": [
+    {
+      "accountNumber": "11221122",
+      "primaryAccount": false,
+      "type": "BROKERAGE",
+      "nickName": "Trading Brokerage",
+      "displayAcctId": "...122",
+      "autoPositionEffect": false,
+      "accountColor": "Green",
+      "lotSelectionMethod": "FIFO"
+    },
+    {
+      "accountNumber": "12345678",
+      "primaryAccount": false,
+      "type": "BROKERAGE",
+      "nickName": "Contributory",
+      "displayAcctId": "...678",
+      "autoPositionEffect": false,
+      "accountColor": "Green",
+      "lotSelectionMethod": "FIFO"
+    }
+  ],
+  "streamerInfo": [
+    {
+      "streamerSocketUrl": "wss://streamer-api.schwab.com/ws",
+      "schwabClientCustomerId": "5as801a4152776d0e435d18b82e866fc58a920f9c52c7a70de6c6f845cb50bf5",
+      "schwabClientCorrelId": "1dd1ad6d-0246-9f38-dc70-e5bfd2a5dff8",
+      "schwabClientChannel": "N9",
+      "schwabClientFunctionId": "APIAPP"
+    }
+  ],
+  "offers": [
+    {
+      "level2Permissions": true,
+      "mktDataPermission": "NP"
+    }
+  ]
+}
