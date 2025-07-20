@@ -8,6 +8,12 @@ module SchwabRb
     class OrderPreview
       attr_reader :order_value, :order_strategy, :order_balance, :order_validation_result, :projected_commission
 
+      class << self
+        def build(data)
+          new(data)
+        end
+      end
+
       def initialize(attrs)
         @order_value = attrs[:orderValue]
         @order_strategy = attrs[:orderStrategy] ? OrderStrategy.new(attrs[:orderStrategy]) : nil

@@ -71,6 +71,15 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
     end
   end
 
+  describe '.build' do
+    it 'creates an OrderPreview instance using the build class method' do
+      built_preview = described_class.build(sample_data)
+      expect(built_preview).to be_a(SchwabRb::DataObjects::OrderPreview)
+      expect(built_preview.order_value).to eq('100.00')
+      expect(built_preview.order_strategy).to be_a(SchwabRb::DataObjects::OrderPreview::OrderStrategy)
+    end
+  end
+
   describe '#to_h' do
     it 'converts the OrderPreview to a hash' do
       hash = order_preview.to_h
