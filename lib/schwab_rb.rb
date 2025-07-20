@@ -40,6 +40,7 @@ require_relative "schwab_rb/data_objects/option"
 require_relative "schwab_rb/data_objects/option_chain"
 require_relative "schwab_rb/data_objects/option_expiration_chain"
 require_relative "schwab_rb/data_objects/price_history"
+require_relative "schwab_rb/data_objects/market_hours"
 
 module SchwabRb
   class Error < StandardError; end
