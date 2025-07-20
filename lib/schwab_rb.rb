@@ -38,6 +38,7 @@ require_relative "schwab_rb/data_objects/order_leg"
 require_relative "schwab_rb/data_objects/order_preview"
 require_relative "schwab_rb/data_objects/option"
 require_relative "schwab_rb/data_objects/option_chain"
+require_relative "schwab_rb/data_objects/option_expiration_chain"
 
 module SchwabRb
   class Error < StandardError; end
