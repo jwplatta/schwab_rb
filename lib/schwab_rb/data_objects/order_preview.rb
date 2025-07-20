@@ -133,10 +133,11 @@ module SchwabRb
           attr_accessor :order_value, :projected_available_fund, :projected_buying_power, :projected_commission
 
           def initialize(attrs)
-            @order_value = attrs[:orderValue]          @projected_available_fund = attrs[:projectedAvailableFund]
-          @projected_buying_power = attrs[:projectedBuyingPower]
-          @projected_commission = attrs[:projectedCommission]
-        end
+            @order_value = attrs[:orderValue]
+            @projected_available_fund = attrs[:projectedAvailableFund]
+            @projected_buying_power = attrs[:projectedBuyingPower]
+            @projected_commission = attrs[:projectedCommission]
+          end
 
         def to_h
           {
