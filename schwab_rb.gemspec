@@ -8,13 +8,13 @@ Gem::Specification.new do |spec|
   spec.authors = ["Joseph Platta"]
   spec.email = ["jwplatta@gmail.com"]
 
-  spec.summary = "Simple Ruby wrapper for Charles Schwab's API"
-  spec.description = "Simple Ruby wrapper for Charles Schwab's API"
+  spec.summary = "Ruby client for the Charles Schwab API"
+  spec.description = "A comprehensive Ruby client for interacting with the Charles Schwab API. Provides access to account data, market quotes, options chains, order management, and more with both synchronous and asynchronous support."
   spec.homepage = "https://github.com/jwplatta/schwab_rb"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
 
-  spec.metadata["allowed_push_host"] = "https://github.com/jwplatta/schwab_rb"
+  spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/jwplatta/schwab_rb"
