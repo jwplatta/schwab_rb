@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'order_leg'
-require_relative 'instrument'
 
 module SchwabRb
   module DataObjects
@@ -20,8 +19,7 @@ module SchwabRb
         @order_strategy = attrs[:orderStrategy] ? OrderStrategy.new(attrs[:orderStrategy]) : nil
         @order_balance = attrs[:orderBalance] ? OrderBalance.new(attrs[:orderBalance]) : nil
         @order_validation_result = attrs[:orderValidationResult] ? OrderValidationResult.new(attrs[:orderValidationResult]) : nil
-        commission_data = attrs[:commissionAndFee] || attrs[:projectedCommission]
-        @projected_commission = commission_data ? CommissionAndFee.new(commission_data) : nil
+        @projected_commission = attrs[:projectedCommission] ? CommissionAndFee.new(attrs[:projectedCommission]) : nil
       end
 
       def status
@@ -42,22 +40,14 @@ module SchwabRb
 
       def commission
         return 0.0 unless @projected_commission
-        
-        if @projected_commission.instance_variable_get(:@direct_commission)
-          @projected_commission.instance_variable_get(:@direct_commission).to_f
-        else
-          @projected_commission.commission_total
-        end
+
+        @projected_commission.commission.to_f
       end
 
       def fees
         return 0.0 unless @projected_commission
-        
-        if @projected_commission.instance_variable_get(:@direct_fee)
-          @projected_commission.instance_variable_get(:@direct_fee).to_f
-        else
-          @projected_commission.fee_total
-        end
+
+        @projected_commission.fee.to_f
       end
 
       def to_h
@@ -154,28 +144,30 @@ module SchwabRb
       end
 
       class CommissionAndFee
-        attr_reader :commission_data, :fee_data, :true_commission_data
+        attr_reader :commission_data, :fee_data
 
         def initialize(attrs)
-          # Handle the actual API format where commission/fee data is at top level
-          if attrs[:commissions] || attrs[:fees] || (attrs[:commission].is_a?(String) rescue false)
-            # API format (like in fixtures)
-            @commission_data = { commissionLegs: attrs[:commissions] || [] }
-            @fee_data = { feeLegs: attrs[:fees] || [] }
-            @true_commission_data = { commissionLegs: attrs[:commissions] || [] }
+          # Handle the flattened structure (from API)
+          if attrs[:commissions]
+            @commission_data = attrs[:commissions]
+            @fee_data = attrs[:fees] || []
+            @true_commission_data = []
             @direct_commission = attrs[:commission]
-            @direct_fee = attrs[:fee] 
+            @direct_fee = attrs[:fee]
             @direct_true_commission = attrs[:trueCommission]
+          # Handle the nested structure (from test data)
           else
-            # Nested format (for backwards compatibility)
-            @commission_data = attrs[:commission] || {}
-            @fee_data = attrs[:fee] || {}
-            @true_commission_data = attrs[:trueCommission] || {}
+            @commission_data = attrs.dig(:commission, :commissionLegs) || []
+            @fee_data = attrs.dig(:fee, :feeLegs) || []
+            @true_commission_data = attrs.dig(:trueCommission, :commissionLegs) || []
+            @direct_commission = nil
+            @direct_fee = nil
+            @direct_true_commission = nil
           end
         end
 
         def commission_total
-          calculate_total_from_legs(@commission_data[:commissionLegs] || [], 'COMMISSION')
+          calculate_total_from_legs(@commission_data, 'COMMISSION')
         end
 
         def commission
@@ -183,27 +175,33 @@ module SchwabRb
         end
 
         def fee_total
-          calculate_total_from_legs(@fee_data[:feeLegs] || [], ['OPT_REG_FEE', 'INDEX_OPTION_FEE'])
+          calculate_total_from_legs(@fee_data, ['OPT_REG_FEE', 'INDEX_OPTION_FEE'])
         end
 
         def fee
           @direct_fee || sprintf("%.2f", fee_total)
         end
 
-        def true_commission_total
-          calculate_total_from_legs(@true_commission_data[:commissionLegs] || [], 'COMMISSION')
-        end
-
         def true_commission
-          @direct_true_commission || sprintf("%.2f", true_commission_total * 2)
+          if @direct_true_commission
+            @direct_true_commission
+          else
+            # For nested structure, calculate from true commission legs
+            if @true_commission_data.any?
+              true_commission_total = calculate_total_from_legs(@true_commission_data, 'COMMISSION')
+              sprintf("%.2f", true_commission_total * 2)
+            else
+              sprintf("%.2f", commission_total * 2)
+            end
+          end
         end
 
         def commissions
-          @commission_data[:commissionLegs] || []
+          @commission_data
         end
 
         def fees
-          @fee_data[:feeLegs] || []
+          @fee_data
         end
 
         def to_h
