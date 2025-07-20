@@ -3,7 +3,13 @@
 ## Analysis Date: July 20, 2025
 
 This document analyzes all API methods in `base_client.rb` to identify:
-1. ### 🚧 In Progress
+1. ###   - [x] Use fixture: `spec/fixtures/user_preferences.json`
+- [x] **OptionExpirationChain** data object class
+  - [x] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
+  - [x] Create `spec/data_objects/option_expiration_chain_spec.rb`
+  - [x] Use fixture: `spec/fixtures/option_expiration_chain.json`
+
+### 📋 Todos
 - [ ] **OptionExpirationChain** data object class
   - [ ] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
   - [ ] Create `spec/data_objects/option_expiration_chain_spec.rb`
