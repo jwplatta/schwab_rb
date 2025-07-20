@@ -1,5 +1,10 @@
 require "date"
+require "json"
 require_relative "../utils/enum_enforcer"
+require_relative "../data_objects/account"
+require_relative "../data_objects/quote"
+require_relative "../data_objects/transaction"
+require_relative "../data_objects/order"
 
 module SchwabRb
   class BaseClient
@@ -36,11 +41,12 @@ module SchwabRb
       @token_manager.token_age
     end
 
-    def get_account(account_hash, fields: nil)
+    def get_account(account_hash, fields: nil, return_data_objects: true)
       # Account balances, positions, and orders for a given account hash.
       #
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
@@ -49,16 +55,24 @@ module SchwabRb
       params[:fields] = fields.join(",") if fields
 
       path = "/trader/v1/accounts/#{account_hash}"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        account_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::Account.build(account_data)
+      else
+        response
+      end
     end
 
-    def get_accounts(fields: nil)
+    def get_accounts(fields: nil, return_data_objects: true)
       # Account balances, positions, and orders for all linked accounts.
       #
       # Note: This method does not return account hashes.
       #
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
@@ -67,7 +81,14 @@ module SchwabRb
       params[:fields] = fields.join(",") if fields
 
       path = "/trader/v1/accounts"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        accounts_data = JSON.parse(response.body, symbolize_names: true)
+        accounts_data.map { |account_data| SchwabRb::DataObjects::Account.build(account_data) }
+      else
+        response
+      end
     end
 
     def get_account_numbers
@@ -262,21 +283,29 @@ module SchwabRb
       get(path, {})
     end
 
-    def get_quote(symbol, fields: nil)
+    def get_quote(symbol, fields: nil, return_data_objects: true)
       # Get quote for a symbol.
       #
       # @param symbol [String] Single symbol to fetch.
       # @param fields [Array] Fields to request. If unset, return all available
       #                       data (i.e., all fields). See `GetQuote::Field` for options.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Quote::Types) if fields
       params = fields ? { "fields" => fields.join(",") } : {}
       path = "/marketdata/v1/#{symbol}/quotes"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        quote_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::QuoteFactory.build(quote_data)
+      else
+        response
+      end
     end
 
-    def get_quotes(symbols, fields: nil, indicative: nil)
+    def get_quotes(symbols, fields: nil, indicative: nil, return_data_objects: true)
       # Get quotes for symbols. This method supports all symbols, including those
       # containing non-alphanumeric characters like `/ES`.
       #
@@ -284,6 +313,7 @@ module SchwabRb
       # @param fields [Array] Fields to request. If unset, return all available data.
       #                       See `GetQuote::Field` for options.
       # @param indicative [Boolean] If set, fetch indicative quotes. Must be true or false.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       symbols = [symbols] if symbols.is_a?(String)
@@ -300,7 +330,14 @@ module SchwabRb
       end
 
       path = "/marketdata/v1/quotes"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        quotes_data = JSON.parse(response.body, symbolize_names: true)
+        quotes_data.map { |symbol, quote_data| SchwabRb::DataObjects::QuoteFactory.build({symbol => quote_data}) }
+      else
+        response
+      end
     end
 
     def get_option_chain(
