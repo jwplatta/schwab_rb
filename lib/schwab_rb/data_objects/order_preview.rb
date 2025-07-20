@@ -228,12 +228,25 @@ module SchwabRb
               commission_values.sum(&:value)
             end
 
+            def to_h
+              {
+                commissionValues: @commission_values.map(&:to_h)
+              }
+            end
+
             class CommissionValue
               attr_accessor :value, :type
 
               def initialize(attrs)
                 @value = attrs[:value]
                 @type = attrs[:type]
+              end
+
+              def to_h
+                {
+                  value: @value,
+                  type: @type
+                }
               end
             end
           end
@@ -250,6 +263,12 @@ module SchwabRb
             fee_legs.sum(&:value)
           end
 
+          def to_h
+            {
+              feeLegs: @fee_legs.map(&:to_h)
+            }
+          end
+
           class FeeLeg
             attr_accessor :fee_values
 
@@ -261,12 +280,25 @@ module SchwabRb
               fee_values.sum(&:value)
             end
 
+            def to_h
+              {
+                feeValues: @fee_values.map(&:to_h)
+              }
+            end
+
             class FeeValue
               attr_accessor :value, :type
 
               def initialize(attrs)
                 @value = attrs[:value]
                 @type = attrs[:type]
+              end
+
+              def to_h
+                {
+                  value: @value,
+                  type: @type
+                }
               end
             end
           end
@@ -285,6 +317,12 @@ module SchwabRb
             commission_legs.sum(&:value)
           end
 
+          def to_h
+            {
+              commissionLegs: @commission_legs.map(&:to_h)
+            }
+          end
+
           class CommissionLeg
             attr_accessor :commission_values
 
@@ -298,12 +336,25 @@ module SchwabRb
               commission_values.sum(&:value)
             end
 
+            def to_h
+              {
+                commissionValues: @commission_values.map(&:to_h)
+              }
+            end
+
             class CommissionValue
               attr_accessor :value, :type
 
               def initialize(attrs)
                 @value = attrs[:value]
                 @type = attrs[:type]
+              end
+
+              def to_h
+                {
+                  value: @value,
+                  type: @type
+                }
               end
             end
           end
