@@ -127,7 +127,8 @@ module SchwabRb
       max_results: nil,
       from_entered_datetime: nil,
       to_entered_datetime: nil,
-      status: nil
+      status: nil,
+      return_data_objects: true
     )
       # Orders for a specific account. Optionally specify a single status on which to filter.
       #
@@ -135,6 +136,7 @@ module SchwabRb
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       if from_entered_datetime.nil?
@@ -155,7 +157,14 @@ module SchwabRb
         status: status
       )
 
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        orders_data = JSON.parse(response.body, symbolize_names: true)
+        orders_data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
+      else
+        response
+      end
     end
 
     def get_all_linked_account_orders(
@@ -209,15 +218,23 @@ module SchwabRb
       put(path, order_spec)
     end
 
-    def preview_order(account_hash, order_spec)
+    def preview_order(account_hash, order_spec, return_data_objects: true)
       # Preview an order, i.e., test whether an order would be accepted by the
       # API and see the structure it would result in.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
 
       path = "/trader/v1/accounts/#{account_hash}/previewOrder"
-      post(path, order_spec)
+      response = post(path, order_spec)
+      
+      if return_data_objects
+        preview_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::OrderPreview.build(preview_data)
+      else
+        response
+      end
     end
 
     def get_transactions(
@@ -225,7 +242,8 @@ module SchwabRb
       start_date: nil,
       end_date: nil,
       transaction_types: nil,
-      symbol: nil
+      symbol: nil,
+      return_data_objects: true
     )
       # Transactions for a specific account.
       #
@@ -234,6 +252,7 @@ module SchwabRb
       # @param end_date [Date, DateTime] End date for transactions (default: now).
       # @param transaction_types [Array] List of transaction types to filter by.
       # @param symbol [String] Filter transactions by the specified symbol.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       transaction_types = if transaction_types
@@ -262,19 +281,34 @@ module SchwabRb
       params["symbol"] = symbol unless symbol.nil?
 
       path = "/trader/v1/accounts/#{account_hash}/transactions"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        transactions_data = JSON.parse(response.body, symbolize_names: true)
+        transactions_data.map { |transaction_data| SchwabRb::DataObjects::Transaction.build(transaction_data) }
+      else
+        response
+      end
     end
 
-    def get_transaction(account_hash, activity_id)
+    def get_transaction(account_hash, activity_id, return_data_objects: true)
       # Transaction for a specific account.
       #
       # @param account_hash [String] Account hash corresponding to the account whose
       #                              transactions should be returned.
       # @param activity_id [String] ID of the order for which to return data.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       path = "/trader/v1/accounts/#{account_hash}/transactions/#{activity_id}"
-      get(path, {})
+      response = get(path, {})
+      
+      if return_data_objects
+        transaction_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::Transaction.build(transaction_data)
+      else
+        response
+      end
     end
 
     def get_user_preferences
@@ -357,7 +391,8 @@ module SchwabRb
       days_to_expiration: nil,
       exp_month: nil,
       option_type: nil,
-      entitlement: nil
+      entitlement: nil,
+      return_data_objects: true
     )
       # Get option chain for an optionable symbol.
       #
@@ -378,6 +413,7 @@ module SchwabRb
       # @param exp_month [String] Filter options by expiration month.
       # @param option_type [String] Type of options to include in the chain.
       # @param entitlement [String] Client entitlement.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
 
       refresh_token_if_needed
 
@@ -407,7 +443,14 @@ module SchwabRb
       params["entitlement"] = entitlement if entitlement
 
       path = "/marketdata/v1/chains"
-      get(path, params)
+      response = get(path, params)
+      
+      if return_data_objects
+        option_chain_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::OptionChain.build(option_chain_data)
+      else
+        response
+      end
     end
 
     def get_option_expiration_chain(symbol)
