@@ -3,6 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe SchwabRb::DataObjects::OrderPreview do
+  let(:accepted_fixture_data) do
+    JSON.parse(File.read('spec/fixtures/orders/accepted_preview.json'), symbolize_names: true)
+  end
+
+  let(:rejected_fixture_data) do
+    JSON.parse(File.read('spec/fixtures/orders/rejected_preview.json'), symbolize_names: true)
+  end
+
   let(:sample_data) do
     {
       orderId: 12345,
@@ -304,6 +312,78 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       it 'includes nil values in hash' do
         hash = nil_preview.to_h
         expect(hash[:orderValue]).to be_nil
+      end
+    end
+  end
+
+  describe 'with fixture data' do
+    context 'using accepted_preview fixture' do
+      let(:accepted_preview) { described_class.new(accepted_fixture_data) }
+
+      it 'parses accepted fixture data correctly' do
+        expect(accepted_preview.order_id).to eq(0)
+        expect(accepted_preview.status).to eq('ACCEPTED')
+        expect(accepted_preview.price).to eq(1.25)
+        expect(accepted_preview.quantity).to eq(1.0)
+        expect(accepted_preview.accepted?).to be true
+      end
+
+      it 'handles commission data from fixture correctly' do
+        expect(accepted_preview.commission).to eq(2.60)
+        expect(accepted_preview.fees).to eq(2.10)
+        expect(accepted_preview.projected_commission.true_commission).to eq("5.20")
+      end
+
+      it 'parses order legs correctly' do
+        expect(accepted_preview.order_strategy.order_legs.length).to eq(4)
+        first_leg = accepted_preview.order_strategy.order_legs[0]
+        expect(first_leg.instruction).to eq('SELL_TO_OPEN')
+        expect(first_leg.instrument.symbol).to eq('SPXW  250725P05680000')
+      end
+
+      it 'handles validation result correctly' do
+        expect(accepted_preview.order_validation_result.rejects).to be_empty
+      end
+    end
+
+    context 'using rejected_preview fixture' do
+      let(:rejected_preview) { described_class.new(rejected_fixture_data) }
+
+      it 'parses rejected fixture data correctly' do
+        expect(rejected_preview.order_id).to eq(0)
+        expect(rejected_preview.status).to eq('REJECTED')
+        expect(rejected_preview.price).to eq(3.46)
+        expect(rejected_preview.quantity).to eq(1.0)
+        expect(rejected_preview.accepted?).to be false
+      end
+
+      it 'handles commission data from fixture correctly' do
+        expect(rejected_preview.commission).to eq(2.60)
+        expect(rejected_preview.fees).to eq(2.10)
+        expect(rejected_preview.projected_commission.true_commission).to eq("5.20")
+      end
+
+      it 'handles validation result with rejects' do
+        expect(rejected_preview.order_validation_result.rejects.length).to eq(1)
+        reject = rejected_preview.order_validation_result.rejects[0]
+        expect(reject.reject_code).to be_nil
+        expect(reject.reject_message).to be_nil
+      end
+    end
+
+    context 'commission calculation from fixture data' do
+      let(:accepted_preview) { described_class.new(accepted_fixture_data) }
+
+      it 'calculates commission from detailed legs correctly' do
+        commission_from_legs = accepted_preview.projected_commission.commission_total
+        # Should be 4 legs * 0.65 COMMISSION each = 2.60
+        expect(commission_from_legs).to eq(2.60)
+      end
+
+      it 'calculates fees from detailed legs correctly' do
+        fee_from_legs = accepted_preview.projected_commission.fee_total
+        # Should be (0.01 + 0.47) * 2 + (0.01 + 0.56) * 2 = 0.96 + 1.14 = 2.10
+        expect(fee_from_legs).to eq(2.10)
       end
     end
   end

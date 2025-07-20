@@ -1,0 +1,150 @@
+{
+  "orderId": 0,
+  "orderValue": null,
+  "orderStrategy": {
+    "accountNumber": "11613762",
+    "status": "REJECTED",
+    "price": 3.46,
+    "quantity": 1.0,
+    "orderType": "LIMIT",
+    "type": null,
+    "strategyId": null,
+    "orderLegs": [
+      {
+        "legId": 1,
+        "orderLegType": null,
+        "quantity": null,
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  250725P05680000",
+          "description": "S \u0026 P 500 INDEX 07/25/2025 $5680 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            { "symbol": "$SPX", "deliverableUnits": 100.0 }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING"
+      },
+      {
+        "legId": 2,
+        "orderLegType": null,
+        "quantity": null,
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  250725P05660000",
+          "description": "S \u0026 P 500 INDEX 07/25/2025 $5660 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            { "symbol": "$SPX", "deliverableUnits": 100.0 }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING"
+      },
+      {
+        "legId": 3,
+        "orderLegType": null,
+        "quantity": null,
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  250725C06410000",
+          "description": "S \u0026 P 500 INDEX 07/25/2025 $6410 Call",
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            { "symbol": "$SPX", "deliverableUnits": 100.0 }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING"
+      },
+      {
+        "legId": 4,
+        "orderLegType": null,
+        "quantity": null,
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  250725C06430000",
+          "description": "S \u0026 P 500 INDEX 07/25/2025 $6430 Call",
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            { "symbol": "$SPX", "deliverableUnits": 100.0 }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING"
+      }
+    ]
+  },
+  "orderBalance": null,
+  "orderValidationResult": {
+    "isValid": null,
+    "warningMessage": null,
+    "rejects": [{ "rejectCode": null, "rejectMessage": null }]
+  },
+  "projectedCommission": {
+    "commission": "2.60",
+    "fee": "2.10",
+    "trueCommission": "5.20",
+    "commissions": [
+      {
+        "commissionValues": [
+          { "value": 0.0, "type": "BASE_CHARGE" },
+          { "value": 0.65, "type": "COMMISSION" }
+        ]
+      },
+      {
+        "commissionValues": [
+          { "value": 0.0, "type": "BASE_CHARGE" },
+          { "value": 0.65, "type": "COMMISSION" }
+        ]
+      },
+      {
+        "commissionValues": [
+          { "value": 0.0, "type": "BASE_CHARGE" },
+          { "value": 0.65, "type": "COMMISSION" }
+        ]
+      },
+      {
+        "commissionValues": [
+          { "value": 0.0, "type": "BASE_CHARGE" },
+          { "value": 0.65, "type": "COMMISSION" }
+        ]
+      }
+    ],
+    "fees": [
+      {
+        "feeValues": [
+          { "value": 0.01, "type": "OPT_REG_FEE" },
+          { "value": 0.47, "type": "INDEX_OPTION_FEE" }
+        ]
+      },
+      {
+        "feeValues": [
+          { "value": 0.01, "type": "OPT_REG_FEE" },
+          { "value": 0.47, "type": "INDEX_OPTION_FEE" }
+        ]
+      },
+      {
+        "feeValues": [
+          { "value": 0.01, "type": "OPT_REG_FEE" },
+          { "value": 0.56, "type": "INDEX_OPTION_FEE" }
+        ]
+      },
+      {
+        "feeValues": [
+          { "value": 0.01, "type": "OPT_REG_FEE" },
+          { "value": 0.56, "type": "INDEX_OPTION_FEE" }
+        ]
+      }
+    ]
+  }
+}
