@@ -62,6 +62,15 @@ module SchwabRb
         commission_and_fee.fee.value.round(2)
       end
 
+      def to_h
+        {
+          orderId: @order_id,
+          orderStrategy: @order_strategy.to_h,
+          orderValidationResult: @order_validation_result.to_h,
+          commissionAndFee: @commission_and_fee.to_h
+        }
+      end
+
       class OrderStrategy
         attr_accessor :account_number, :advanced_order_type, :close_time, :entered_time, :order_balance,
                       :order_strategy_type, :order_version, :session, :status, :discretionary, :duration,
@@ -94,15 +103,49 @@ module SchwabRb
           end
         end
 
+        def to_h
+          {
+            accountNumber: @account_number,
+            advancedOrderType: @advanced_order_type,
+            closeTime: @close_time,
+            enteredTime: @entered_time,
+            orderBalance: @order_balance.to_h,
+            orderStrategyType: @order_strategy_type,
+            orderVersion: @order_version,
+            session: @session,
+            status: @status,
+            discretionary: @discretionary,
+            duration: @duration,
+            filledQuantity: @filled_quantity,
+            orderType: @order_type,
+            orderValue: @order_value,
+            price: @price,
+            quantity: @quantity,
+            remainingQuantity: @remaining_quantity,
+            sellNonMarginableFirst: @sell_non_marginable_first,
+            strategy: @strategy,
+            amountIndicator: @amount_indicator,
+            orderLegs: @order_legs.map(&:to_h)
+          }
+        end
+
         class OrderBalance
           attr_accessor :order_value, :projected_available_fund, :projected_buying_power, :projected_commission
 
           def initialize(attrs)
-            @order_value = attrs[:orderValue]
-            @projected_available_fund = attrs[:projectedAvailableFund]
-            @projected_buying_power = attrs[:projectedBuyingPower]
-            @projected_commission = attrs[:projectedCommission]
-          end
+            @order_value = attrs[:orderValue]          @projected_available_fund = attrs[:projectedAvailableFund]
+          @projected_buying_power = attrs[:projectedBuyingPower]
+          @projected_commission = attrs[:projectedCommission]
+        end
+
+        def to_h
+          {
+            orderValue: @order_value,
+            projectedAvailableFund: @projected_available_fund,
+            projectedBuyingPower: @projected_buying_power,
+            projectedCommission: @projected_commission
+          }
+        end
         end
       end
 
@@ -113,12 +156,25 @@ module SchwabRb
           @rejects = attrs.fetch(:rejects, []).map { |reject| Reject.new(reject) }
         end
 
+        def to_h
+          {
+            rejects: @rejects.map(&:to_h)
+          }
+        end
+
         class Reject
           attr_accessor :activity_message, :original_severity
 
           def initialize(attrs)
             @activity_message = attrs[:activityMessage]
             @original_severity = attrs[:originalSeverity]
+          end
+
+          def to_h
+            {
+              activityMessage: @activity_message,
+              originalSeverity: @original_severity
+            }
           end
         end
       end
@@ -132,6 +188,14 @@ module SchwabRb
           @true_commission = TrueCommission.new(attrs[:trueCommission])
         end
 
+        def to_h
+          {
+            commission: @commission.to_h,
+            fee: @fee.to_h,
+            trueCommission: @true_commission.to_h
+          }
+        end
+
         class Commission
           attr_accessor :commission_legs
 
@@ -143,6 +207,12 @@ module SchwabRb
 
           def value
             commission_legs.sum(&:value)
+          end
+
+          def to_h
+            {
+              commissionLegs: @commission_legs.map(&:to_h)
+            }
           end
 
           class CommissionLeg
