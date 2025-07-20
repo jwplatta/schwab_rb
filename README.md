@@ -1,4 +1,4 @@
-****# schwab_rb: Schwab API Ruby Client
+# schwab_rb: Schwab API Ruby Client
 
 The `schwab_rb` gem is a Ruby client for interacting with the Schwab API. It provides a simple and flexible interface for accessing Schwab account data, placing orders, retrieving quotes, and more.
 
@@ -204,7 +204,7 @@ response = client.place_order('account_hash', order)
 The gem supports multiple authentication approaches:
 
 1. **Easy Initialization** (Recommended): Automatically handles token storage and refresh
-2. **Token File**: Initialize from a saved token file  
+2. **Token File**: Initialize from a saved token file
 3. **Login Flow**: Interactive browser-based authentication
 
 ### Easy Authentication Setup
@@ -212,7 +212,7 @@ The gem supports multiple authentication approaches:
 ```ruby
 client = SchwabRb::Auth.init_client_easy(
   ENV['SCHWAB_API_KEY'],
-  ENV['SCHWAB_APP_SECRET'], 
+  ENV['SCHWAB_APP_SECRET'],
   ENV['APP_CALLBACK_URL'],
   ENV['TOKEN_PATH']
 )
