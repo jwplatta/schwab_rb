@@ -23,6 +23,7 @@ module ResponseFactory
             "isDayTrader" => false,
             "isClosingOnlyRestricted" => false,
             "pfcbFlag" => false,
+            "positions" => [],
             "initialBalances" =>
               {
                 "accruedInterest" => 0.0,
@@ -105,7 +106,7 @@ module ResponseFactory
         "aggregatedBalance" => {
           "currentLiquidationValue" => 1000.01, "liquidationValue" => 1000.01
         }
-      },
+      }.to_json,
       status: 200
     )
   end
@@ -121,6 +122,7 @@ module ResponseFactory
           "isDayTrader" => false,
           "isClosingOnlyRestricted" => false,
           "pfcbFlag" => false,
+          "positions" => [],
           "initialBalances" => {
             "accruedInterest" => 0.0,
             "availableFundsNonMarginableTrade" => 1000.01,
