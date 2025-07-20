@@ -202,18 +202,17 @@ The following data object classes already exist and are being used:
   - [ ] Create `spec/data_objects/movers_spec.rb`
   - [ ] Use fixture: `spec/fixtures/movers_basic.json`
 
-- [ ] **MarketHours** data object class
-  - [ ] Create `lib/schwab_rb/data_objects/market_hours.rb`
-  - [ ] Create `spec/data_objects/market_hours_spec.rb`
-  - [ ] Use fixtures: `spec/fixtures/market_hours_*.json`
-
-### 🔄 BaseClient Updates (After Data Objects)
-- [ ] Update `get_account_numbers` to support `return_data_objects: true`
-- [ ] Update `get_user_preferences` to support `return_data_objects: true`
-- [ ] Update `get_option_expiration_chain` to support `return_data_objects: true`
-- [ ] Update `get_price_history` to support `return_data_objects: true`
-- [ ] Update `get_movers` to support `return_data_objects: true`
-- [ ] Update `get_market_hours` to support `return_data_objects: true`
+### 🔄 BaseClient Updates
+- [x] Update `get_account_numbers` to support `return_data_objects: true`
+- [x] Update `get_order` to support `return_data_objects: true`
+- [x] Update `get_all_linked_account_orders` to support `return_data_objects: true`
+- [x] Update `get_user_preferences` to support `return_data_objects: true`
+- [x] Update `get_option_expiration_chain` to support `return_data_objects: true`
+- [x] Update `get_price_history` to support `return_data_objects: true`
+- [x] Update `get_market_hours` to support `return_data_objects: true`
+- [x] Update `get_instruments` to support `return_data_objects: true`
+- [x] Update `get_instrument_by_cusip` to support `return_data_objects: true`
+- [ ] Update `get_movers` to support `return_data_objects: true` (skipped for now)
 
 ## Summary
 
