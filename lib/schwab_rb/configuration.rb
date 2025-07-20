@@ -29,7 +29,6 @@ module SchwabRb
 
     def configure
       yield(configuration) if block_given?
-      # Reset logger to pick up new configuration
       SchwabRb::Logger.reset! if defined?(SchwabRb::Logger)
     end
 

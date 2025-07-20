@@ -21,24 +21,16 @@ module SchwabRb
       def create_logger
         config = SchwabRb.configuration
 
-        # Use external logger if provided
         return config.logger if config.has_external_logger?
-
-        # Return null logger if silenced
         return null_logger if config.silence_output
-
-        # Create logger if should create one
         return null_logger unless config.should_create_logger?
 
-        # Determine log destination
         log_destination = config.effective_log_file || STDOUT
 
-        # Handle special cases
         if log_destination == :null || log_destination == '/dev/null'
           return null_logger
         end
 
-        # Setup file if it's a file path
         if log_destination.is_a?(String) && log_destination != 'STDOUT'
           setup_log_file(log_destination)
         end
