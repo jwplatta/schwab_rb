@@ -1,0 +1,1160 @@
+[
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "IRON_CONDOR",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 1.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 1.85,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0SPXW.AV56210000",
+          "symbol": "SPXW  250131C06210000",
+          "description": "S & P 500 INDEX 01/31/2025 $6210 Call",
+          "instrumentId": 226301755,
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0SPXW.AV56220000",
+          "symbol": "SPXW  250131C06220000",
+          "description": "S & P 500 INDEX 01/31/2025 $6220 Call",
+          "instrumentId": 226126813,
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 3,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0SPXW.MV55960000",
+          "symbol": "SPXW  250131P05960000",
+          "description": "S & P 500 INDEX 01/31/2025 $5960 Put",
+          "instrumentId": 222787763,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 4,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0SPXW.MV55950000",
+          "symbol": "SPXW  250131P05950000",
+          "description": "S & P 500 INDEX 01/31/2025 $5950 Put",
+          "instrumentId": 222089405,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002651112111,
+    "cancelable": true,
+    "editable": true,
+    "status": "PENDING_ACTIVATION",
+    "enteredTime": "2025-01-25T21:32:46+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "LIMIT",
+    "complexOrderStrategyType": "NONE",
+    "quantity": 100.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 50.0,
+    "orderLegCollection": [
+      {
+        "orderLegType": "EQUITY",
+        "legId": 1,
+        "instrument": {
+          "assetType": "EQUITY",
+          "cusip": "169656105",
+          "symbol": "CMG",
+          "instrumentId": 136174
+        },
+        "instruction": "BUY",
+        "positionEffect": "OPENING",
+        "quantity": 100.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002651112109,
+    "cancelable": false,
+    "editable": false,
+    "status": "CANCELED",
+    "enteredTime": "2025-01-25T20:49:25+0000",
+    "closeTime": "2025-01-25T20:56:55+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91455648768,
+        "executionType": "CANCELED",
+        "quantity": 100.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 100.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.0,
+            "time": "2025-01-25T20:56:55+0000",
+            "instrumentId": 136174
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_DEBIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "WEXM",
+    "price": 0.17,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0META.MV50525000",
+          "symbol": "META  250131P00525000",
+          "description": "META PLATFORMS INC 01/31/2025 $525 Put",
+          "instrumentId": 228798252,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "META",
+          "optionDeliverables": [
+            {
+              "symbol": "META",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_CLOSE",
+        "positionEffect": "CLOSING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0META.MV50510000",
+          "symbol": "META  250131P00510000",
+          "description": "META PLATFORMS INC 01/31/2025 $510 Put",
+          "instrumentId": 228215124,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "META",
+          "optionDeliverables": [
+            {
+              "symbol": "META",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_CLOSE",
+        "positionEffect": "CLOSING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002648561251,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-24T18:53:10+0000",
+    "closeTime": "2025-01-24T18:53:11+0000",
+    "tag": "API_TOS:POS_STMT",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91437824940,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.29,
+            "time": "2025-01-24T18:53:11+0000",
+            "instrumentId": 228215124
+          },
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.46,
+            "time": "2025-01-24T18:53:11+0000",
+            "instrumentId": 228798252
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "CDRG",
+    "price": 1.2,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.CL50155000",
+          "symbol": "MRVL  250321C00155000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $155 Call",
+          "instrumentId": 227784488,
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.CL50170000",
+          "symbol": "MRVL  250321C00170000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $170 Call",
+          "instrumentId": 227814638,
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002613435352,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-17T17:19:49+0000",
+    "closeTime": "2025-01-17T17:19:49+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91176753938,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 2.06,
+            "time": "2025-01-17T17:19:49+0000",
+            "instrumentId": 227784488
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.86,
+            "time": "2025-01-17T17:19:49+0000",
+            "instrumentId": 227814638
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "CDRG",
+    "price": 2.59,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0TSLA.NL50340000",
+          "symbol": "TSLA  250221P00340000",
+          "description": "TESLA INC 02/21/2025 $340 Put",
+          "instrumentId": 221175400,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "TSLA",
+          "optionDeliverables": [
+            {
+              "symbol": "TSLA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0TSLA.NL50320000",
+          "symbol": "TSLA  250221P00320000",
+          "description": "TESLA INC 02/21/2025 $320 Put",
+          "instrumentId": 221372233,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "TSLA",
+          "optionDeliverables": [
+            {
+              "symbol": "TSLA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002604357590,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-16T16:13:09+0000",
+    "closeTime": "2025-01-16T16:13:29+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91109332555,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 6.29,
+            "time": "2025-01-16T16:13:29+0000",
+            "instrumentId": 221175400
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 3.7,
+            "time": "2025-01-16T16:13:29+0000",
+            "instrumentId": 221372233
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "WEXM",
+    "price": 2.6,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0TSLA.NL50340000",
+          "symbol": "TSLA  250221P00340000",
+          "description": "TESLA INC 02/21/2025 $340 Put",
+          "instrumentId": 221175400,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "TSLA",
+          "optionDeliverables": [
+            {
+              "symbol": "TSLA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0TSLA.NL50320000",
+          "symbol": "TSLA  250221P00320000",
+          "description": "TESLA INC 02/21/2025 $320 Put",
+          "instrumentId": 221372233,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "TSLA",
+          "optionDeliverables": [
+            {
+              "symbol": "TSLA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002604357222,
+    "cancelable": false,
+    "editable": false,
+    "status": "REPLACED",
+    "enteredTime": "2025-01-16T16:07:58+0000",
+    "closeTime": "2025-01-16T16:13:09+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91109332429,
+        "executionType": "CANCELED",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.0,
+            "time": "2025-01-16T16:13:09+0000",
+            "instrumentId": 221175400
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.0,
+            "time": "2025-01-16T16:13:09+0000",
+            "instrumentId": 221372233
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "CDRG",
+    "price": 1.47,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0NVDA.NS50115000",
+          "symbol": "NVDA  250228P00115000",
+          "description": "NVIDIA CORP 02/28/2025 $115 Put",
+          "instrumentId": 229178904,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "NVDA",
+          "optionDeliverables": [
+            {
+              "symbol": "NVDA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0NVDA.NS50095000",
+          "symbol": "NVDA  250228P00095000",
+          "description": "NVIDIA CORP 02/28/2025 $95 Put",
+          "instrumentId": 229481713,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "NVDA",
+          "optionDeliverables": [
+            {
+              "symbol": "NVDA",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002604356269,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-16T15:57:49+0000",
+    "closeTime": "2025-01-16T15:58:02+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91106713847,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 1.86,
+            "time": "2025-01-16T15:58:02+0000",
+            "instrumentId": 229178904
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.39,
+            "time": "2025-01-16T15:58:02+0000",
+            "instrumentId": 229481713
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "CDRG",
+    "price": 1.04,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0META.MV50525000",
+          "symbol": "META  250131P00525000",
+          "description": "META PLATFORMS INC 01/31/2025 $525 Put",
+          "instrumentId": 228798252,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "META",
+          "optionDeliverables": [
+            {
+              "symbol": "META",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0META.MV50510000",
+          "symbol": "META  250131P00510000",
+          "description": "META PLATFORMS INC 01/31/2025 $510 Put",
+          "instrumentId": 228215124,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "META",
+          "optionDeliverables": [
+            {
+              "symbol": "META",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002603886223,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-16T15:35:47+0000",
+    "closeTime": "2025-01-16T15:35:47+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 91103180934,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 2.78,
+            "time": "2025-01-16T15:35:47+0000",
+            "instrumentId": 228798252
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 1.74,
+            "time": "2025-01-16T15:35:47+0000",
+            "instrumentId": 228215124
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 1.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "WEXM",
+    "price": 1.26,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50090000",
+          "symbol": "MRVL  250321P00090000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $90 Put",
+          "instrumentId": 216976019,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50080000",
+          "symbol": "MRVL  250321P00080000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $80 Put",
+          "instrumentId": 217118015,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002581898359,
+    "cancelable": false,
+    "editable": false,
+    "status": "FILLED",
+    "enteredTime": "2025-01-13T16:54:15+0000",
+    "closeTime": "2025-01-13T16:56:17+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 90933359941,
+        "executionType": "FILL",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 2.2,
+            "time": "2025-01-13T16:56:17+0000",
+            "instrumentId": 216976019
+          },
+          {
+            "legId": 2,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.94,
+            "time": "2025-01-13T16:56:17+0000",
+            "instrumentId": 217118015
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "LIMIT",
+    "complexOrderStrategyType": "NONE",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 2.02,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50090000",
+          "symbol": "MRVL  250321P00090000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $90 Put",
+          "instrumentId": 216976019,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002577270720,
+    "cancelable": false,
+    "editable": false,
+    "status": "CANCELED",
+    "enteredTime": "2025-01-12T18:19:17+0000",
+    "closeTime": "2025-01-12T18:27:03+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 90898514191,
+        "executionType": "CANCELED",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.0,
+            "time": "2025-01-12T18:27:03+0000",
+            "instrumentId": 216976019
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 1.31,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50090000",
+          "symbol": "MRVL  250321P00090000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $90 Put",
+          "instrumentId": 216976019,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50080000",
+          "symbol": "MRVL  250321P00080000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $80 Put",
+          "instrumentId": 217118015,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002577270697,
+    "cancelable": false,
+    "editable": false,
+    "status": "REJECTED",
+    "enteredTime": "2025-01-12T16:17:33+0000",
+    "closeTime": "2025-01-12T16:17:33+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "statusDescription": "The account is not approved for this level of options trading."
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "LIMIT",
+    "complexOrderStrategyType": "NONE",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 0.43,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50075000",
+          "symbol": "MRVL  250321P00075000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $75 Put",
+          "instrumentId": 216902026,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002568100972,
+    "cancelable": false,
+    "editable": false,
+    "status": "REJECTED",
+    "enteredTime": "2025-01-09T15:58:49+0000",
+    "closeTime": "2025-01-09T15:58:49+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "statusDescription": "The account is not approved for this level of options trading."
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "LIMIT",
+    "complexOrderStrategyType": "NONE",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 2.27,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50095000",
+          "symbol": "MRVL  250321P00095000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $95 Put",
+          "instrumentId": 217070031,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002568100971,
+    "cancelable": false,
+    "editable": false,
+    "status": "CANCELED",
+    "enteredTime": "2025-01-09T15:58:06+0000",
+    "closeTime": "2025-01-09T16:08:30+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "orderActivityCollection": [
+      {
+        "activityType": "EXECUTION",
+        "activityId": 90828759073,
+        "executionType": "CANCELED",
+        "quantity": 1.0,
+        "orderRemainingQuantity": 0.0,
+        "executionLegs": [
+          {
+            "legId": 1,
+            "quantity": 1.0,
+            "mismarkedQuantity": 0.0,
+            "price": 0.0,
+            "time": "2025-01-09T16:08:30+0000",
+            "instrumentId": 217070031
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "session": "NORMAL",
+    "duration": "DAY",
+    "orderType": "NET_CREDIT",
+    "complexOrderStrategyType": "VERTICAL",
+    "quantity": 1.0,
+    "filledQuantity": 0.0,
+    "remainingQuantity": 0.0,
+    "requestedDestination": "AUTO",
+    "destinationLinkName": "AutoRoute",
+    "price": 1.9,
+    "orderLegCollection": [
+      {
+        "orderLegType": "OPTION",
+        "legId": 1,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50095000",
+          "symbol": "MRVL  250321P00095000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $95 Put",
+          "instrumentId": 217070031,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      },
+      {
+        "orderLegType": "OPTION",
+        "legId": 2,
+        "instrument": {
+          "assetType": "OPTION",
+          "cusip": "0MRVL.OL50075000",
+          "symbol": "MRVL  250321P00075000",
+          "description": "MARVELL TECHNOLOGY INC 03/21/2025 $75 Put",
+          "instrumentId": 216902026,
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "MRVL",
+          "optionDeliverables": [
+            {
+              "symbol": "MRVL",
+              "deliverableUnits": 100.0
+            }
+          ]
+        },
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "quantity": 1.0
+      }
+    ],
+    "orderStrategyType": "SINGLE",
+    "orderId": 1002568100966,
+    "cancelable": false,
+    "editable": false,
+    "status": "REJECTED",
+    "enteredTime": "2025-01-09T15:53:43+0000",
+    "closeTime": "2025-01-09T15:53:43+0000",
+    "tag": "API_TOS:TRADE_ALL",
+    "accountNumber": 11613762,
+    "statusDescription": "The account is not approved for this level of options trading."
+  }
+]

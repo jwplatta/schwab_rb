@@ -1,0 +1,10 @@
+{
+  "assetType": "EQUITY",
+  "cusip": "88160R101",
+  "symbol": "TSLA",
+  "description": "TESLA INC",
+  "instrumentId": 11181301,
+  "netChange": 2.56,
+  "status": "NORMAL",
+  "closingPrice": 248.33
+}

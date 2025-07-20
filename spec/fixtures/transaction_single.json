@@ -1,0 +1,43 @@
+{
+  "activityId": 91176753938,
+  "time": "2025-01-17T17:19:49+0000",
+  "type": "TRADE",
+  "status": "VALID",
+  "subAccount": "CASH",
+  "tradeDate": "2025-01-17",
+  "positionId": 12345678,
+  "orderId": "1002613435352",
+  "netAmount": -1215.95,
+  "transferItems": [
+    {
+      "instrument": {
+        "assetType": "OPTION",
+        "status": "ACTIVE",
+        "symbol": "MRVL  250321C00155000",
+        "description": "MARVELL TECHNOLOGY INC 03/21/2025 $155 Call",
+        "instrumentId": 216902025,
+        "putCall": "CALL",
+        "strikePrice": 155,
+        "underlyingSymbol": "MRVL",
+        "underlyingCusip": "573874104"
+      },
+      "amount": -1,
+      "cost": 206.0,
+      "price": 2.06,
+      "positionEffect": "OPENING"
+    },
+    {
+      "instrument": {
+        "assetType": "CURRENCY",
+        "status": "ACTIVE",
+        "symbol": "CURRENCY_USD",
+        "description": "USD currency",
+        "instrumentId": 1,
+        "closingPrice": 0
+      },
+      "amount": 0.95,
+      "cost": -0.95,
+      "feeType": "OPT_REG_FEE"
+    }
+  ]
+}

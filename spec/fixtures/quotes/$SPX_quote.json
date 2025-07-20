@@ -1,0 +1,38 @@
+{
+  "$SPX": {
+    "assetMainType": "INDEX",
+    "realtime": true,
+    "ssid": 1819771877,
+    "symbol": "$SPX",
+    "fundamental": {
+      "avg10DaysVolume": 0.0,
+      "avg1YearVolume": 0.0,
+      "divAmount": 0.0,
+      "divFreq": 0,
+      "divPayAmount": 0.0,
+      "divYield": 0.0,
+      "eps": 0.0,
+      "fundLeverageFactor": 0.0,
+      "peRatio": 0.0
+    },
+    "quote": {
+      "52WeekHigh": 6118.73,
+      "52WeekLow": 4845.15,
+      "closePrice": 6039.31,
+      "highPrice": 6086.64,
+      "lastPrice": 6071.17,
+      "lowPrice": 6027.46,
+      "netChange": 31.86,
+      "netPercentChange": 0.52754371,
+      "openPrice": 6050.75,
+      "securityStatus": "Closed",
+      "totalVolume": 3079257414,
+      "tradeTime": 1738274121590
+    },
+    "reference": {
+      "description": "S\u0026P 500 INDEX",
+      "exchange": "0",
+      "exchangeName": "Index"
+    }
+  }
+}

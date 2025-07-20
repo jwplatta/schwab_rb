@@ -1,0 +1,170 @@
+{
+  "orderId": 0,
+  "orderStrategy": {
+    "accountNumber": "11111111",
+    "advancedOrderType": "NONE",
+    "enteredTime": "2025-02-25T14:36:12+0000",
+    "orderBalance": {
+      "orderValue": 125.0,
+      "projectedAvailableFund": 5000.0,
+      "projectedBuyingPower": 10000.0,
+      "projectedCommission": 0.0
+    },
+    "orderStrategyType": "SINGLE",
+    "orderVersion": 1,
+    "session": "NORMAL",
+    "status": "ACCEPTED",
+    "discretionary": false,
+    "duration": "DAY",
+    "filledQuantity": 0.0,
+    "orderType": "NET_CREDIT",
+    "orderValue": 125.0,
+    "price": 1.25,
+    "quantity": 1.0,
+    "remainingQuantity": 1.0,
+    "sellNonMarginableFirst": false,
+    "strategy": "VERTICAL",
+    "amountIndicator": "PRICE",
+    "orderLegs": [
+      {
+        "askPrice": 2.1,
+        "bidPrice": 1.9,
+        "lastPrice": 2.0,
+        "markPrice": 2.0,
+        "projectedCommission": 0.65,
+        "legId": 1,
+        "assetType": "OPTION",
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPX  250317P04350000",
+          "description": "S&P 500 INDEX 03/17/2025 $4350 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPX",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      },
+      {
+        "askPrice": 0.9,
+        "bidPrice": 0.7,
+        "lastPrice": 0.8,
+        "markPrice": 0.8,
+        "projectedCommission": 0.65,
+        "legId": 2,
+        "assetType": "OPTION",
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPX  250317P04250000",
+          "description": "S&P 500 INDEX 03/17/2025 $4250 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPX",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "orderValidationResult": {
+    "rejects": []
+  },
+  "commissionAndFee": {
+    "commission": {
+      "commissionLegs": [
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        }
+      ]
+    },
+    "fee": {
+      "feeLegs": [
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.56,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        },
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.56,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "trueCommission": {
+      "commissionLegs": [
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

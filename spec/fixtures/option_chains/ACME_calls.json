@@ -1,0 +1,195 @@
+{
+  "symbol": "ACME",
+  "status": "SUCCESS",
+  "strategy": "SINGLE",
+  "underlyingPrice": 100.0,
+  "daysToExpiration": 0.0,
+  "assetMainType": "EQUITY",
+  "putExpDateMap": {},
+  "callExpDateMap": {
+    "2025-01-16:1": {
+      "105.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  105117P00005000",
+          "description": "ACME 01/16/2025 105.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.0,
+          "delta": 0.0,
+          "openInterest": 100,
+          "strikePrice": 105.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ],
+      "110.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  110117P00005000",
+          "description": "ACME 01/16/2025 110.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.0,
+          "delta": 0.20,
+          "openInterest": 100,
+          "strikePrice": 110.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ],
+      "115.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  115117P00005000",
+          "description": "ACME 01/16/2025 115.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.9,
+          "delta": 0.14,
+          "openInterest": 100,
+          "strikePrice": 115.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ],
+      "120.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  120117P00005000",
+          "description": "ACME 01/16/2025 120.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.2,
+          "delta": 0.10,
+          "openInterest": 0,
+          "strikePrice": 120.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ],
+      "125.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  125117P00005000",
+          "description": "ACME 01/16/2025 125.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.3,
+          "delta": 0.05,
+          "openInterest": 100,
+          "strikePrice": 125.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ],
+      "130.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  130117P00005000",
+          "description": "ACME 01/16/2025 130.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.5,
+          "delta": 0.03,
+          "openInterest": 100,
+          "strikePrice": 130.0,
+          "expirationDate": "2025-01-16T21:00:00.000+00:00"
+        }
+      ]
+    },
+    "2025-01-17:1": {
+      "105.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  105117P00005000",
+          "description": "ACME 01/17/2025 105.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.0,
+          "delta": 0.0,
+          "openInterest": 100,
+          "strikePrice": 105.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "110.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  110117P00005000",
+          "description": "ACME 01/17/2025 110.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": 0.20,
+          "openInterest": 100,
+          "strikePrice": 110.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "115.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  115117P00005000",
+          "description": "ACME 01/17/2025 115.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.9,
+          "delta": 0.14,
+          "openInterest": 100,
+          "strikePrice": 115.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "120.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  120117P00005000",
+          "description": "ACME 01/17/2025 120.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": 0.10,
+          "openInterest": 0,
+          "strikePrice": 120.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "125.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  125117P00005000",
+          "description": "ACME 01/17/2025 125.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": 0.05,
+          "openInterest": 100,
+          "strikePrice": 125.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "130.0": [
+        {
+          "putCall": "CALL",
+          "symbol": "ACME  130117P00005000",
+          "description": "ACME 01/17/2025 130.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.4,
+          "delta": 0.03,
+          "openInterest": 100,
+          "strikePrice": 130.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ]
+    }
+  }
+}

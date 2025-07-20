@@ -1,0 +1,103 @@
+{
+  "symbol": "ACME",
+  "status": "SUCCESS",
+  "strategy": "SINGLE",
+  "underlyingPrice": 100.0,
+  "daysToExpiration": 0.0,
+  "assetMainType": "EQUITY",
+  "callExpDateMap": {},
+  "putExpDateMap": {
+    "2025-01-17:1": {
+      "95.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  095117P00005000",
+          "description": "ACME 01/17/2025 95.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.0,
+          "delta": 0.0,
+          "openInterest": 100,
+          "strikePrice": 95.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "90.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  090117P00005000",
+          "description": "ACME 01/17/2025 90.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": -0.20,
+          "openInterest": 100,
+          "strikePrice": 90.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "85.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  085117P00005000",
+          "description": "ACME 01/17/2025 85.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.9,
+          "delta": -0.14,
+          "openInterest": 100,
+          "strikePrice": 85.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "80.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  080117P00005000",
+          "description": "ACME 01/17/2025 80.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": -0.10,
+          "openInterest": 0,
+          "strikePrice": 80.0,
+          "expirationDate": "2025-03-01T21:00:00.000+00:00"
+        }
+      ],
+      "75.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  075117P00005000",
+          "description": "ACME 01/17/2025 75.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 1.5,
+          "delta": -0.05,
+          "openInterest": 100,
+          "strikePrice": 75.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ],
+      "70.0": [
+        {
+          "putCall": "PUT",
+          "symbol": "ACME  070117P00005000",
+          "description": "ACME 01/17/2025 70.00 P",
+          "bid": 0.0,
+          "ask": 0.00,
+          "last": 0.00,
+          "mark": 0.4,
+          "delta": -0.03,
+          "openInterest": 100,
+          "strikePrice": 70.0,
+          "expirationDate": "2025-01-17T21:00:00.000+00:00"
+        }
+      ]
+    }
+  }
+}
