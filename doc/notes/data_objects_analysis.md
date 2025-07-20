@@ -3,7 +3,24 @@
 ## Analysis Date: July 20, 2025
 
 This document analyzes all API methods in `base_client.rb` to identify:
-1. ###   - [x] Use fixture: `spec/fixtures/user_preferences.json`
+1. ###   - [x]  - [x]- [x] **UserPreferences** data object class
+  - [x] Create `lib/schwab_rb/data_objects/user_preferences.rb`
+  - [x] Create `spec/data_objects/user_preferences_spec.rb`
+  - [x] Use fixture: `spec/fixtures/user_preferences.json`
+- [x] **OptionExpirationChain** data object class
+  - [x] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
+  - [x] Create `spec/data_objects/option_expiration_chain_spec.rb`
+  - [x] Use fixture: `spec/fixtures/option_expiration_chain.json`spec/fixtures/user_preferences.json`
+- [x] **OptionExpirationChain** data object class
+  - [x] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
+  - [x] Create `spec/data_objects/option_expiration_chain_spec.rb`
+  - [x] Use fixture: `spec/fixtures/option_expiration_chain.json`
+- [x] **PriceHistory** data object class
+  - [x] Create `lib/schwab_rb/data_objects/price_history.rb`
+  - [x] Create `spec/data_objects/price_history_spec.rb`
+  - [x] Use fixtures: `spec/fixtures/price_history_*.json`
+
+### 📋 Todoec/fixtures/user_preferences.json`
 - [x] **OptionExpirationChain** data object class
   - [x] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
   - [x] Create `spec/data_objects/option_expiration_chain_spec.rb`
@@ -156,26 +173,31 @@ The following data object classes already exist and are being used:
   - [x] Use fixture: `spec/fixtures/account_numbers.json`
 - [x] **UserPreferences** data object class
   - [x] Create `lib/schwab_rb/data_objects/user_preferences.rb`
-  - [x] Create `spec/data_objects/user_preferences_spec.rb` 
+  - [x] Create `spec/data_objects/user_preferences_spec.rb`
   - [x] Use fixture: `spec/fixtures/user_preferences.json`
 
 ### � In Progress
 - [x] **UserPreferences** data object class
   - [x] Create `lib/schwab_rb/data_objects/user_preferences.rb`
-  - [x] Create `spec/data_objects/user_preferences_spec.rb` 
+  - [x] Create `spec/data_objects/user_preferences_spec.rb`
   - [x] Use fixture: `spec/fixtures/user_preferences.json`
 
-- [ ] **OptionExpirationChain** data object class
-  - [ ] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
-  - [ ] Create `spec/data_objects/option_expiration_chain_spec.rb`
-  - [ ] Use fixture: `spec/fixtures/option_expiration_chain.json`
+- [x] **OptionExpirationChain** data object class
+  - [x] Create `lib/schwab_rb/data_objects/option_expiration_chain.rb`
+  - [x] Create `spec/data_objects/option_expiration_chain_spec.rb`
+  - [x] Use fixture: `spec/fixtures/option_expiration_chain.json`
 
-- [ ] **PriceHistory** data object class
-  - [ ] Create `lib/schwab_rb/data_objects/price_history.rb`
-  - [ ] Create `spec/data_objects/price_history_spec.rb`
-  - [ ] Use fixtures: `spec/fixtures/price_history_*.json`
+- [x] **PriceHistory** data object class
+  - [x] Create `lib/schwab_rb/data_objects/price_history.rb`
+  - [x] Create `spec/data_objects/price_history_spec.rb`
+  - [x] Use fixtures: `spec/fixtures/price_history_*.json`
+- [x] **MarketHours** data object class
+  - [x] Create `lib/schwab_rb/data_objects/market_hours.rb`
+  - [x] Create `spec/data_objects/market_hours_spec.rb`
+  - [x] Use fixtures: `spec/fixtures/market_hours_*.json`
 
-- [ ] **Movers** data object class  
+### 📋 Todo
+- [ ] **Movers** data object class
   - [ ] Create `lib/schwab_rb/data_objects/movers.rb`
   - [ ] Create `spec/data_objects/movers_spec.rb`
   - [ ] Use fixture: `spec/fixtures/movers_basic.json`
