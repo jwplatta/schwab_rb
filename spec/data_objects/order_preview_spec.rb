@@ -44,20 +44,42 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
         ]
       },
       projectedCommission: {
-        commissionAndFee: {
-          commission: '1.00',
-          fee: '0.50',
-          trueCommission: '1.50',
-          commissions: [
+        commission: {
+          commissionLegs: [
             {
-              commissionType: 'OPTION',
-              amount: '1.00'
+              commissionValues: [
+                { value: 0.5, type: 'COMMISSION' },
+                { value: 0.0, type: 'BASE_CHARGE' }
+              ]
+            },
+            {
+              commissionValues: [
+                { value: 0.5, type: 'COMMISSION' },
+                { value: 0.0, type: 'BASE_CHARGE' }
+              ]
             }
-          ],
-          fees: [
+          ]
+        },
+        fee: {
+          feeLegs: [
             {
-              feeType: 'REGULATORY',
-              amount: '0.50'
+              feeValues: [
+                { value: 0.25, type: 'OPT_REG_FEE' }
+              ]
+            },
+            {
+              feeValues: [
+                { value: 0.25, type: 'INDEX_OPTION_FEE' }
+              ]
+            }
+          ]
+        },
+        trueCommission: {
+          commissionLegs: [
+            {
+              commissionValues: [
+                { value: 0.75, type: 'COMMISSION' }
+              ]
             }
           ]
         }
@@ -96,11 +118,11 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
     end
 
     it 'calculates commission correctly' do
-      expect(order_preview.commission).to eq(2.5) # 1.00 + 1.50
+      expect(order_preview.commission).to eq(1.0) # 0.5 + 0.5 from COMMISSION values
     end
 
     it 'provides fees' do
-      expect(order_preview.fees).to eq(0.5)
+      expect(order_preview.fees).to eq(0.5) # 0.25 + 0.25 from fee values
     end
   end
 
