@@ -4,6 +4,7 @@ require 'json'
 require 'uri'
 require_relative 'base_client'
 require_relative '../utils/logger'
+require_relative '../utils/redactor'
 require_relative '../constants'
 
 module SchwabRb
@@ -34,7 +35,6 @@ module SchwabRb
         response = @client.get("#{path}#{query_string}", build_headers)
 
         log_response(response, req_num)
-        register_redactions_from_response(response)
         response
       end
     end
@@ -50,7 +50,6 @@ module SchwabRb
         response = @client.post(path, build_headers, JSON.dump(data))
 
         log_response(response, req_num)
-        register_redactions_from_response(response)
         response
       end
     end
@@ -66,7 +65,6 @@ module SchwabRb
         response = @client.put(path, build_headers, JSON.dump(data))
 
         log_response(response, req_num)
-        register_redactions_from_response(response)
         response
       end
     end
@@ -82,13 +80,8 @@ module SchwabRb
         response = @client.delete(path, build_headers)
 
         log_response(response, req_num)
-        register_redactions_from_response(response)
         response
       end
-    end
-
-    def register_redactions_from_response(response)
-      # Implement the redaction logic here - placeholder for now
     end
 
     def build_headers
@@ -103,12 +96,22 @@ module SchwabRb
     end
 
     def log_request(method, req_num, dest, data = nil)
-      SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{dest}")
-      SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(data)}") if data
+      redacted_dest = SchwabRb::Redactor.redact_url(dest.to_s)
+      SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{redacted_dest}")
+      
+      if data
+        redacted_data = SchwabRb::Redactor.redact_data(data)
+        SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
+      end
     end
 
     def log_response(response, req_num)
       SchwabRb::Logger.logger.info("Resp #{req_num}: Status #{response.status}")
+      
+      if SchwabRb::Logger.logger.level == ::Logger::DEBUG
+        redacted_body = SchwabRb::Redactor.redact_response_body(response)
+        SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
+      end
     end
 
     def req_num

@@ -5,6 +5,7 @@ require "net/http"
 require "uri"
 require_relative "base_client"
 require_relative "../utils/logger"
+require_relative "../utils/redactor"
 
 module SchwabRb
   class Client < BaseClient
@@ -21,7 +22,6 @@ module SchwabRb
       response = session.get(dest)
 
       log_response(response, req_num)
-      register_redactions_from_response(response)
       response
     end
 
@@ -39,7 +39,6 @@ module SchwabRb
         }
       )
       log_response(response, req_num)
-      register_redactions_from_response(response)
       response
     end
 
@@ -57,7 +56,6 @@ module SchwabRb
         }
       )
       log_response(response, req_num)
-      register_redactions_from_response(response)
       response
     end
 
@@ -69,26 +67,31 @@ module SchwabRb
 
       response = session.delete(dest)
       log_response(response, req_num)
-      register_redactions_from_response(response)
       response
     end
 
     def log_request(method, req_num, dest, data = nil)
-      SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{dest}")
-      SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(data)}") if data
+      redacted_dest = SchwabRb::Redactor.redact_url(dest.to_s)
+      SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{redacted_dest}")
+      
+      if data
+        redacted_data = SchwabRb::Redactor.redact_data(data)
+        SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
+      end
     end
 
     def log_response(response, req_num)
       SchwabRb::Logger.logger.info("Resp #{req_num}: Status #{response.status}")
+      
+      if SchwabRb::Logger.logger.level == ::Logger::DEBUG
+        redacted_body = SchwabRb::Redactor.redact_response_body(response)
+        SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
+      end
     end
 
     def req_num
       @request_counter ||= 0
       @request_counter += 1
-    end
-
-    def register_redactions_from_response(response)
-      # Placeholder for redaction logic
     end
   end
 end
