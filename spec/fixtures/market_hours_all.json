@@ -1,0 +1,42 @@
+{
+  "forex": {
+    "forex": {
+      "date": "2025-07-20",
+      "marketType": "FOREX",
+      "product": "forex",
+      "isOpen": false
+    }
+  },
+  "future": {
+    "future": {
+      "date": "2025-07-20",
+      "marketType": "FUTURE",
+      "product": "future",
+      "isOpen": false
+    }
+  },
+  "option": {
+    "option": {
+      "date": "2025-07-20",
+      "marketType": "OPTION",
+      "product": "option",
+      "isOpen": false
+    }
+  },
+  "equity": {
+    "equity": {
+      "date": "2025-07-20",
+      "marketType": "EQUITY",
+      "product": "equity",
+      "isOpen": false
+    }
+  },
+  "bond": {
+    "bond": {
+      "date": "2025-07-20",
+      "marketType": "BOND",
+      "product": "bond",
+      "isOpen": false
+    }
+  }
+}

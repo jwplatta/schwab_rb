@@ -1,0 +1,63 @@
+{
+  "option": {
+    "EQO": {
+      "date": "2025-07-21",
+      "marketType": "OPTION",
+      "product": "EQO",
+      "productName": "equity option",
+      "isOpen": true,
+      "sessionHours": {
+        "regularMarket": [
+          {
+            "start": "2025-07-21T09:30:00-04:00",
+            "end": "2025-07-21T16:00:00-04:00"
+          }
+        ]
+      }
+    },
+    "IND": {
+      "date": "2025-07-21",
+      "marketType": "OPTION",
+      "product": "IND",
+      "productName": "index option",
+      "isOpen": true,
+      "sessionHours": {
+        "regularMarket": [
+          {
+            "start": "2025-07-21T09:30:00-04:00",
+            "end": "2025-07-21T16:15:00-04:00"
+          }
+        ]
+      }
+    }
+  },
+  "equity": {
+    "EQ": {
+      "date": "2025-07-21",
+      "marketType": "EQUITY",
+      "product": "EQ",
+      "productName": "equity",
+      "isOpen": true,
+      "sessionHours": {
+        "preMarket": [
+          {
+            "start": "2025-07-21T07:00:00-04:00",
+            "end": "2025-07-21T09:30:00-04:00"
+          }
+        ],
+        "regularMarket": [
+          {
+            "start": "2025-07-21T09:30:00-04:00",
+            "end": "2025-07-21T16:00:00-04:00"
+          }
+        ],
+        "postMarket": [
+          {
+            "start": "2025-07-21T16:00:00-04:00",
+            "end": "2025-07-21T20:00:00-04:00"
+          }
+        ]
+      }
+    }
+  }
+}
