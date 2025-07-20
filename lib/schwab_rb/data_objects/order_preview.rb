@@ -6,7 +6,7 @@ require_relative 'instrument'
 module SchwabRb
   module DataObjects
     class OrderPreview
-      attr_reader :order_value, :order_strategy, :order_balance, :order_validation_result, :projected_commission
+      attr_reader :order_id, :order_value, :order_strategy, :order_balance, :order_validation_result, :projected_commission
 
       class << self
         def build(data)
@@ -15,6 +15,7 @@ module SchwabRb
       end
 
       def initialize(attrs)
+        @order_id = attrs[:orderId]
         @order_value = attrs[:orderValue]
         @order_strategy = attrs[:orderStrategy] ? OrderStrategy.new(attrs[:orderStrategy]) : nil
         @order_balance = attrs[:orderBalance] ? OrderBalance.new(attrs[:orderBalance]) : nil
@@ -22,8 +23,39 @@ module SchwabRb
         @projected_commission = attrs[:projectedCommission] ? CommissionAndFee.new(attrs[:projectedCommission]) : nil
       end
 
+      # Convenience methods expected by the tests
+      def status
+        @order_strategy&.status
+      end
+
+      def price
+        @order_strategy&.price
+      end
+
+      def quantity
+        @order_strategy&.quantity
+      end
+
+      def accepted?
+        status == 'ACCEPTED'
+      end
+
+      def commission
+        # Calculate total commission from commission and fee structure
+        if @projected_commission
+          (@projected_commission.commission.to_f + @projected_commission.true_commission.to_f).round(2)
+        else
+          0.0
+        end
+      end
+
+      def fees
+        @projected_commission&.fee.to_f || 0.0
+      end
+
       def to_h
         {
+          orderId: @order_id,
           orderValue: @order_value,
           orderStrategy: @order_strategy&.to_h,
           orderBalance: @order_balance&.to_h,
@@ -33,9 +65,14 @@ module SchwabRb
       end
 
       class OrderStrategy
-        attr_reader :type, :strategy_id, :order_legs
+        attr_reader :account_number, :status, :price, :quantity, :order_type, :type, :strategy_id, :order_legs
 
         def initialize(attrs)
+          @account_number = attrs[:accountNumber]
+          @status = attrs[:status]
+          @price = attrs[:price]
+          @quantity = attrs[:quantity]
+          @order_type = attrs[:orderType]
           @type = attrs[:type]
           @strategy_id = attrs[:strategyId]
           @order_legs = attrs[:orderLegs]&.map { |leg| OrderLeg.build(leg) } || []
@@ -43,6 +80,11 @@ module SchwabRb
 
         def to_h
           {
+            accountNumber: @account_number,
+            status: @status,
+            price: @price,
+            quantity: @quantity,
+            orderType: @order_type,
             type: @type,
             strategyId: @strategy_id,
             orderLegs: @order_legs.map(&:to_h)

@@ -5,8 +5,14 @@ require 'spec_helper'
 RSpec.describe SchwabRb::DataObjects::OrderPreview do
   let(:sample_data) do
     {
+      orderId: 12345,
       orderValue: '100.00',
       orderStrategy: {
+        accountNumber: 'ABC123',
+        status: 'ACCEPTED',
+        price: 50.0,
+        quantity: 2,
+        orderType: 'NET_CREDIT',
         type: 'SINGLE',
         strategyId: 'SINGLE',
         orderLegs: [
@@ -63,11 +69,38 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
 
   describe '#initialize' do
     it 'creates an OrderPreview instance with correct attributes' do
+      expect(order_preview.order_id).to eq(12345)
       expect(order_preview.order_value).to eq('100.00')
       expect(order_preview.order_strategy).to be_a(SchwabRb::DataObjects::OrderPreview::OrderStrategy)
       expect(order_preview.order_balance).to be_a(SchwabRb::DataObjects::OrderPreview::OrderBalance)
       expect(order_preview.order_validation_result).to be_a(SchwabRb::DataObjects::OrderPreview::OrderValidationResult)
       expect(order_preview.projected_commission).to be_a(SchwabRb::DataObjects::OrderPreview::CommissionAndFee)
+    end
+  end
+
+  describe 'convenience methods' do
+    it 'provides status from order strategy' do
+      expect(order_preview.status).to eq('ACCEPTED')
+    end
+
+    it 'provides price from order strategy' do
+      expect(order_preview.price).to eq(50.0)
+    end
+
+    it 'provides quantity from order strategy' do
+      expect(order_preview.quantity).to eq(2)
+    end
+
+    it 'indicates if order is accepted' do
+      expect(order_preview.accepted?).to be true
+    end
+
+    it 'calculates commission correctly' do
+      expect(order_preview.commission).to eq(2.5) # 1.00 + 1.50
+    end
+
+    it 'provides fees' do
+      expect(order_preview.fees).to eq(0.5)
     end
   end
 
@@ -96,6 +129,11 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       hash = order_preview.to_h
 
       # Test OrderStrategy
+      expect(hash[:orderStrategy][:accountNumber]).to eq('ABC123')
+      expect(hash[:orderStrategy][:status]).to eq('ACCEPTED')
+      expect(hash[:orderStrategy][:price]).to eq(50.0)
+      expect(hash[:orderStrategy][:quantity]).to eq(2)
+      expect(hash[:orderStrategy][:orderType]).to eq('NET_CREDIT')
       expect(hash[:orderStrategy][:type]).to eq('SINGLE')
       expect(hash[:orderStrategy][:strategyId]).to eq('SINGLE')
       expect(hash[:orderStrategy][:orderLegs]).to be_an(Array)
@@ -127,6 +165,11 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       let(:order_strategy) { order_preview.order_strategy }
 
       it 'has correct attributes' do
+        expect(order_strategy.account_number).to eq('ABC123')
+        expect(order_strategy.status).to eq('ACCEPTED')
+        expect(order_strategy.price).to eq(50.0)
+        expect(order_strategy.quantity).to eq(2)
+        expect(order_strategy.order_type).to eq('NET_CREDIT')
         expect(order_strategy.type).to eq('SINGLE')
         expect(order_strategy.strategy_id).to eq('SINGLE')
         expect(order_strategy.order_legs).to be_an(Array)
@@ -135,6 +178,11 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
 
       it 'converts to hash correctly' do
         hash = order_strategy.to_h
+        expect(hash[:accountNumber]).to eq('ABC123')
+        expect(hash[:status]).to eq('ACCEPTED')
+        expect(hash[:price]).to eq(50.0)
+        expect(hash[:quantity]).to eq(2)
+        expect(hash[:orderType]).to eq('NET_CREDIT')
         expect(hash[:type]).to eq('SINGLE')
         expect(hash[:strategyId]).to eq('SINGLE')
         expect(hash[:orderLegs]).to be_an(Array)
