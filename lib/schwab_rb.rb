@@ -26,6 +26,16 @@ require_relative "schwab_rb/orders/duration"
 require_relative "schwab_rb/orders/equity_instructions"
 require_relative "schwab_rb/orders/option_instructions"
 require_relative "schwab_rb/utils/logger"
+require_relative "schwab_rb/data_objects/account"
+require_relative "schwab_rb/data_objects/instrument"
+require_relative "schwab_rb/data_objects/position"
+require_relative "schwab_rb/data_objects/quote"
+require_relative "schwab_rb/data_objects/transaction"
+require_relative "schwab_rb/data_objects/order"
+require_relative "schwab_rb/data_objects/order_leg"
+require_relative "schwab_rb/data_objects/order_preview"
+require_relative "schwab_rb/data_objects/option"
+require_relative "schwab_rb/data_objects/option_chain"
 
 module SchwabRb
   class Error < StandardError; end
