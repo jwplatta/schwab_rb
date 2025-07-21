@@ -1,3 +1,114 @@
 {
-  "screeners": []
+  "screeners": [
+    {
+      "description": "NVIDIA CORP",
+      "volume": 83043184,
+      "lastPrice": 172.56,
+      "netChange": 0.15,
+      "marketShare": 5.18,
+      "totalVolume": 1604124927,
+      "trades": 918661,
+      "netPercentChange": 0.0008,
+      "symbol": "NVDA"
+    },
+    {
+      "description": "TESLA INC",
+      "volume": 61006196,
+      "lastPrice": 330.08,
+      "netChange": 0.43,
+      "marketShare": 3.8,
+      "totalVolume": 1604124927,
+      "trades": 900767,
+      "netPercentChange": 0.0013,
+      "symbol": "TSLA"
+    },
+    {
+      "description": "FORD MTR CO DEL",
+      "volume": 49559952,
+      "lastPrice": 11.41,
+      "netChange": 0.24,
+      "marketShare": 3.09,
+      "totalVolume": 1604124927,
+      "trades": 99824,
+      "netPercentChange": 0.022,
+      "symbol": "F"
+    },
+    {
+      "description": "WARNER BROS DISCOVER",
+      "volume": 48786088,
+      "lastPrice": 12.79,
+      "netChange": 0.04,
+      "marketShare": 3.04,
+      "totalVolume": 1604124927,
+      "trades": 63827,
+      "netPercentChange": 0.0027,
+      "symbol": "WBD"
+    },
+    {
+      "description": "INTEL CORP",
+      "volume": 41099556,
+      "lastPrice": 23.32,
+      "netChange": 0.21,
+      "marketShare": 2.56,
+      "totalVolume": 1604124927,
+      "trades": 154523,
+      "netPercentChange": 0.0093,
+      "symbol": "INTC"
+    },
+    {
+      "description": "APPLE INC",
+      "volume": 38018792,
+      "lastPrice": 213.24,
+      "netChange": 2.06,
+      "marketShare": 2.37,
+      "totalVolume": 1604124927,
+      "trades": 549504,
+      "netPercentChange": 0.0098,
+      "symbol": "AAPL"
+    },
+    {
+      "description": "PALANTIR TECHNOLOGIE A",
+      "volume": 34670106,
+      "lastPrice": 152.21,
+      "netChange": -1.31,
+      "marketShare": 2.16,
+      "totalVolume": 1604124927,
+      "trades": 405171,
+      "netPercentChange": -0.0086,
+      "symbol": "PLTR"
+    },
+    {
+      "description": "VERIZON COMMUNICATIO",
+      "volume": 34548502,
+      "lastPrice": 42.78,
+      "netChange": 1.94,
+      "marketShare": 2.15,
+      "totalVolume": 1604124927,
+      "trades": 183237,
+      "netPercentChange": 0.0475,
+      "symbol": "VZ"
+    },
+    {
+      "description": "ADVANCED MICRO DEVIC",
+      "volume": 30665724,
+      "lastPrice": 158.79,
+      "netChange": 1.8,
+      "marketShare": 1.91,
+      "totalVolume": 1604124927,
+      "trades": 339007,
+      "netPercentChange": 0.0115,
+      "symbol": "AMD"
+    },
+    {
+      "description": "ALPHABET INC A",
+      "volume": 30659105,
+      "lastPrice": 189.83,
+      "netChange": 4.76,
+      "marketShare": 1.91,
+      "totalVolume": 1604124927,
+      "trades": 472727,
+      "netPercentChange": 0.0257,
+      "symbol": "GOOGL"
+    }
+  ]
 }

@@ -250,6 +250,47 @@ describe SchwabRb::Client do
       expect(resp.body).to eq(transaction_resp.body)
     end
   end
+
+  describe "#get_movers" do
+    let(:movers_response_body) do
+      File.read("spec/fixtures/movers_volume.json")
+    end
+
+    it "returns MarketMovers object by default" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: movers_response_body,
+          status: 200
+        )
+      )
+
+      result = client.get_movers("$SPX")
+      expect(result).to be_a(SchwabRb::DataObjects::MarketMovers)
+      expect(result.count).to eq(10)
+      expect(result.movers.first.symbol).to eq("NVDA")
+    end
+
+    it "returns raw response when return_data_objects is false" do
+      mock_response = instance_double(OAuth2::Response, body: movers_response_body, status: 200)
+      
+      allow(session).to receive(:get).and_return(mock_response)
+
+      result = client.get_movers("$SPX", return_data_objects: false)
+      expect(result).to eq(mock_response)
+    end
+
+    it "passes sort_order and frequency parameters correctly" do
+      allow(session).to receive(:get).and_return(
+        instance_double(OAuth2::Response, body: movers_response_body, status: 200)
+      )
+
+      client.get_movers("$SPX", sort_order: "VOLUME", frequency: 1)
+
+      expect(session).to have_received(:get).once
+    end
+  end
+
   describe "user preferences" do
   end
   describe "quotes" do

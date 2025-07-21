@@ -10,6 +10,7 @@ require_relative "../data_objects/market_hours"
 require_relative "../data_objects/quote"
 require_relative "../data_objects/transaction"
 require_relative "../data_objects/order"
+require_relative "../data_objects/market_movers"
 
 module SchwabRb
   class BaseClient
@@ -724,12 +725,13 @@ module SchwabRb
       )
     end
 
-    def get_movers(index, sort_order: nil, frequency: nil)
+    def get_movers(index, sort_order: nil, frequency: nil, return_data_objects: true)
       # Get a list of the top ten movers for a given index.
       #
       # @param index [String] Category of mover. See Movers::Index for valid values.
       # @param sort_order [String] Order in which to return values. See Movers::SortOrder for valid values.
       # @param frequency [String] Only return movers that saw this magnitude or greater. See Movers::Frequency for valid values.
+      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
       index = convert_enum(index, SchwabRb::Movers::Indexes)
@@ -742,7 +744,14 @@ module SchwabRb
       params["sort"] = sort_order if sort_order
       params["frequency"] = frequency.to_s if frequency
 
-      get(path, params)
+      response = get(path, params)
+
+      if return_data_objects
+        movers_data = JSON.parse(response.body, symbolize_names: true)
+        SchwabRb::DataObjects::MarketMoversFactory.build(movers_data)
+      else
+        response
+      end
     end
 
     def get_market_hours(markets, date: nil, return_data_objects: true)
