@@ -36,7 +36,7 @@ Moving all data object classes from `options_trader` gem to `schwab_rb` gem, alo
 
 ## Phase 4: Update Base Client ✅ COMPLETED
 - [x] Add `return_data_objects: true` parameter to get_account method
-- [x] Add `return_data_objects: true` parameter to get_accounts method  
+- [x] Add `return_data_objects: true` parameter to get_accounts method
 - [x] Add data object imports to base client
 - [x] Maintain backward compatibility with raw JSON responses
 - [x] Update method signatures and documentation
@@ -57,7 +57,7 @@ Moving all data object classes from `options_trader` gem to `schwab_rb` gem, alo
 - [x] Eliminate all manual JSON parsing from mixin
 - [x] Update documentation
 
-## ✅ **REFACTORING COMPLETE** 
+## ✅ **REFACTORING COMPLETE**
 
 ### **Final Status:**
 - **All 6 phases completed successfully**
