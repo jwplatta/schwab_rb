@@ -4,9 +4,9 @@ Bundler.setup
 require "schwab_rb"
 require "pry"
 require "dotenv"
-require_relative "./factories/accounts"
-require_relative "./factories/orders"
-require_relative "./factories/transactions"
+require_relative "factories/accounts"
+require_relative "factories/orders"
+require_relative "factories/transactions"
 
 Dotenv.load
 

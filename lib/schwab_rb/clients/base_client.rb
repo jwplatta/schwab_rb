@@ -162,13 +162,9 @@ module SchwabRb
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
-      if from_entered_datetime.nil?
-        from_entered_datetime = DateTime.now.new_offset(0) - 60
-      end
+      from_entered_datetime = DateTime.now.new_offset(0) - 60 if from_entered_datetime.nil?
 
-      if to_entered_datetime.nil?
-        to_entered_datetime = DateTime.now
-      end
+      to_entered_datetime = DateTime.now if to_entered_datetime.nil?
 
       status = convert_enum(status, SchwabRb::Order::Statuses) if status
 
@@ -288,22 +284,22 @@ module SchwabRb
       refresh_token_if_needed
 
       transaction_types = if transaction_types
-        convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
+                            convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
       else
         get_valid_enum_values(SchwabRb::Transaction::Types)
-      end
+                          end
 
       start_date = if start_date.nil?
-        format_date_as_iso("start_date", DateTime.now.new_offset(0) - 60)
+                     format_date_as_iso("start_date", DateTime.now.new_offset(0) - 60)
       else
         format_date_as_iso("start_date", start_date)
-      end
+                   end
 
       end_date = if end_date.nil?
-        format_date_as_iso("end_date", DateTime.now.new_offset(0))
+                   format_date_as_iso("end_date", DateTime.now.new_offset(0))
       else
         format_date_as_iso("end_date", end_date)
-      end
+                 end
 
       params = {
         "types" => transaction_types.sort.join(","),
@@ -412,7 +408,7 @@ module SchwabRb
       if return_data_objects
         quotes_data = JSON.parse(response.body, symbolize_names: true)
         quotes_data.map do |symbol, quote_data|
-          SchwabRb::DataObjects::QuoteFactory.build({symbol => quote_data})
+          SchwabRb::DataObjects::QuoteFactory.build({ symbol => quote_data })
         end
       else
         response
@@ -730,7 +726,7 @@ module SchwabRb
       #
       # @param index [String] Category of mover. See Movers::Index for valid values.
       # @param sort_order [String] Order in which to return values. See Movers::SortOrder for valid values.
-      # @param frequency [String] Only return movers that saw this magnitude or greater. 
+      # @param frequency [String] Only return movers that saw this magnitude or greater.
       #   See Movers::Frequency for valid values.
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed

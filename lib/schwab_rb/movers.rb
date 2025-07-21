@@ -3,24 +3,24 @@
 module SchwabRb
   class Movers
     module Indexes
-      DJI = '$DJI'
-      COMPX = '$COMPX'
-      SPX = '$SPX'
-      NYSE = 'NYSE'
-      NASDAQ = 'NASDAQ'
-      OTCBB = 'OTCBB'
-      INDEX_ALL = 'INDEX_ALL'
-      EQUITY_ALL = 'EQUITY_ALL'
-      OPTION_ALL = 'OPTION_ALL'
-      OPTION_PUT = 'OPTION_PUT'
-      OPTION_CALL = 'OPTION_CALL'
+      DJI = "$DJI"
+      COMPX = "$COMPX"
+      SPX = "$SPX"
+      NYSE = "NYSE"
+      NASDAQ = "NASDAQ"
+      OTCBB = "OTCBB"
+      INDEX_ALL = "INDEX_ALL"
+      EQUITY_ALL = "EQUITY_ALL"
+      OPTION_ALL = "OPTION_ALL"
+      OPTION_PUT = "OPTION_PUT"
+      OPTION_CALL = "OPTION_CALL"
     end
 
     module SortOrders
-      VOLUME = 'VOLUME'
-      TRADES = 'TRADES'
-      PERCENT_CHANGE_UP = 'PERCENT_CHANGE_UP'
-      PERCENT_CHANGE_DOWN = 'PERCENT_CHANGE_DOWN'
+      VOLUME = "VOLUME"
+      TRADES = "TRADES"
+      PERCENT_CHANGE_UP = "PERCENT_CHANGE_UP"
+      PERCENT_CHANGE_DOWN = "PERCENT_CHANGE_DOWN"
     end
 
     module Frequencies

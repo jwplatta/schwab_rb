@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'order_leg'
+require_relative "order_leg"
 
 module SchwabRb
   module DataObjects
     class OrderPreview
-      attr_reader :order_id, :order_value, :order_strategy, :order_balance, :order_validation_result, :projected_commission
+      attr_reader :order_id, :order_value, :order_strategy, :order_balance, :order_validation_result,
+                  :projected_commission
 
       class << self
         def build(data)
@@ -35,7 +36,7 @@ module SchwabRb
       end
 
       def accepted?
-        status == 'ACCEPTED'
+        status == "ACCEPTED"
       end
 
       def commission
@@ -167,32 +168,30 @@ module SchwabRb
         end
 
         def commission_total
-          calculate_total_from_legs(@commission_data, 'COMMISSION')
+          calculate_total_from_legs(@commission_data, "COMMISSION")
         end
 
         def commission
-          @direct_commission || sprintf("%.2f", commission_total)
+          @direct_commission || format("%.2f", commission_total)
         end
 
         def fee_total
-          calculate_total_from_legs(@fee_data, ['OPT_REG_FEE', 'INDEX_OPTION_FEE'])
+          calculate_total_from_legs(@fee_data, %w[OPT_REG_FEE INDEX_OPTION_FEE])
         end
 
         def fee
-          @direct_fee || sprintf("%.2f", fee_total)
+          @direct_fee || format("%.2f", fee_total)
         end
 
         def true_commission
           if @direct_true_commission
             @direct_true_commission
-          else
+          elsif @true_commission_data.any?
             # For nested structure, calculate from true commission legs
-            if @true_commission_data.any?
-              true_commission_total = calculate_total_from_legs(@true_commission_data, 'COMMISSION')
-              sprintf("%.2f", true_commission_total * 2)
+            true_commission_total = calculate_total_from_legs(@true_commission_data, "COMMISSION")
+            format("%.2f", true_commission_total * 2)
             else
-              sprintf("%.2f", commission_total * 2)
-            end
+              format("%.2f", commission_total * 2)
           end
         end
 
@@ -223,9 +222,7 @@ module SchwabRb
           legs.each do |leg|
             values = leg[:commissionValues] || leg[:feeValues] || []
             values.each do |value_item|
-              if types.include?(value_item[:type])
-                total += (value_item[:value] || 0.0)
-              end
+              total += value_item[:value] || 0.0 if types.include?(value_item[:type])
             end
           end
 

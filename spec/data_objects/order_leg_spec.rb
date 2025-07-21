@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'rspec'
-require 'schwab_rb'
+require "rspec"
+require "schwab_rb"
 
 RSpec.describe SchwabRb::DataObjects::OrderLeg do
   let(:raw_data) do
-    orders = JSON.parse(File.read('spec/fixtures/orders.json'), symbolize_names: true)
+    orders = JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
     orders.flat_map { |order| order[:orderLegCollection] || [] }.first
   end
 
-  describe '.build' do
-    it 'creates an order leg object from raw data' do
+  describe ".build" do
+    it "creates an order leg object from raw data" do
       order_leg = SchwabRb::DataObjects::OrderLeg.build(raw_data)
 
       expect(order_leg).to be_an_instance_of(SchwabRb::DataObjects::OrderLeg)
@@ -24,8 +24,8 @@ RSpec.describe SchwabRb::DataObjects::OrderLeg do
     end
   end
 
-  describe '#to_h' do
-    it 'converts the order leg object back to a hash with the same structure as the input data' do
+  describe "#to_h" do
+    it "converts the order leg object back to a hash with the same structure as the input data" do
       order_leg = SchwabRb::DataObjects::OrderLeg.build(raw_data)
       leg_hash = order_leg.to_h
 

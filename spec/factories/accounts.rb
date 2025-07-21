@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-require_relative 'mock_response'
+
+require_relative "mock_response"
 
 module ResponseFactory
   def self.account_numbers_response

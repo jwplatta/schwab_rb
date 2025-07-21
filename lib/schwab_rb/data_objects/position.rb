@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'instrument'
+require_relative "instrument"
 
 module SchwabRb
   module DataObjects
@@ -73,11 +73,11 @@ module SchwabRb
 
       def long_short
         if long?
-          'LONG'
+          "LONG"
         elsif short?
-          'SHORT'
+          "SHORT"
         else
-          'NONE'
+          "NONE"
         end
       end
 

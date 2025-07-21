@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require 'rspec'
-require 'schwab_rb'
-require 'date'
+require "rspec"
+require "schwab_rb"
+require "date"
 
 RSpec.describe SchwabRb::DataObjects::Order do
   let(:raw_data) do
-    JSON.parse(File.read('spec/fixtures/orders.json'), symbolize_names: true)
+    JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
   end
 
-  describe '.build' do
-    it 'creates an order object from raw data' do
+  describe ".build" do
+    it "creates an order object from raw data" do
       raw_data.each do |data|
         order = SchwabRb::DataObjects::Order.build(data)
         expect(order).to be_an_instance_of SchwabRb::DataObjects::Order
@@ -28,8 +28,8 @@ RSpec.describe SchwabRb::DataObjects::Order do
     end
   end
 
-  describe '#to_h' do
-    it 'converts the order object back to a hash with the same structure as the input data' do
+  describe "#to_h" do
+    it "converts the order object back to a hash with the same structure as the input data" do
       raw_data.each do |data|
         order = SchwabRb::DataObjects::Order.build(data)
         order_hash = order.to_h
@@ -68,21 +68,21 @@ RSpec.describe SchwabRb::DataObjects::Order do
     end
   end
 
-  describe 'datetime parsing' do
-    it 'correctly parses ISO8601 datetime strings' do
+  describe "datetime parsing" do
+    it "correctly parses ISO8601 datetime strings" do
       order_data = {
-        orderId: '123456',
-        status: 'FILLED',
-        enteredTime: '2024-01-15T14:30:45.123Z',
-        closeTime: '2024-01-15T15:45:30.456Z',
-        duration: 'DAY',
-        orderType: 'LIMIT',
-        complexOrderStrategyType: 'NONE',
+        orderId: "123456",
+        status: "FILLED",
+        enteredTime: "2024-01-15T14:30:45.123Z",
+        closeTime: "2024-01-15T15:45:30.456Z",
+        duration: "DAY",
+        orderType: "LIMIT",
+        complexOrderStrategyType: "NONE",
         quantity: 1,
         filledQuantity: 1,
         remainingQuantity: 0,
         price: 1.50,
-        orderStrategyType: 'SINGLE',
+        orderStrategyType: "SINGLE",
         orderLegCollection: [],
         orderActivityCollection: []
       }
@@ -107,20 +107,20 @@ RSpec.describe SchwabRb::DataObjects::Order do
       expect(order.close_time.minute).to eq(45)
     end
 
-    it 'handles nil or empty datetime strings' do
+    it "handles nil or empty datetime strings" do
       order_data = {
-        orderId: '123456',
-        status: 'WORKING',
+        orderId: "123456",
+        status: "WORKING",
         enteredTime: nil,
-        closeTime: '',
-        duration: 'DAY',
-        orderType: 'LIMIT',
-        complexOrderStrategyType: 'NONE',
+        closeTime: "",
+        duration: "DAY",
+        orderType: "LIMIT",
+        complexOrderStrategyType: "NONE",
         quantity: 1,
         filledQuantity: 0,
         remainingQuantity: 1,
         price: 1.50,
-        orderStrategyType: 'SINGLE',
+        orderStrategyType: "SINGLE",
         orderLegCollection: [],
         orderActivityCollection: []
       }
@@ -136,13 +136,13 @@ end
 
 RSpec.describe SchwabRb::DataObjects::OrderActivity do
   let(:raw_data) do
-    JSON.parse(File.read('spec/fixtures/orders.json'), symbolize_names: true)
+    JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
         .flat_map { |order| order[:orderActivityCollection] || [] }
         .reject(&:nil?)
   end
 
-  describe '#to_h' do
-    it 'converts the order activity object back to a hash with the same structure as the input data' do
+  describe "#to_h" do
+    it "converts the order activity object back to a hash with the same structure as the input data" do
       raw_data.each do |data|
         activity = SchwabRb::DataObjects::OrderActivity.build(data)
         activity_hash = activity.to_h
@@ -162,14 +162,14 @@ end
 
 RSpec.describe SchwabRb::DataObjects::ExecutionLeg do
   let(:raw_data) do
-    JSON.parse(File.read('spec/fixtures/orders.json'), symbolize_names: true)
+    JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
         .flat_map { |order| order[:orderActivityCollection] || [] }
         .flat_map { |activity| activity[:executionLegs] || [] }
         .reject(&:nil?)
   end
 
-  describe '#to_h' do
-    it 'converts the execution leg object back to a hash with the same structure as the input data' do
+  describe "#to_h" do
+    it "converts the execution leg object back to a hash with the same structure as the input data" do
       raw_data.each do |data|
         execution_leg = SchwabRb::DataObjects::ExecutionLeg.build(data)
         leg_hash = execution_leg.to_h

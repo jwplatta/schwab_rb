@@ -38,7 +38,7 @@ module SchwabRb
       end
 
       def brokerage_accounts
-        @accounts.select { |account| account.type == 'BROKERAGE' }
+        @accounts.select { |account| account.type == "BROKERAGE" }
       end
 
       def has_level2_permissions?
@@ -46,7 +46,7 @@ module SchwabRb
       end
 
       class UserAccount
-        attr_reader :account_number, :primary_account, :type, :nick_name, :display_acct_id, 
+        attr_reader :account_number, :primary_account, :type, :nick_name, :display_acct_id,
                     :auto_position_effect, :account_color, :lot_selection_method
 
         def initialize(data)
@@ -83,7 +83,7 @@ module SchwabRb
       end
 
       class StreamerInfo
-        attr_reader :streamer_socket_url, :schwab_client_customer_id, :schwab_client_correl_id, 
+        attr_reader :streamer_socket_url, :schwab_client_customer_id, :schwab_client_correl_id,
                     :schwab_client_channel, :schwab_client_function_id
 
         def initialize(data)

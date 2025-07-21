@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'date'
+require "json"
+require "date"
 
 module SchwabRb
   module DataObjects

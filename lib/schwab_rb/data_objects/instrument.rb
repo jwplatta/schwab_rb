@@ -132,7 +132,7 @@ module SchwabRb
       end
 
       def option?
-        asset_type == 'OPTION'
+        asset_type == "OPTION"
       end
 
       def to_h

@@ -10,11 +10,11 @@ module SchwabRb
         data[:symbol] ||= symbol
 
         case data[:assetMainType]
-        when 'OPTION'
+        when "OPTION"
           OptionQuote.new(data)
-        when 'INDEX'
+        when "INDEX"
           IndexQuote.new(data)
-        when 'EQUITY'
+        when "EQUITY"
           EquityQuote.new(data)
         else
           raise "Unknown assetMainType: #{data[:assetMainType]}"
@@ -89,11 +89,11 @@ module SchwabRb
 
       def zone
         if quote_delta.abs > 0.3
-          'DANGER'
+          "DANGER"
         elsif quote_delta.abs > 0.15
-          'AT_RISK'
+          "AT_RISK"
         else
-          'SAFE'
+          "SAFE"
         end
       end
     end

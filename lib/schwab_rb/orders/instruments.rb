@@ -2,12 +2,12 @@ module SchwabRb
   module Orders
     class Instrument
       module Projections
-        SYMBOL_SEARCH = 'symbol-search'
-        SYMBOL_REGEX = 'symbol-regex'
-        DESCRIPTION_SEARCH = 'desc-search'
-        DESCRIPTION_REGEX = 'desc-regex'
-        SEARCH = 'search'
-        FUNDAMENTAL = 'fundamental'
+        SYMBOL_SEARCH = "symbol-search"
+        SYMBOL_REGEX = "symbol-regex"
+        DESCRIPTION_SEARCH = "desc-search"
+        DESCRIPTION_REGEX = "desc-regex"
+        SEARCH = "search"
+        FUNDAMENTAL = "fundamental"
       end
     end
 
@@ -22,13 +22,13 @@ module SchwabRb
 
     class EquityInstrument < BaseInstrument
       def initialize(symbol)
-        super('EQUITY', symbol)
+        super("EQUITY", symbol)
       end
     end
 
     class OptionInstrument < BaseInstrument
       def initialize(symbol)
-        super('OPTION', symbol)
+        super("OPTION", symbol)
       end
     end
   end

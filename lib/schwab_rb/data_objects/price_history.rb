@@ -12,16 +12,16 @@ module SchwabRb
       end
 
       def initialize(data)
-        @symbol = data['symbol']
-        @empty = data['empty']
-        @candles = data['candles']&.map { |candle_data| Candle.new(candle_data) } || []
+        @symbol = data["symbol"]
+        @empty = data["empty"]
+        @candles = data["candles"]&.map { |candle_data| Candle.new(candle_data) } || []
       end
 
       def to_h
         {
-          'symbol' => @symbol,
-          'empty' => @empty,
-          'candles' => @candles.map(&:to_h)
+          "symbol" => @symbol,
+          "empty" => @empty,
+          "candles" => @candles.map(&:to_h)
         }
       end
 
@@ -46,7 +46,7 @@ module SchwabRb
       def candles_for_date_range(start_date, end_date)
         start_timestamp = start_date.to_time.to_i * 1000
         end_timestamp = end_date.to_time.to_i * 1000
-        
+
         @candles.select do |candle|
           candle.datetime >= start_timestamp && candle.datetime <= end_timestamp
         end
@@ -54,32 +54,38 @@ module SchwabRb
 
       def highest_price
         return nil if @candles.empty?
+
         @candles.map(&:high).max
       end
 
       def lowest_price
         return nil if @candles.empty?
+
         @candles.map(&:low).min
       end
 
       def highest_volume
         return nil if @candles.empty?
+
         @candles.map(&:volume).max
       end
 
       def total_volume
         return 0 if @candles.empty?
+
         @candles.map(&:volume).sum
       end
 
       def average_price
         return nil if @candles.empty?
+
         total_price = @candles.map(&:close).sum
         total_price / @candles.length.to_f
       end
 
       def price_range
         return nil if @candles.empty?
+
         {
           high: highest_price,
           low: lowest_price,
@@ -89,6 +95,7 @@ module SchwabRb
 
       def each(&block)
         return enum_for(:each) unless block_given?
+
         @candles.each(&block)
       end
 
@@ -98,22 +105,22 @@ module SchwabRb
         attr_reader :open, :high, :low, :close, :volume, :datetime
 
         def initialize(data)
-          @open = data['open']
-          @high = data['high']
-          @low = data['low']
-          @close = data['close']
-          @volume = data['volume']
-          @datetime = data['datetime']
+          @open = data["open"]
+          @high = data["high"]
+          @low = data["low"]
+          @close = data["close"]
+          @volume = data["volume"]
+          @datetime = data["datetime"]
         end
 
         def to_h
           {
-            'open' => @open,
-            'high' => @high,
-            'low' => @low,
-            'close' => @close,
-            'volume' => @volume,
-            'datetime' => @datetime
+            "open" => @open,
+            "high" => @high,
+            "low" => @low,
+            "close" => @close,
+            "volume" => @volume,
+            "datetime" => @datetime
           }
         end
 
@@ -131,6 +138,7 @@ module SchwabRb
 
         def price_change_percent
           return 0 if @open == 0
+
           ((price_change / @open) * 100).round(4)
         end
 

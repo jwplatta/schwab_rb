@@ -1,4 +1,4 @@
-require 'oauth2'
+require "oauth2"
 
 module SchwabRb::Auth
   class AuthContext

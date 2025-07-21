@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'json'
-require 'date'
-require_relative 'option'
+require "json"
+require "date"
+require_relative "option"
 
 module SchwabRb
   module DataObjects
@@ -14,7 +14,7 @@ module SchwabRb
           call_dates = []
           call_opts = []
           data.fetch(:callExpDateMap).each do |exp_date, options|
-            call_dates << Date.strptime(exp_date.to_s.split(':').first, '%Y-%m-%d')
+            call_dates << Date.strptime(exp_date.to_s.split(":").first, "%Y-%m-%d")
             options.each_value do |opts|
               opts.each do |option_data|
                 call_opts << Option.build(underlying_symbol, option_data)
@@ -25,7 +25,7 @@ module SchwabRb
           put_dates = []
           put_opts = []
           data.fetch(:putExpDateMap).each do |exp_date, options|
-            put_dates << Date.strptime(exp_date.to_s.split(':').first, '%Y-%m-%d')
+            put_dates << Date.strptime(exp_date.to_s.split(":").first, "%Y-%m-%d")
 
             options.each_value do |opts|
               opts.each do |option_data|
@@ -83,10 +83,10 @@ module SchwabRb
 
       def to_a(_date = nil)
         call_opts.map do |copt|
-          [copt.expiration_date.strftime('%Y-%m-%d'), copt.put_call, copt.strike, copt.delta, copt.bid, copt.ask,
+          [copt.expiration_date.strftime("%Y-%m-%d"), copt.put_call, copt.strike, copt.delta, copt.bid, copt.ask,
            copt.mark]
         end + put_opts.map do |popt|
-          [popt.expiration_date.strftime('%Y-%m-%d'), popt.put_call, popt.strike, popt.delta, popt.bid, popt.ask,
+          [popt.expiration_date.strftime("%Y-%m-%d"), popt.put_call, popt.strike, popt.delta, popt.bid, popt.ask,
            popt.mark]
         end
       end

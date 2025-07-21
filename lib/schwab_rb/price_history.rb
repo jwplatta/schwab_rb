@@ -3,10 +3,10 @@
 module SchwabRb
   class PriceHistory
     module PeriodTypes
-      DAY = 'day'
-      MONTH = 'month'
-      YEAR = 'year'
-      YEAR_TO_DATE = 'ytd'
+      DAY = "day"
+      MONTH = "month"
+      YEAR = "year"
+      YEAR_TO_DATE = "ytd"
     end
 
     module Periods
@@ -34,10 +34,10 @@ module SchwabRb
     end
 
     module FrequencyTypes
-      MINUTE = 'minute'
-      DAILY = 'daily'
-      WEEKLY = 'weekly'
-      MONTHLY = 'monthly'
+      MINUTE = "minute"
+      DAILY = "daily"
+      WEEKLY = "weekly"
+      MONTHLY = "monthly"
     end
 
     module Frequencies

@@ -1,5 +1,5 @@
-require 'logger'
-require 'fileutils'
+require "logger"
+require "fileutils"
 
 module SchwabRb
   class Logger
@@ -27,17 +27,13 @@ module SchwabRb
 
         log_destination = config.effective_log_file || STDOUT
 
-        if log_destination == :null || log_destination == '/dev/null'
-          return null_logger
-        end
+        return null_logger if [:null, "/dev/null"].include?(log_destination)
 
-        if log_destination.is_a?(String) && log_destination != 'STDOUT'
-          setup_log_file(log_destination)
-        end
+        setup_log_file(log_destination) if log_destination.is_a?(String) && log_destination != "STDOUT"
 
-        ::Logger.new(log_destination, 'weekly').tap do |log|
+        ::Logger.new(log_destination, "weekly").tap do |log|
           log.level = parse_log_level(config.log_level)
-          log.formatter = proc do |severity, datetime, progname, msg|
+          log.formatter = proc do |severity, datetime, _progname, msg|
             "[#{datetime.strftime('%H:%M:%S')}] SCHWAB_RB #{severity}: #{msg}\n"
           end
         end
@@ -57,11 +53,11 @@ module SchwabRb
 
       def parse_log_level(level)
         case level.to_s.upcase
-        when 'DEBUG' then ::Logger::DEBUG
-        when 'INFO' then ::Logger::INFO
-        when 'WARN' then ::Logger::WARN
-        when 'ERROR' then ::Logger::ERROR
-        when 'FATAL' then ::Logger::FATAL
+        when "DEBUG" then ::Logger::DEBUG
+        when "INFO" then ::Logger::INFO
+        when "WARN" then ::Logger::WARN
+        when "ERROR" then ::Logger::ERROR
+        when "FATAL" then ::Logger::FATAL
         else ::Logger::WARN
         end
       end

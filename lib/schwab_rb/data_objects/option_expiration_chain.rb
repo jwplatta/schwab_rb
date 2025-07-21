@@ -12,19 +12,19 @@ module SchwabRb
       end
 
       def initialize(data)
-        @expiration_list = data['expirationList']&.map { |expiration_data| Expiration.new(expiration_data) } || []
-        @status = data['status']
+        @expiration_list = data["expirationList"]&.map { |expiration_data| Expiration.new(expiration_data) } || []
+        @status = data["status"]
       end
 
       def to_h
         {
-          'expirationList' => @expiration_list.map(&:to_h),
-          'status' => @status
+          "expirationList" => @expiration_list.map(&:to_h),
+          "status" => @status
         }
       end
 
       def find_by_date(date)
-        date_str = date.is_a?(Date) ? date.strftime('%Y-%m-%d') : date.to_s
+        date_str = date.is_a?(Date) ? date.strftime("%Y-%m-%d") : date.to_s
         @expiration_list.find { |exp| exp.expiration_date == date_str }
       end
 
@@ -33,15 +33,15 @@ module SchwabRb
       end
 
       def weekly_expirations
-        @expiration_list.select { |exp| exp.expiration_type == 'W' }
+        @expiration_list.select { |exp| exp.expiration_type == "W" }
       end
 
       def monthly_expirations
-        @expiration_list.select { |exp| exp.expiration_type == 'M' }
+        @expiration_list.select { |exp| exp.expiration_type == "M" }
       end
 
       def quarterly_expirations
-        @expiration_list.select { |exp| exp.expiration_type == 'Q' }
+        @expiration_list.select { |exp| exp.expiration_type == "Q" }
       end
 
       def standard_expirations
@@ -64,32 +64,33 @@ module SchwabRb
 
       def each(&block)
         return enum_for(:each) unless block_given?
+
         @expiration_list.each(&block)
       end
 
       include Enumerable
 
       class Expiration
-        attr_reader :expiration_date, :days_to_expiration, :expiration_type, 
+        attr_reader :expiration_date, :days_to_expiration, :expiration_type,
                     :settlement_type, :option_roots, :standard
 
         def initialize(data)
-          @expiration_date = data['expirationDate']
-          @days_to_expiration = data['daysToExpiration']
-          @expiration_type = data['expirationType']
-          @settlement_type = data['settlementType']
-          @option_roots = data['optionRoots']
-          @standard = data['standard']
+          @expiration_date = data["expirationDate"]
+          @days_to_expiration = data["daysToExpiration"]
+          @expiration_type = data["expirationType"]
+          @settlement_type = data["settlementType"]
+          @option_roots = data["optionRoots"]
+          @standard = data["standard"]
         end
 
         def to_h
           {
-            'expirationDate' => @expiration_date,
-            'daysToExpiration' => @days_to_expiration,
-            'expirationType' => @expiration_type,
-            'settlementType' => @settlement_type,
-            'optionRoots' => @option_roots,
-            'standard' => @standard
+            "expirationDate" => @expiration_date,
+            "daysToExpiration" => @days_to_expiration,
+            "expirationType" => @expiration_type,
+            "settlementType" => @settlement_type,
+            "optionRoots" => @option_roots,
+            "standard" => @standard
           }
         end
 
@@ -98,19 +99,19 @@ module SchwabRb
         end
 
         def weekly?
-          @expiration_type == 'W'
+          @expiration_type == "W"
         end
 
         def monthly?
-          @expiration_type == 'M'
+          @expiration_type == "M"
         end
 
         def quarterly?
-          @expiration_type == 'Q'
+          @expiration_type == "Q"
         end
 
         def special?
-          @expiration_type == 'S'
+          @expiration_type == "S"
         end
 
         def date_object

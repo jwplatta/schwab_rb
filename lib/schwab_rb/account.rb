@@ -3,7 +3,7 @@
 module SchwabRb
   class Account
     module Statuses
-      POSITIONS = 'positions'
+      POSITIONS = "positions"
     end
   end
 end

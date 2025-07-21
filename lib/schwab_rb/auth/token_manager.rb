@@ -1,5 +1,5 @@
-require 'oauth2'
-require 'json'
+require "oauth2"
+require "json"
 
 module SchwabRb::Auth
   class TokenManager
@@ -74,9 +74,7 @@ module SchwabRb::Auth
     end
 
     def to_file
-      File.open(token_path, "w") do |f|
-        f.write(to_json)
-      end
+      File.write(token_path, to_json)
     end
 
     def token_age
@@ -84,7 +82,7 @@ module SchwabRb::Auth
     end
 
     def to_h
-      token_data = {
+      {
         timestamp: timestamp,
         token: {
           expires_in: token.expires_in,
@@ -98,7 +96,7 @@ module SchwabRb::Auth
       }
     end
 
-    def to_json
+    def to_json(*_args)
       to_h.to_json
     end
   end

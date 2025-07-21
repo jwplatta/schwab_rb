@@ -4,9 +4,9 @@ module SchwabRb
 
     def initialize
       @logger = nil
-      @log_file = ENV['SCHWAB_LOGFILE']
-      @log_level = ENV.fetch('SCHWAB_LOG_LEVEL', 'WARN').upcase
-      @silence_output = ENV.fetch('SCHWAB_SILENCE_OUTPUT', 'false').downcase == 'true'
+      @log_file = ENV.fetch("SCHWAB_LOGFILE", nil)
+      @log_level = ENV.fetch("SCHWAB_LOG_LEVEL", "WARN").upcase
+      @silence_output = ENV.fetch("SCHWAB_SILENCE_OUTPUT", "false").downcase == "true"
     end
 
     def has_external_logger?
@@ -18,7 +18,7 @@ module SchwabRb
     end
 
     def effective_log_file
-      @log_file || (ENV['LOGFILE'] if ENV['LOGFILE'] && !ENV['LOGFILE'].empty?)
+      @log_file || (ENV["LOGFILE"] if ENV["LOGFILE"] && !ENV["LOGFILE"].empty?)
     end
   end
 

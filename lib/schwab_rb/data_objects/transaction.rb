@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'instrument'
+require_relative "instrument"
 
 module SchwabRb
   module DataObjects
@@ -28,15 +28,15 @@ module SchwabRb
       end
 
       def symbol
-        option? ? instrument.symbol : ''
+        option? ? instrument.symbol : ""
       end
 
       def underlying_symbol
-        option? ? instrument.underlying_symbol : ''
+        option? ? instrument.underlying_symbol : ""
       end
 
       def description
-        option? ? instrument.description : ''
+        option? ? instrument.description : ""
       end
 
       def option?
@@ -52,7 +52,7 @@ module SchwabRb
       end
 
       def commission?
-        fee_type == 'COMMISSION'
+        fee_type == "COMMISSION"
       end
 
       def to_h
@@ -102,7 +102,7 @@ module SchwabRb
                   :transfer_items
 
       def trade?
-        type == 'TRADE'
+        type == "TRADE"
       end
 
       def symbols

@@ -4,29 +4,29 @@ describe SchwabRb::PriceHistory do
   it "does not raise" do
     expect { described_class.new }.not_to raise_error
   end
-  describe 'constants' do
-    it 'returns correct period types' do
+  describe "constants" do
+    it "returns correct period types" do
       period_types = SchwabRb::PriceHistory::PeriodTypes.constants.map do |const|
         SchwabRb::PriceHistory::PeriodTypes.const_get(const)
       end
-      expect(period_types).to match_array(['day', 'month', 'year', 'ytd'])
+      expect(period_types).to match_array(%w[day month year ytd])
     end
 
-    it 'returns correct periods' do
+    it "returns correct periods" do
       periods = SchwabRb::PriceHistory::Periods.constants.map do |const|
         SchwabRb::PriceHistory::Periods.const_get(const)
       end
       expect(periods).to match_array([1, 2, 3, 4, 5, 10, 1, 2, 3, 6, 1, 2, 3, 5, 10, 15, 20, 1])
     end
 
-    it 'returns correct frequency types' do
+    it "returns correct frequency types" do
       frequency_types = SchwabRb::PriceHistory::FrequencyTypes.constants.map do |const|
         SchwabRb::PriceHistory::FrequencyTypes.const_get(const)
       end
-      expect(frequency_types).to match_array(['minute', 'daily', 'weekly', 'monthly'])
+      expect(frequency_types).to match_array(%w[minute daily weekly monthly])
     end
 
-    it 'returns correct frequencies' do
+    it "returns correct frequencies" do
       frequencies = SchwabRb::PriceHistory::Frequencies.constants.map do |const|
         SchwabRb::PriceHistory::Frequencies.const_get(const)
       end

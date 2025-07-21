@@ -1,4 +1,4 @@
-require_relative 'mock_response'
+require_relative "mock_response"
 
 module ResponseFactory
   def self.order_response

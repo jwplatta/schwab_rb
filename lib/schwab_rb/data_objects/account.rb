@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative 'instrument'
-require_relative 'position'
+require_relative "instrument"
+require_relative "position"
 
 module SchwabRb
   module DataObjects

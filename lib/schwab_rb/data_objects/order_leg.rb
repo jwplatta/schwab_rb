@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'instrument'
+require_relative "instrument"
 
 module SchwabRb
   module DataObjects
@@ -30,19 +30,19 @@ module SchwabRb
       end
 
       def call?
-        put_call == 'CALL'
+        put_call == "CALL"
       end
 
       def close?
-        position_effect == 'CLOSING'
+        position_effect == "CLOSING"
       end
 
       def open?
-        position_effect == 'OPENING'
+        position_effect == "OPENING"
       end
 
       def put?
-        put_call == 'PUT'
+        put_call == "PUT"
       end
 
       def put_call

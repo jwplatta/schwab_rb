@@ -33,23 +33,23 @@ module SchwabRb
       end
 
       def equity
-        @markets['equity'] || {}
+        @markets["equity"] || {}
       end
 
       def option
-        @markets['option'] || {}
+        @markets["option"] || {}
       end
 
       def future
-        @markets['future'] || {}
+        @markets["future"] || {}
       end
 
       def forex
-        @markets['forex'] || {}
+        @markets["forex"] || {}
       end
 
       def bond
-        @markets['bond'] || {}
+        @markets["bond"] || {}
       end
 
       def market_types
@@ -63,6 +63,7 @@ module SchwabRb
       def find_market_info(market_type, product_key)
         market_data = find_by_market_type(market_type)
         return nil unless market_data
+
         market_data[product_key.to_s]
       end
 
@@ -102,8 +103,9 @@ module SchwabRb
         !any_open?
       end
 
-      def each_market(&block)
+      def each_market
         return enum_for(:each_market) unless block_given?
+
         @markets.each do |market_type, market_data|
           market_data.each do |product_key, market_info|
             yield(market_type, product_key, market_info)
@@ -121,23 +123,23 @@ module SchwabRb
         attr_reader :date, :market_type, :product, :product_name, :is_open, :session_hours
 
         def initialize(data)
-          @date = data['date']
-          @market_type = data['marketType']
-          @product = data['product']
-          @product_name = data['productName']
-          @is_open = data['isOpen']
-          @session_hours = data['sessionHours'] ? SessionHours.new(data['sessionHours']) : nil
+          @date = data["date"]
+          @market_type = data["marketType"]
+          @product = data["product"]
+          @product_name = data["productName"]
+          @is_open = data["isOpen"]
+          @session_hours = data["sessionHours"] ? SessionHours.new(data["sessionHours"]) : nil
         end
 
         def to_h
           result = {
-            'date' => @date,
-            'marketType' => @market_type,
-            'product' => @product,
-            'isOpen' => @is_open
+            "date" => @date,
+            "marketType" => @market_type,
+            "product" => @product,
+            "isOpen" => @is_open
           }
-          result['productName'] = @product_name if @product_name
-          result['sessionHours'] = @session_hours.to_h if @session_hours
+          result["productName"] = @product_name if @product_name
+          result["sessionHours"] = @session_hours.to_h if @session_hours
           result
         end
 
@@ -159,37 +161,40 @@ module SchwabRb
 
         def regular_market_hours
           return nil unless @session_hours
+
           @session_hours.regular_market
         end
 
         def pre_market_hours
           return nil unless @session_hours
+
           @session_hours.pre_market
         end
 
         def post_market_hours
           return nil unless @session_hours
+
           @session_hours.post_market
         end
 
         def equity?
-          @market_type == 'EQUITY'
+          @market_type == "EQUITY"
         end
 
         def option?
-          @market_type == 'OPTION'
+          @market_type == "OPTION"
         end
 
         def future?
-          @market_type == 'FUTURE'
+          @market_type == "FUTURE"
         end
 
         def forex?
-          @market_type == 'FOREX'
+          @market_type == "FOREX"
         end
 
         def bond?
-          @market_type == 'BOND'
+          @market_type == "BOND"
         end
       end
 
@@ -197,16 +202,16 @@ module SchwabRb
         attr_reader :regular_market, :pre_market, :post_market
 
         def initialize(data)
-          @regular_market = parse_session_periods(data['regularMarket'])
-          @pre_market = parse_session_periods(data['preMarket'])
-          @post_market = parse_session_periods(data['postMarket'])
+          @regular_market = parse_session_periods(data["regularMarket"])
+          @pre_market = parse_session_periods(data["preMarket"])
+          @post_market = parse_session_periods(data["postMarket"])
         end
 
         def to_h
           result = {}
-          result['regularMarket'] = @regular_market.map(&:to_h) if @regular_market
-          result['preMarket'] = @pre_market.map(&:to_h) if @pre_market
-          result['postMarket'] = @post_market.map(&:to_h) if @post_market
+          result["regularMarket"] = @regular_market.map(&:to_h) if @regular_market
+          result["preMarket"] = @pre_market.map(&:to_h) if @pre_market
+          result["postMarket"] = @post_market.map(&:to_h) if @post_market
           result
         end
 
@@ -226,6 +231,7 @@ module SchwabRb
 
         def parse_session_periods(periods_data)
           return nil unless periods_data && periods_data.is_a?(Array)
+
           periods_data.map { |period_data| SessionPeriod.new(period_data) }
         end
       end
@@ -234,14 +240,14 @@ module SchwabRb
         attr_reader :start_time, :end_time
 
         def initialize(data)
-          @start_time = data['start']
-          @end_time = data['end']
+          @start_time = data["start"]
+          @end_time = data["end"]
         end
 
         def to_h
           {
-            'start' => @start_time,
-            'end' => @end_time
+            "start" => @start_time,
+            "end" => @end_time
           }
         end
 
@@ -255,18 +261,22 @@ module SchwabRb
 
         def duration_minutes
           return nil unless @start_time && @end_time
+
           start_obj = start_time_object
           end_obj = end_time_object
           return nil unless start_obj && end_obj
+
           ((end_obj - start_obj) / 60).to_i
         end
 
         def active_now?
           return false unless @start_time && @end_time
+
           now = Time.now
           start_obj = start_time_object
           end_obj = end_time_object
           return false unless start_obj && end_obj
+
           now >= start_obj && now <= end_obj
         end
       end

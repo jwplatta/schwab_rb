@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'json'
+require "json"
 
 module SchwabRb
   class Redactor
     # Patterns for account numbers and hashes that should be redacted
     ACCOUNT_NUMBER_PATTERN = /\b\d{8,12}\b/
     ACCOUNT_HASH_PATTERN = /\b[A-Z0-9]{32}\b/
-    
+
     # JSON keys that commonly contain sensitive account information
     SENSITIVE_KEYS = %w[
       accountNumber
@@ -16,19 +16,19 @@ module SchwabRb
       hashValue
       encryptedId
     ].freeze
-    
+
     def self.redact_url(url_string)
       return url_string unless url_string
-      
+
       redacted = url_string.to_s.dup
-      redacted.gsub!(ACCOUNT_NUMBER_PATTERN, '[REDACTED_ACCOUNT_NUMBER]')
-      redacted.gsub!(ACCOUNT_HASH_PATTERN, '[REDACTED_ACCOUNT_HASH]')
+      redacted.gsub!(ACCOUNT_NUMBER_PATTERN, "[REDACTED_ACCOUNT_NUMBER]")
+      redacted.gsub!(ACCOUNT_HASH_PATTERN, "[REDACTED_ACCOUNT_HASH]")
       redacted
     end
-    
+
     def self.redact_data(data)
       return data unless data
-      
+
       case data
       when Hash
         redact_hash(data)
@@ -43,13 +43,13 @@ module SchwabRb
         data
       end
     end
-    
+
     def self.redact_response_body(response)
       return unless response&.respond_to?(:body)
-      
+
       body = response.body
       return unless body
-      
+
       begin
         if body.is_a?(String)
           parsed = JSON.parse(body)
@@ -70,34 +70,32 @@ module SchwabRb
         redact_string(body_str)
       end
     end
-    
-    private
-    
+
     def self.redact_hash(hash)
       hash.each_with_object({}) do |(key, value), redacted|
-        if SENSITIVE_KEYS.include?(key.to_s)
-          redacted[key] = '[REDACTED]'
+        redacted[key] = if SENSITIVE_KEYS.include?(key.to_s)
+                          "[REDACTED]"
         else
           case value
           when Hash
-            redacted[key] = redact_hash(value)
+            redact_hash(value)
           when Array
-            redacted[key] = value.map { |item| redact_data(item) }
+            value.map { |item| redact_data(item) }
           when String
-            redacted[key] = redact_string(value)
+            redact_string(value)
           else
-            redacted[key] = value
+            value
           end
-        end
+                        end
       end
     end
-    
+
     def self.redact_string(str)
       return str unless str.is_a?(String)
-      
+
       redacted = str.dup
-      redacted.gsub!(ACCOUNT_NUMBER_PATTERN, '[REDACTED_ACCOUNT_NUMBER]')
-      redacted.gsub!(ACCOUNT_HASH_PATTERN, '[REDACTED_ACCOUNT_HASH]')
+      redacted.gsub!(ACCOUNT_NUMBER_PATTERN, "[REDACTED_ACCOUNT_NUMBER]")
+      redacted.gsub!(ACCOUNT_HASH_PATTERN, "[REDACTED_ACCOUNT_HASH]")
       redacted
     end
   end

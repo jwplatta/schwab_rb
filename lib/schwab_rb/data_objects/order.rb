@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'order_leg'
+require_relative "order_leg"
 
 module SchwabRb
   module DataObjects
@@ -57,7 +57,8 @@ module SchwabRb
         end
       end
 
-      def initialize(activity_type:, activity_id:, execution_type:, quantity:, order_remaining_quantity:, execution_legs:)
+      def initialize(activity_type:, activity_id:, execution_type:, quantity:, order_remaining_quantity:,
+                     execution_legs:)
         @activity_type = activity_type
         @activity_id = activity_id
         @execution_type = execution_type
@@ -147,20 +148,20 @@ module SchwabRb
 
       def strategy
         if %w[VERTICAL CUSTOM].include?(complex_order_strategy_type) && order_leg_collection.all?(&:call?)
-          'CALL_SPREAD'
+          "CALL_SPREAD"
         elsif %w[VERTICAL CUSTOM].include?(complex_order_strategy_type) && order_leg_collection.all?(&:put?)
-          'PUT_SPREAD'
+          "PUT_SPREAD"
         else
           order_strategy_type
         end
       end
 
       def close?
-        order_leg_collection.all? { |leg| leg.position_effect == 'CLOSING' }
+        order_leg_collection.all? { |leg| leg.position_effect == "CLOSING" }
       end
 
       def open?
-        order_leg_collection.all? { |leg| leg.position_effect == 'OPENING' }
+        order_leg_collection.all? { |leg| leg.position_effect == "OPENING" }
       end
 
       def to_h

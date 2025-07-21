@@ -10,7 +10,7 @@ module SchwabRb::Auth
 
     self.queue = Queue.new
 
-    self.disable :logging
+    disable :logging
 
     get "/status" do
       "running"
@@ -34,7 +34,7 @@ module SchwabRb::Auth
         ctx = Puma::MiniSSL::Context.new.tap do |ctx|
           ctx.key = key_file.path
           ctx.cert = cert_file.path
-          ctx.verify_mode=Puma::MiniSSL::VERIFY_NONE
+          ctx.verify_mode = Puma::MiniSSL::VERIFY_NONE
         end
 
         puts ctx.inspect

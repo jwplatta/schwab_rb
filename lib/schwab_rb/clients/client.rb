@@ -34,8 +34,8 @@ module SchwabRb
       response = session.post(
         dest,
         {
-          :body => data.to_json,
-          :headers => { "Content-Type" => "application/json" }
+          body: data.to_json,
+          headers: { "Content-Type" => "application/json" }
         }
       )
       log_response(response, req_num)
@@ -51,8 +51,8 @@ module SchwabRb
       response = session.put(
         dest,
         {
-          :body => data.to_json,
-          :headers => { "Content-Type" => "application/json" }
+          body: data.to_json,
+          headers: { "Content-Type" => "application/json" }
         }
       )
       log_response(response, req_num)
@@ -73,20 +73,20 @@ module SchwabRb
     def log_request(method, req_num, dest, data = nil)
       redacted_dest = SchwabRb::Redactor.redact_url(dest.to_s)
       SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{redacted_dest}")
-      
-      if data
-        redacted_data = SchwabRb::Redactor.redact_data(data)
-        SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
-      end
+
+      return unless data
+
+      redacted_data = SchwabRb::Redactor.redact_data(data)
+      SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
     end
 
     def log_response(response, req_num)
       SchwabRb::Logger.logger.info("Resp #{req_num}: Status #{response.status}")
-      
-      if SchwabRb::Logger.logger.level == ::Logger::DEBUG
-        redacted_body = SchwabRb::Redactor.redact_response_body(response)
-        SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
-      end
+
+      return unless SchwabRb::Logger.logger.level == ::Logger::DEBUG
+
+      redacted_body = SchwabRb::Redactor.redact_response_body(response)
+      SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
     end
 
     def req_num

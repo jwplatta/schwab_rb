@@ -1,4 +1,4 @@
-require_relative '../utils/enum_enforcer'
+require_relative "../utils/enum_enforcer"
 
 module SchwabRb::Orders
   class Builder
@@ -36,7 +36,7 @@ module SchwabRb::Orders
       end
 
       def camel_case(snake_str)
-        camel_case_str = snake_str.split('_').map(&:capitalize).join
+        camel_case_str = snake_str.split("_").map(&:capitalize).join
         camel_case_str[0].downcase + camel_case_str[1..]
       end
     end
@@ -165,7 +165,7 @@ module SchwabRb::Orders
       @order_leg_collection << {
         "instruction" => convert_enum(instruction, SchwabRb::Orders::OptionInstructions),
         "instrument" => SchwabRb::Orders::OptionInstrument.new(symbol),
-        "quantity" => quantity,
+        "quantity" => quantity
       }
     end
 
@@ -193,9 +193,9 @@ module SchwabRb::Orders
 
     def truncate_float(flt)
       if flt.abs < 1 && flt != 0.0
-        format('%.4f', (flt * 10000).to_i / 10000.0)
+        format("%.4f", (flt * 10_000).to_i / 10_000.0)
       else
-        format('%.2f', (flt * 100).to_i / 100.0)
+        format("%.2f", (flt * 100).to_i / 100.0)
       end
     end
   end

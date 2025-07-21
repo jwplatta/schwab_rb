@@ -1,17 +1,19 @@
-require 'openssl'
-require 'uri'
-require 'net/http'
-require 'json'
-require 'oauth2'
+require "openssl"
+require "uri"
+require "net/http"
+require "json"
+require "oauth2"
 # require 'logger'
 
 module SchwabRb::Auth
   class RedirectTimeoutError < StandardError
-    def initialize(msg="Timed out waiting for a callback")
-      super(msg)
+    def initialize(msg = "Timed out waiting for a callback")
+      super
     end
   end
+
   class RedirectServerExitedError < StandardError; end
+
   # class TokenExchangeError < StandardError
   #   def initialize(msg)
   #     super(msg)
@@ -33,15 +35,16 @@ module SchwabRb::Auth
     enforce_enums: false,
     callback_timeout: 300.0,
     interactive: true,
-    requested_browser: nil)
+    requested_browser: nil
+  )
 
-    callback_timeout = if not callback_timeout
-      callback_timeout = 0
+    callback_timeout = if !callback_timeout
+                         0
     elsif callback_timeout < 0
       raise ArgumentError, "callback_timeout must be non-negative"
     else
       callback_timeout
-    end
+                       end
 
     parsed = URI.parse(callback_url)
     raise InvalidHostname.new(parsed.host) unless parsed.host == "127.0.0.1"
@@ -49,9 +52,9 @@ module SchwabRb::Auth
     callback_port = parsed.port || 4567
     callback_path = parsed.path.empty? ? "/" : parsed.path
 
-    cert_file, key_file = self.create_ssl_certificate
+    cert_file, key_file = create_ssl_certificate
 
-    server_thread = SchwabRb::Auth::LoginFlowServer.run_in_thread(
+    SchwabRb::Auth::LoginFlowServer.run_in_thread(
       callback_port: callback_port,
       callback_path: callback_path,
       cert_file: cert_file,
@@ -80,13 +83,13 @@ module SchwabRb::Auth
         raise RedirectServerExitedError if Time.now - start_time > 5
       end
 
-      auth_context = self.build_auth_context(api_key, callback_url)
+      auth_context = build_auth_context(api_key, callback_url)
 
       puts <<~MESSAGE
-      ***********************************************************************
-      Open this URL in your browser to log in:
-      #{auth_context.authorization_url}
-      ***********************************************************************
+        ***********************************************************************
+        Open this URL in your browser to log in:
+        #{auth_context.authorization_url}
+        ***********************************************************************
       MESSAGE
 
       if interactive
@@ -109,7 +112,7 @@ module SchwabRb::Auth
 
       raise RedirectTimeoutError.new unless received_url
 
-      self.client_from_received_url(
+      client_from_received_url(
         api_key,
         app_secret,
         auth_context,
@@ -132,7 +135,7 @@ module SchwabRb::Auth
     cert.not_after = Time.now + (60 * 60 * 24) # 1 day
     cert.serial = 0x0
     cert.version = 2
-    cert.sign(key, OpenSSL::Digest::SHA256.new)
+    cert.sign(key, OpenSSL::Digest.new("SHA256"))
 
     cert_file = Tempfile.new("cert.pem")
     cert_file.write(cert.to_pem)
@@ -142,7 +145,7 @@ module SchwabRb::Auth
     key_file.write(key.to_pem)
     key_file.close
 
-    return cert_file, key_file
+    [cert_file, key_file]
   end
 
   def self.build_auth_context(api_key, callback_url, state: nil)

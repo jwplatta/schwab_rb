@@ -1,11 +1,11 @@
-require 'async'
-require 'async/http'
-require 'json'
-require 'uri'
-require_relative 'base_client'
-require_relative '../utils/logger'
-require_relative '../utils/redactor'
-require_relative '../constants'
+require "async"
+require "async/http"
+require "json"
+require "uri"
+require_relative "base_client"
+require_relative "../utils/logger"
+require_relative "../utils/redactor"
+require_relative "../constants"
 
 module SchwabRb
   class AsyncClient < BaseClient
@@ -28,7 +28,7 @@ module SchwabRb
         dest.query = URI.encode_www_form(params) if params.any?
 
         req_num = req_num()
-        log_request('GET', req_num, dest, params)
+        log_request("GET", req_num, dest, params)
 
         # Use path only since @endpoint already has the base URL
         query_string = params.any? ? "?#{URI.encode_www_form(params)}" : ""
@@ -45,7 +45,7 @@ module SchwabRb
         dest = URI(URI::DEFAULT_PARSER.escape("#{SchwabRb::Constants::SCHWAB_BASE_URL}#{path}"))
 
         req_num = req_num()
-        log_request('POST', req_num, dest, data)
+        log_request("POST", req_num, dest, data)
 
         response = @client.post(path, build_headers, JSON.dump(data))
 
@@ -60,7 +60,7 @@ module SchwabRb
         dest = URI(URI::DEFAULT_PARSER.escape("#{SchwabRb::Constants::SCHWAB_BASE_URL}#{path}"))
 
         req_num = req_num()
-        log_request('PUT', req_num, dest, data)
+        log_request("PUT", req_num, dest, data)
 
         response = @client.put(path, build_headers, JSON.dump(data))
 
@@ -75,7 +75,7 @@ module SchwabRb
         dest = URI(URI::DEFAULT_PARSER.escape("#{SchwabRb::Constants::SCHWAB_BASE_URL}#{path}"))
 
         req_num = req_num()
-        log_request('DELETE', req_num, dest)
+        log_request("DELETE", req_num, dest)
 
         response = @client.delete(path, build_headers)
 
@@ -86,32 +86,30 @@ module SchwabRb
 
     def build_headers
       headers = { "Content-Type" => "application/json" }
-      
+
       # Add authorization header if token is available
-      if @token_manager&.access_token
-        headers["Authorization"] = "Bearer #{@token_manager.access_token}"
-      end
-      
+      headers["Authorization"] = "Bearer #{@token_manager.access_token}" if @token_manager&.access_token
+
       headers
     end
 
     def log_request(method, req_num, dest, data = nil)
       redacted_dest = SchwabRb::Redactor.redact_url(dest.to_s)
       SchwabRb::Logger.logger.info("Req #{req_num}: #{method} to #{redacted_dest}")
-      
-      if data
-        redacted_data = SchwabRb::Redactor.redact_data(data)
-        SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
-      end
+
+      return unless data
+
+      redacted_data = SchwabRb::Redactor.redact_data(data)
+      SchwabRb::Logger.logger.debug("Payload: #{JSON.pretty_generate(redacted_data)}")
     end
 
     def log_response(response, req_num)
       SchwabRb::Logger.logger.info("Resp #{req_num}: Status #{response.status}")
-      
-      if SchwabRb::Logger.logger.level == ::Logger::DEBUG
-        redacted_body = SchwabRb::Redactor.redact_response_body(response)
-        SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
-      end
+
+      return unless SchwabRb::Logger.logger.level == ::Logger::DEBUG
+
+      redacted_body = SchwabRb::Redactor.redact_response_body(response)
+      SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
     end
 
     def req_num

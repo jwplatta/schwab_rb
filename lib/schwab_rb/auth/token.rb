@@ -19,6 +19,6 @@ module SchwabRb::Auth
     end
 
     attr_reader :token, :expires_in, :token_type, :scope,
-      :refresh_token, :id_token, :expires_at
+                :refresh_token, :id_token, :expires_at
   end
 end

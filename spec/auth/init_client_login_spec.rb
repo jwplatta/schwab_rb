@@ -13,10 +13,10 @@ describe SchwabRb::Auth do
     xit do
       expect do
         client = SchwabRb::Auth.init_client_login(
-          ENV["SCHWAB_API_KEY"],
-          ENV["SCHWAB_APP_SECRET"],
-          ENV["APP_CALLBACK_URL"],
-          ENV["TOKEN_PATH"]
+          ENV.fetch("SCHWAB_API_KEY", nil),
+          ENV.fetch("SCHWAB_APP_SECRET", nil),
+          ENV.fetch("APP_CALLBACK_URL", nil),
+          ENV.fetch("TOKEN_PATH", nil)
         )
         puts client
       end.to_not raise_error
