@@ -730,7 +730,8 @@ module SchwabRb
       #
       # @param index [String] Category of mover. See Movers::Index for valid values.
       # @param sort_order [String] Order in which to return values. See Movers::SortOrder for valid values.
-      # @param frequency [String] Only return movers that saw this magnitude or greater. See Movers::Frequency for valid values.
+      # @param frequency [String] Only return movers that saw this magnitude or greater. 
+      #   See Movers::Frequency for valid values.
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
       refresh_token_if_needed
 
