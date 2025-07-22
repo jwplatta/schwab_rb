@@ -252,10 +252,10 @@ module SchwabRb
             is_day_trader: data.fetch(:isDayTrader),
             is_closing_only_restricted: data.fetch(:isClosingOnlyRestricted),
             pfcb_flag: data.fetch(:pfcbFlag),
-            positions: data.fetch(:positions).map { |position| Position.build(position) },
-            initial_balances: InitialBalances.build(data.fetch(:initialBalances)),
-            current_balances: CurrentBalances.build(data.fetch(:currentBalances)),
-            projected_balances: ProjectedBalances.build(data.fetch(:projectedBalances))
+            positions: data.fetch(:positions).map { |position| Position.build(position) } if data.key?(:positions),
+            initial_balances: InitialBalances.build(data.fetch(:initialBalances)) if data.key?(:initialBalances),
+            current_balances: CurrentBalances.build(data.fetch(:currentBalances)) if data.key?(:currentBalances),
+            projected_balances: ProjectedBalances.build(data.fetch(:projectedBalances)) if data.key?(:projectedBalances)
           )
         end
       end
