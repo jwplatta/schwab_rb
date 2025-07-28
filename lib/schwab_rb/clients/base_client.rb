@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "date"
 require "json"
 require_relative "../utils/enum_enforcer"

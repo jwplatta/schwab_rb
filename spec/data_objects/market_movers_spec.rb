@@ -95,8 +95,7 @@ RSpec.describe SchwabRb::DataObjects::MarketMovers do
 
   describe "#each" do
     it "iterates over all movers" do
-      symbols = []
-      market_movers.each { |mover| symbols << mover.symbol }
+      symbols = market_movers.map(&:symbol)
       expect(symbols.size).to eq(10)
       expect(symbols.first).to eq("NVDA")
     end

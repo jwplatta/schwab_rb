@@ -230,7 +230,7 @@ module SchwabRb
         private
 
         def parse_session_periods(periods_data)
-          return nil unless periods_data && periods_data.is_a?(Array)
+          return nil unless periods_data.is_a?(Array)
 
           periods_data.map { |period_data| SessionPeriod.new(period_data) }
         end

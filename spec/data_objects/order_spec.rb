@@ -138,7 +138,7 @@ RSpec.describe SchwabRb::DataObjects::OrderActivity do
   let(:raw_data) do
     JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
         .flat_map { |order| order[:orderActivityCollection] || [] }
-        .reject(&:nil?)
+        .compact
   end
 
   describe "#to_h" do
@@ -165,7 +165,7 @@ RSpec.describe SchwabRb::DataObjects::ExecutionLeg do
     JSON.parse(File.read("spec/fixtures/orders.json"), symbolize_names: true)
         .flat_map { |order| order[:orderActivityCollection] || [] }
         .flat_map { |activity| activity[:executionLegs] || [] }
-        .reject(&:nil?)
+        .compact
   end
 
   describe "#to_h" do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EnumEnforcer
   def enforce_enums?
     @enforce_enums ||= false
@@ -17,10 +19,7 @@ module EnumEnforcer
       end
 
       if possible_members.any?
-        possible_members_message = "Did you mean " +
-                                   possible_members[0..-2].join(", ") +
-                                   (possible_members.size > 1 ? " or " : "") +
-                                   possible_members[-1].to_s + "? "
+        possible_members_message = "Did you mean #{possible_members[0..-2].join(', ')}#{possible_members.size > 1 ? ' or ' : ''}#{possible_members[-1]}? "
       end
     end
 

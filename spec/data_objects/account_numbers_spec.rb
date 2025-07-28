@@ -102,8 +102,7 @@ RSpec.describe SchwabRb::DataObjects::AccountNumbers do
 
   describe "#each" do
     it "iterates over all accounts" do
-      accounts = []
-      account_numbers.each { |account| accounts << account }
+      accounts = account_numbers.map { |account| account }
       expect(accounts.size).to eq(2)
       accounts.each { |account| expect(account).to be_a(described_class::AccountNumber) }
     end

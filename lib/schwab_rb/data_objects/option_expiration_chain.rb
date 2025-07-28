@@ -123,7 +123,7 @@ module SchwabRb
         end
 
         def expires_today?
-          @days_to_expiration == 0
+          @days_to_expiration.zero?
         end
 
         def expires_tomorrow?

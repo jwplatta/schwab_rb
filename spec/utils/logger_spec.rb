@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "logger"
 require "fileutils"
 require_relative "../../lib/schwab_rb"
@@ -14,7 +16,7 @@ describe SchwabRb::Logger do
   end
 
   after do
-    File.delete(log_file) if File.exist?(log_file)
+    FileUtils.rm_f(log_file)
     ENV.delete("SCHWAB_LOGFILE")
     ENV.delete("SCHWAB_LOG_LEVEL")
   end

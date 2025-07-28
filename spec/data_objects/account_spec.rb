@@ -2,7 +2,6 @@
 
 require "rspec"
 require "schwab_rb"
-require "schwab_rb"
 
 RSpec.describe SchwabRb::DataObjects::Account do
   let(:raw_data) do

@@ -137,7 +137,7 @@ module SchwabRb
         end
 
         def price_change_percent
-          return 0 if @open == 0
+          return 0 if @open.zero?
 
           ((price_change / @open) * 100).round(4)
         end

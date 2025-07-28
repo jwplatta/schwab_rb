@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SchwabRb
   class Configuration
     attr_accessor :logger, :log_file, :log_level, :silence_output

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 require_relative "../../lib/schwab_rb/utils/enum_enforcer"
 

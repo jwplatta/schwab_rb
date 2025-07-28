@@ -4,8 +4,8 @@ require "json"
 
 module SchwabRb
   class Redactor
-    ACCOUNT_NUMBER_PATTERN = /\b\d{8,12}\b/
-    ACCOUNT_HASH_PATTERN = /\b[A-Z0-9]{32}\b/
+    ACCOUNT_NUMBER_PATTERN = /\b\d{8,12}\b/.freeze
+    ACCOUNT_HASH_PATTERN = /\b[A-Z0-9]{32}\b/.freeze
 
     # JSON keys that commonly contain sensitive account information
     SENSITIVE_KEYS = %w[
@@ -44,7 +44,7 @@ module SchwabRb
     end
 
     def self.redact_response_body(response)
-      return unless response&.respond_to?(:body)
+      return unless response.respond_to?(:body)
 
       body = response.body
       return unless body
