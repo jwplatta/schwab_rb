@@ -11,6 +11,7 @@ module SchwabRb
     end
 
     class MarketMovers
+      include Enumerable
       attr_reader :movers
 
       def initialize(movers)

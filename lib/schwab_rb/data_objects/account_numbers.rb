@@ -3,6 +3,7 @@
 module SchwabRb
   module DataObjects
     class AccountNumbers
+      include Enumerable
       attr_reader :accounts
 
       class << self
