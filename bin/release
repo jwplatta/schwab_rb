@@ -13,7 +13,21 @@ if !system("bundle exec rubocop")
   puts "⚠️  RuboCop has some issues, but continuing with release..."
 end
 
-puts "Building and releasing gem to RubyGems..."
-system("bundle exec rake release") or abort("Release failed!")
+puts "Building gem..."
+system("gem build schwab_rb.gemspec") or abort("Gem build failed!")
+
+puts "Pushing gem to RubyGems..."
+# Find the most recent gem file
+gem_file = Dir.glob("pkg/schwab_rb-*.gem").max_by { |f| File.mtime(f) }
+if gem_file.nil?
+  # Try current directory if pkg doesn't exist
+  gem_file = Dir.glob("schwab_rb-*.gem").max_by { |f| File.mtime(f) }
+end
+
+if gem_file
+  system("gem push #{gem_file}") or abort("Gem push failed!")
+else
+  abort("Could not find gem file to push!")
+end
 
 puts "Successfully released gem!"
