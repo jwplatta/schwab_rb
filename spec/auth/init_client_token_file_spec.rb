@@ -2,12 +2,14 @@ require "spec_helper"
 
 describe SchwabRb::Auth do
   describe ".from_token_file" do
-    it do
+    it "initializes client from token file" do
+      token_path = File.join(__dir__, "../fixtures/token.json")
+      
       expect do
         SchwabRb::Auth.init_client_token_file(
-          ENV.fetch("SCHWAB_API_KEY", nil),
-          ENV.fetch("SCHWAB_APP_SECRET", nil),
-          ENV.fetch("TOKEN_PATH", nil)
+          "fake_api_key",
+          "fake_app_secret",
+          token_path
         )
       end.to_not raise_error
     end
