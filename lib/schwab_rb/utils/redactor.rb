@@ -4,7 +4,6 @@ require "json"
 
 module SchwabRb
   class Redactor
-    # Patterns for account numbers and hashes that should be redacted
     ACCOUNT_NUMBER_PATTERN = /\b\d{8,12}\b/
     ACCOUNT_HASH_PATTERN = /\b[A-Z0-9]{32}\b/
 
@@ -55,7 +54,6 @@ module SchwabRb
           parsed = JSON.parse(body)
           redact_data(parsed)
         elsif body.respond_to?(:read)
-          # Handle IO-like objects
           content = body.read
           body.rewind if body.respond_to?(:rewind)
           parsed = JSON.parse(content)
