@@ -42,13 +42,13 @@ module SchwabRb
       def commission
         return 0.0 unless @projected_commission
 
-        @projected_commission.commission.to_f
+        @projected_commission.commission_value
       end
 
       def fees
         return 0.0 unless @projected_commission
 
-        @projected_commission.fee.to_f
+        @projected_commission.fee_value
       end
 
       def to_h
@@ -145,71 +145,43 @@ module SchwabRb
       end
 
       class CommissionAndFee
-        attr_reader :commission_data, :fee_data
+        attr_reader :commission, :commissions, :fee, :fees, :true_commission
 
         def initialize(attrs)
-          # Handle the flattened structure (from API)
-          if attrs[:commissions]
-            @commission_data = attrs[:commissions]
-            @fee_data = attrs[:fees] || []
-            @true_commission_data = []
-            @direct_commission = attrs[:commission]
-            @direct_fee = attrs[:fee]
-            @direct_true_commission = attrs[:trueCommission]
-          # Handle the nested structure (from test data)
-          else
-            @commission_data = attrs.dig(:commission, :commissionLegs) || []
-            @fee_data = attrs.dig(:fee, :feeLegs) || []
-            @true_commission_data = attrs.dig(:trueCommission, :commissionLegs) || []
-            @direct_commission = nil
-            @direct_fee = nil
-            @direct_true_commission = nil
-          end
+          @commission = attrs[:commission]&.to_f
+          @commissions = attrs[:commissions] || []
+          @fee = attrs[:fee]&.to_f
+          @fees = attrs[:fees] || []
+          @true_commission = attrs[:trueCommission]&.to_f
         end
 
         def commission_total
-          calculate_total_from_legs(@commission_data, "COMMISSION")
+          calculate_total_from_legs(@commissions, "COMMISSION")
         end
 
-        def commission
-          @direct_commission || format("%.2f", commission_total)
+        def commission_value
+          @commission || commission_total
         end
 
         def fee_total
-          calculate_total_from_legs(@fee_data, %w[OPT_REG_FEE INDEX_OPTION_FEE])
+          calculate_total_from_legs(@fees, %w[OPT_REG_FEE INDEX_OPTION_FEE])
         end
 
-        def fee
-          @direct_fee || format("%.2f", fee_total)
+        def fee_value
+          @fee || fee_total
         end
 
-        def true_commission
-          if @direct_true_commission
-            @direct_true_commission
-          elsif @true_commission_data.any?
-            # For nested structure, calculate from true commission legs
-            true_commission_total = calculate_total_from_legs(@true_commission_data, "COMMISSION")
-            format("%.2f", true_commission_total * 2)
-            else
-              format("%.2f", commission_total * 2)
-          end
-        end
-
-        def commissions
-          @commission_data
-        end
-
-        def fees
-          @fee_data
+        def true_commission_value
+          @true_commission || (commission_total * 2)
         end
 
         def to_h
           {
-            commission: commission,
-            fee: fee,
-            trueCommission: true_commission,
-            commissions: commissions,
-            fees: fees
+            commission: @commission,
+            fee: @fee,
+            trueCommission: @true_commission,
+            commissions: @commissions,
+            fees: @fees
           }
         end
 
