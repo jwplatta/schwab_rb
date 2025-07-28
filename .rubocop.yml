@@ -7,6 +7,8 @@ AllCops:
     - 'db/schema.rb'
     - 'node_modules/**/*'
     - 'vendor/**/*'
+    - 'examples/**/*'
+    - 'test_*.rb'
 
 Layout/LineLength:
   Max: 120
