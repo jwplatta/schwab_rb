@@ -47,6 +47,10 @@ module SchwabRb
         instrument.put_call
       end
 
+      def credit_debit?
+        fee_type.nil?
+      end
+
       def fee?
         %w[OPT_REG_FEE TAF_FEE SEC_FEE].include?(fee_type)
       end
@@ -105,12 +109,16 @@ module SchwabRb
         type == "TRADE"
       end
 
+      def credit_debits
+        transfer_items.select(&:credit_debit?).map { |ti| ti.cost }
+      end
+
       def fees
-        transfer_items.select(&:fee?).map { |ti| ti.amount }
+        transfer_items.select(&:fee?).map { |ti| ti.cost }
       end
 
       def commissions
-        transfer_items.select(&:commission?).map { |ti| ti.amount }
+        transfer_items.select(&:commission?).map { |ti| ti.cost }
       end
 
       def symbols
