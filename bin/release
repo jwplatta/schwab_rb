@@ -16,13 +16,16 @@ end
 puts "Building gem..."
 system("gem build schwab_rb.gemspec") or abort("Gem build failed!")
 
+# Move the built gem to the pkg folder if it's not already there
+built_gem = Dir.glob("schwab_rb-*.gem").max_by { |f| File.mtime(f) }
+if built_gem && !built_gem.start_with?("pkg/")
+  Dir.mkdir("pkg") unless Dir.exist?("pkg")
+  File.rename(built_gem, File.join("pkg", built_gem))
+end
+
 puts "Pushing gem to RubyGems..."
 # Find the most recent gem file
 gem_file = Dir.glob("pkg/schwab_rb-*.gem").max_by { |f| File.mtime(f) }
-if gem_file.nil?
-  # Try current directory if pkg doesn't exist
-  gem_file = Dir.glob("schwab_rb-*.gem").max_by { |f| File.mtime(f) }
-end
 
 if gem_file
   system("gem push #{gem_file}") or abort("Gem push failed!")
