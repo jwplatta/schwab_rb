@@ -29,6 +29,10 @@ module SchwabRb
         @position_effect = position_effect
       end
 
+      def instrument_id
+        instrument.instrument_id
+      end
+
       def call?
         put_call == "CALL"
       end
