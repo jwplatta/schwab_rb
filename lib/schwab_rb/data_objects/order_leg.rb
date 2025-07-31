@@ -53,6 +53,10 @@ module SchwabRb
         instrument.symbol
       end
 
+      def description
+        instrument.description
+      end
+
       def to_h
         {
           legId: @leg_id,
