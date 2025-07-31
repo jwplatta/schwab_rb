@@ -27,8 +27,12 @@ module SchwabRb
         @position_effect = position_effect
       end
 
+      def instrument_id
+        instrument.instrument_id
+      end
+
       def symbol
-        asset? ? instrument.symbol : ""
+        instrument.symbol
       end
 
       def underlying_symbol
@@ -60,7 +64,7 @@ module SchwabRb
       end
 
       def fee?
-        %w[OPT_REG_FEE TAF_FEE SEC_FEE].include?(fee_type)
+        %w[OPT_REG_FEE TAF_FEE SEC_FEE INDEX_OPTION_FEE].include?(fee_type)
       end
 
       def commission?
@@ -135,6 +139,10 @@ module SchwabRb
 
       def asset_symbol
         transfer_items.find { |ti| ti.asset? }.symbol
+      end
+
+      def asset_instrument_id
+        transfer_items.find { |ti| ti.asset? }.instrument_id
       end
 
       def to_h
