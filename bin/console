@@ -2,10 +2,27 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
+require "dotenv"
 require "schwab_rb"
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
+Dotenv.load
 
+def client
+  @client ||= SchwabRb::Auth.init_client_easy(
+    ENV.fetch("SCHWAB_API_KEY", nil),
+    ENV.fetch("SCHWAB_APP_SECRET", nil),
+    ENV.fetch("APP_CALLBACK_URL", nil),
+    ENV.fetch("TOKEN_PATH", "schwab_token.json")
+  )
+end
+
+$client = client
+
+puts "Client initialized."
+puts "Access via 'client' method or '$client' global variable."
+puts "SchwabRb loaded and ready to use."
+
+ARGV.clear
 require "irb"
-IRB.start(__FILE__)
+
+IRB.start
