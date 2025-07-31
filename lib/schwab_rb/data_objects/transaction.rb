@@ -105,6 +105,14 @@ module SchwabRb
         type == "TRADE"
       end
 
+      def fees
+        transfer_items.select(&:fee?).map { |ti| ti.amount }
+      end
+
+      def commissions
+        transfer_items.select(&:commission?).map { |ti| ti.amount }
+      end
+
       def symbols
         transfer_items.map { |ti| ti.instrument.symbol }
       end
