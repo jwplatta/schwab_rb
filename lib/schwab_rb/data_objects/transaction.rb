@@ -28,7 +28,7 @@ module SchwabRb
       end
 
       def symbol
-        option? ? instrument.symbol : ""
+        asset? ? instrument.symbol : ""
       end
 
       def underlying_symbol
@@ -36,11 +36,19 @@ module SchwabRb
       end
 
       def description
-        option? ? instrument.description : ""
+        asset? ? instrument.description : ""
       end
 
       def option?
         instrument.option?
+      end
+
+      def equity?
+        instrument.equity?
+      end
+
+      def asset?
+        option? || equity?
       end
 
       def put_call
@@ -122,11 +130,11 @@ module SchwabRb
       end
 
       def symbols
-        transfer_items.map { |ti| ti.instrument.symbol }
+        transfer_items.map { |ti| ti.symbol }
       end
 
-      def option_symbol
-        transfer_items.find { |ti| ti.instrument.option? }.instrument.symbol
+      def asset_symbol
+        transfer_items.find { |ti| ti.asset? }.symbol
       end
 
       def to_h

@@ -51,12 +51,12 @@ RSpec.describe SchwabRb::DataObjects::Transaction do
     end
   end
 
-  describe "#option_symbol" do
-    it "returns the option symbol from transfer items" do
+  describe "#asset_symbol" do
+    it "returns the asset symbol from transfer items" do
       transaction = SchwabRb::DataObjects::Transaction.build(transaction_data)
-      option_symbol = transaction.option_symbol
+      asset_symbol = transaction.asset_symbol
 
-      expect(option_symbol).to eq("MRVL  250321C00155000")
+      expect(asset_symbol).to eq("MRVL  250321C00155000")
     end
   end
 end
