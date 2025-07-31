@@ -135,6 +135,10 @@ module SchwabRb
         asset_type == "OPTION"
       end
 
+      def equity?
+        asset_type == "EQUITY"
+      end
+
       def to_h
         {
           assetType: @asset_type,
