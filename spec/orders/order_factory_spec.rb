@@ -1,0 +1,207 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe SchwabRb::Orders::OrderFactory do
+  describe '.build' do
+    let(:account_number) { '123456789' }
+    let(:quantity) { 1 }
+    let(:price) { 1.50 }
+    let(:order_builder) { instance_double(SchwabRb::Orders::Builder) }
+
+    before do
+      # Set up mocks for all order classes before any tests run
+      allow(SchwabRb::Orders::IronCondorOrder).to receive(:build).and_return(order_builder)
+      allow(SchwabRb::Orders::VerticalOrder).to receive(:build).and_return(order_builder)
+      allow(SchwabRb::Orders::SingleOrder).to receive(:build).and_return(order_builder)
+    end
+
+    context 'with an iron condor trade' do
+      let(:iron_condor_options) do
+        {
+          strategy_type: 'ironcondor',
+          account_number: account_number,
+          quantity: quantity,
+          price: price,
+          put_short_symbol: 'SPX_PUT_SHORT',
+          put_long_symbol: 'SPX_PUT_LONG',
+          call_short_symbol: 'SPX_CALL_SHORT',
+          call_long_symbol: 'SPX_CALL_LONG'
+        }
+      end
+
+      it 'delegates to IronCondorOrder.build with explicit parameters' do
+        described_class.build(**iron_condor_options)
+        expect(SchwabRb::Orders::IronCondorOrder).to have_received(:build).with(
+          put_short_symbol: 'SPX_PUT_SHORT',
+          put_long_symbol: 'SPX_PUT_LONG',
+          call_short_symbol: 'SPX_CALL_SHORT',
+          call_long_symbol: 'SPX_CALL_LONG',
+          price: price,
+          account_number: account_number,
+          credit_debit: :credit,
+          order_instruction: :open,
+          quantity: quantity
+        )
+      end
+
+      it 'handles exit orders' do
+        exit_options = iron_condor_options.merge(order_instruction: :exit)
+        described_class.build(**exit_options)
+        expect(SchwabRb::Orders::IronCondorOrder).to have_received(:build).with(
+          put_short_symbol: 'SPX_PUT_SHORT',
+          put_long_symbol: 'SPX_PUT_LONG',
+          call_short_symbol: 'SPX_CALL_SHORT',
+          call_long_symbol: 'SPX_CALL_LONG',
+          price: price,
+          account_number: account_number,
+          credit_debit: :credit,
+          order_instruction: :exit,
+          quantity: quantity
+        )
+      end
+    end
+
+    context 'with a vertical spread trade' do
+      let(:vertical_options) do
+        {
+          account_number: account_number,
+          quantity: quantity,
+          price: price,
+          short_leg_symbol: 'SPX_SHORT_LEG',
+          long_leg_symbol: 'SPX_LONG_LEG'
+        }
+      end
+
+      context 'with call spread' do
+        let(:call_spread_options) { vertical_options.merge(strategy_type: 'vertical') }
+
+        it 'delegates to VerticalOrder.build with explicit parameters' do
+          described_class.build(**call_spread_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            account_number: account_number,
+            credit_debit: :credit,
+            order_instruction: :open,
+            quantity: quantity
+          )
+        end
+
+        it 'handles exit orders' do
+          exit_options = call_spread_options.merge(order_instruction: :exit)
+          described_class.build(**exit_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            account_number: account_number,
+            credit_debit: :credit,
+            order_instruction: :exit,
+            quantity: quantity
+          )
+        end
+      end
+
+      context 'with put spread' do
+        let(:put_spread_options) { vertical_options.merge(strategy_type: 'vertical') }
+
+        it 'delegates to VerticalOrder.build with explicit parameters' do
+          described_class.build(**put_spread_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            account_number: account_number,
+            credit_debit: :credit,
+            order_instruction: :open,
+            quantity: quantity
+          )
+        end
+
+        it 'handles exit orders' do
+          exit_options = put_spread_options.merge(order_instruction: :exit)
+          described_class.build(**exit_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            account_number: account_number,
+            credit_debit: :credit,
+            order_instruction: :exit,
+            quantity: quantity
+          )
+        end
+      end
+    end
+
+    context 'with a single option order' do
+      let(:single_options) do
+        {
+          strategy_type: 'single',
+          account_number: account_number,
+          quantity: quantity,
+          price: price,
+          symbol: 'SPX_OPTION'
+        }
+      end
+
+      it 'delegates to SingleOrder.build with explicit parameters' do
+        described_class.build(**single_options)
+        expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
+          symbol: 'SPX_OPTION',
+          price: price,
+          account_number: account_number,
+          credit_debit: :credit,
+          order_instruction: :open,
+          quantity: quantity
+        )
+      end
+
+      it 'handles exit orders' do
+        exit_options = single_options.merge(order_instruction: :exit)
+        described_class.build(**exit_options)
+        expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
+          symbol: 'SPX_OPTION',
+          price: price,
+          account_number: account_number,
+          credit_debit: :credit,
+          order_instruction: :exit,
+          quantity: quantity
+        )
+      end
+    end
+
+    context 'with an unsupported trade type' do
+      let(:unsupported_options) do
+        {
+          strategy_type: 'unsupported',
+          account_number: account_number,
+          quantity: quantity
+        }
+      end
+
+      it 'raises an error for unsupported trade strategies' do
+        expect {
+          described_class.build(**unsupported_options)
+        }.to raise_error('Unsupported trade strategy: unsupported')
+      end
+    end
+
+    context 'with no strategy type specified' do
+      let(:options) do
+        {
+          account_number: account_number,
+          quantity: quantity
+        }
+      end
+
+      it 'raises an error for missing strategy type' do
+        expect {
+          described_class.build(**options)
+        }.to raise_error('Unsupported trade strategy: none')
+      end
+    end
+  end
+end
