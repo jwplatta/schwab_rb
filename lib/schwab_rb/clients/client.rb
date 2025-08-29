@@ -23,6 +23,9 @@ module SchwabRb
 
       log_response(response, req_num)
       response
+    rescue StandardError => e
+      log_error(e, req_num)
+      raise e
     end
 
     def post(path, data = {})
@@ -40,6 +43,9 @@ module SchwabRb
       )
       log_response(response, req_num)
       response
+    rescue StandardError => e
+      log_error(e, req_num)
+      raise e
     end
 
     def put(path, data = {})
@@ -57,6 +63,9 @@ module SchwabRb
       )
       log_response(response, req_num)
       response
+    rescue StandardError => e
+      log_error(e, req_num)
+      raise e
     end
 
     def delete(path)
@@ -68,6 +77,9 @@ module SchwabRb
       response = session.delete(dest)
       log_response(response, req_num)
       response
+    rescue StandardError => e
+      log_error(e, req_num)
+      raise e
     end
 
     def log_request(method, req_num, dest, data = nil)
@@ -87,6 +99,11 @@ module SchwabRb
 
       redacted_body = SchwabRb::Redactor.redact_response_body(response)
       SchwabRb::Logger.logger.debug("Response body: #{JSON.pretty_generate(redacted_body)}") if redacted_body
+    end
+
+    def log_error(error, req_num)
+      SchwabRb::Logger.logger.error("Req #{req_num}: Error - #{error.message}")
+      SchwabRb::Logger.logger.debug("Backtrace: #{error.backtrace.join("\n")}")
     end
 
     def req_num
