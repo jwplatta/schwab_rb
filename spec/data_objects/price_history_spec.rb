@@ -32,17 +32,17 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
     it "returns hash representation" do
       result = price_history.to_h
       expect(result).to be_a(Hash)
-      expect(result).to have_key("symbol")
-      expect(result).to have_key("empty")
-      expect(result).to have_key("candles")
-      expect(result["candles"]).to be_an(Array)
+      expect(result).to have_key(:symbol)
+      expect(result).to have_key(:empty)
+      expect(result).to have_key(:candles)
+      expect(result[:candles]).to be_an(Array)
     end
 
     it "includes all candle data" do
       result = price_history.to_h
-      first_candle = result["candles"].first
+      first_candle = result[:candles].first
       expect(first_candle).to include(
-        "open", "high", "low", "close", "volume", "datetime"
+        :open, :high, :low, :close, :volume, :datetime
       )
     end
   end
@@ -230,12 +230,12 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
   describe SchwabRb::DataObjects::PriceHistory::Candle do
     let(:candle_data) do
       {
-        "open" => 598.44,
-        "high" => 601.22,
-        "low" => 596.47,
-        "close" => 597.44,
-        "volume" => 76_605_029,
-        "datetime" => 1_750_222_800_000
+        open: 598.44,
+        high: 601.22,
+        low: 596.47,
+        close: 597.44,
+        volume: 76_605_029,
+        datetime: 1_750_222_800_000
       }
     end
     let(:candle) { described_class.new(candle_data) }
@@ -266,7 +266,7 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
       end
 
       it "handles nil datetime" do
-        candle_nil = described_class.new(candle_data.merge("datetime" => nil))
+        candle_nil = described_class.new(candle_data.merge(datetime: nil))
         expect(candle_nil.date_time).to be_nil
       end
     end
@@ -295,14 +295,14 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
       end
 
       it "handles zero open price" do
-        zero_candle = described_class.new(candle_data.merge("open" => 0))
+        zero_candle = described_class.new(candle_data.merge(open: 0))
         expect(zero_candle.price_change_percent).to eq(0)
       end
     end
 
     describe "color predicates" do
       it "#is_green? returns true for green candle (close > open)" do
-        green_candle = described_class.new(candle_data.merge("close" => 600.0))
+        green_candle = described_class.new(candle_data.merge(close: 600.0))
         expect(green_candle.is_green?).to be(true)
         expect(candle.is_green?).to be(false) # red candle
       end
@@ -310,12 +310,12 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
       it "#is_red? returns true for red candle (close < open)" do
         expect(candle.is_red?).to be(true)
 
-        green_candle = described_class.new(candle_data.merge("close" => 600.0))
+        green_candle = described_class.new(candle_data.merge(close: 600.0))
         expect(green_candle.is_red?).to be(false)
       end
 
       it "#is_doji? returns true for doji candle (close == open)" do
-        doji_candle = described_class.new(candle_data.merge("close" => 598.44))
+        doji_candle = described_class.new(candle_data.merge(close: 598.44))
         expect(doji_candle.is_doji?).to be(true)
         expect(candle.is_doji?).to be(false)
       end

@@ -12,6 +12,8 @@ module SchwabRb
       end
 
       def initialize(data)
+        # Convert string keys to symbols if needed
+        data = data.transform_keys(&:to_sym) if data.respond_to?(:transform_keys)
         @symbol = data[:symbol]
         @empty = data[:empty]
         @candles = data[:candles]&.map { |candle_data| Candle.new(candle_data) } || []
@@ -45,7 +47,7 @@ module SchwabRb
 
       def candles_for_date_range(start_date, end_date)
         start_timestamp = start_date.to_time.to_i * 1000
-        end_timestamp = end_date.to_time.to_i * 1000
+        end_timestamp = (end_date.to_time + 24 * 60 * 60 - 1).to_i * 1000
 
         @candles.select do |candle|
           candle.datetime >= start_timestamp && candle.datetime <= end_timestamp
@@ -105,6 +107,8 @@ module SchwabRb
         attr_reader :open, :high, :low, :close, :volume, :datetime
 
         def initialize(data)
+          # Convert string keys to symbols if needed
+          data = data.transform_keys(&:to_sym) if data.respond_to?(:transform_keys)
           @open = data[:open]
           @high = data[:high]
           @low = data[:low]
