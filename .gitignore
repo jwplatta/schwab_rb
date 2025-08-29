@@ -9,3 +9,4 @@
 *.crt
 *.key
 token.json
+.rspec_status
