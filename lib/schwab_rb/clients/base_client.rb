@@ -555,11 +555,14 @@ module SchwabRb
       end
     end
 
-    def get_price_history_every_minute(symbol,
-                                       start_datetime: nil,
-                                       end_datetime: nil,
-                                       need_extended_hours_data: nil,
-                                       need_previous_close: nil)
+    def get_price_history_every_minute(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -568,22 +571,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::DAY,
-        period: SchwabRb::PriceHistory::Period::ONE_DAY,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::MINUTE,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_MINUTE,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+        period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+        frequency: SchwabRb::PriceHistory::Frequencies::EVERY_MINUTE,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_five_minutes(symbol,
-                                             start_datetime: nil,
-                                             end_datetime: nil,
-                                             need_extended_hours_data: nil,
-                                             need_previous_close: nil)
+    def get_price_history_every_five_minutes(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -592,22 +599,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::DAY,
-        period: SchwabRb::PriceHistory::Period::ONE_DAY,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::MINUTE,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_FIVE_MINUTES,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+        period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+        frequency: SchwabRb::PriceHistory::Frequencies::EVERY_FIVE_MINUTES,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_ten_minutes(symbol,
-                                            start_datetime: nil,
-                                            end_datetime: nil,
-                                            need_extended_hours_data: nil,
-                                            need_previous_close: nil)
+    def get_price_history_every_ten_minutes(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -616,22 +627,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::DAY,
-        period: SchwabRb::PriceHistory::Period::ONE_DAY,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::MINUTE,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_TEN_MINUTES,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+        period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+        frequency: SchwabRb::PriceHistory::Frequencies::EVERY_TEN_MINUTES,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_fifteen_minutes(symbol,
-                                                start_datetime: nil,
-                                                end_datetime: nil,
-                                                need_extended_hours_data: nil,
-                                                need_previous_close: nil)
+    def get_price_history_every_fifteen_minutes(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -640,22 +655,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::DAY,
-        period: SchwabRb::PriceHistory::Period::ONE_DAY,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::MINUTE,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_FIFTEEN_MINUTES,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+        period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+        frequency: SchwabRb::PriceHistory::Frequencies::EVERY_FIFTEEN_MINUTES,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_thirty_minutes(symbol,
-                                               start_datetime: nil,
-                                               end_datetime: nil,
-                                               need_extended_hours_data: nil,
-                                               need_previous_close: nil)
+    def get_price_history_every_thirty_minutes(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -664,22 +683,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::DAY,
-        period: SchwabRb::PriceHistory::Period::ONE_DAY,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::MINUTE,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_THIRTY_MINUTES,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+        period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+        frequency: SchwabRb::PriceHistory::Frequencies::EVERY_THIRTY_MINUTES,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_day(symbol,
-                                    start_datetime: nil,
-                                    end_datetime: nil,
-                                    need_extended_hours_data: nil,
-                                    need_previous_close: nil)
+    def get_price_history_every_day(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -688,22 +711,26 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::YEAR,
-        period: SchwabRb::PriceHistory::Period::TWENTY_YEARS,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::DAILY,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_MINUTE,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+        period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+        frequency: SchwabRb::PriceHistory::FrequencyTypes::EVERY_MINUTE,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
-    def get_price_history_every_week(symbol,
-                                     start_datetime: nil,
-                                     end_datetime: nil,
-                                     need_extended_hours_data: nil,
-                                     need_previous_close: nil)
+    def get_price_history_every_week(
+      symbol,
+      start_datetime: nil,
+      end_datetime: nil,
+      need_extended_hours_data: nil,
+      need_previous_close: nil,
+      return_data_objects: true
+    )
       refresh_token_if_needed
 
       start_datetime, end_datetime = normalize_start_and_end_datetimes(
@@ -712,14 +739,15 @@ module SchwabRb
 
       get_price_history(
         symbol,
-        period_type: SchwabRb::PriceHistory::PeriodType::YEAR,
-        period: SchwabRb::PriceHistory::Period::TWENTY_YEARS,
-        frequency_type: SchwabRb::PriceHistory::FrequencyType::WEEKLY,
-        frequency: SchwabRb::PriceHistory::Frequency::EVERY_MINUTE,
+        period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+        period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+        frequency_type: SchwabRb::PriceHistory::FrequencyTypes::WEEKLY,
+        frequency: SchwabRb::PriceHistory::FrequencyTypes::EVERY_MINUTE,
         start_datetime: start_datetime,
         end_datetime: end_datetime,
         need_extended_hours_data: need_extended_hours_data,
-        need_previous_close: need_previous_close
+        need_previous_close: need_previous_close,
+        return_data_objects: return_data_objects
       )
     end
 
