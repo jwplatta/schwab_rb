@@ -12,16 +12,16 @@ module SchwabRb
       end
 
       def initialize(data)
-        @symbol = data["symbol"]
-        @empty = data["empty"]
-        @candles = data["candles"]&.map { |candle_data| Candle.new(candle_data) } || []
+        @symbol = data[:symbol]
+        @empty = data[:empty]
+        @candles = data[:candles]&.map { |candle_data| Candle.new(candle_data) } || []
       end
 
       def to_h
         {
-          "symbol" => @symbol,
-          "empty" => @empty,
-          "candles" => @candles.map(&:to_h)
+          symbol: @symbol,
+          empty: @empty,
+          candles: @candles.map(&:to_h)
         }
       end
 
@@ -105,22 +105,22 @@ module SchwabRb
         attr_reader :open, :high, :low, :close, :volume, :datetime
 
         def initialize(data)
-          @open = data["open"]
-          @high = data["high"]
-          @low = data["low"]
-          @close = data["close"]
-          @volume = data["volume"]
-          @datetime = data["datetime"]
+          @open = data[:open]
+          @high = data[:high]
+          @low = data[:low]
+          @close = data[:close]
+          @volume = data[:volume]
+          @datetime = data[:datetime]
         end
 
         def to_h
           {
-            "open" => @open,
-            "high" => @high,
-            "low" => @low,
-            "close" => @close,
-            "volume" => @volume,
-            "datetime" => @datetime
+            open: @open,
+            high: @high,
+            low: @low,
+            close: @close,
+            volume: @volume,
+            datetime: @datetime
           }
         end
 
