@@ -247,7 +247,8 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
         expect(candle.low).to eq(596.47)
         expect(candle.close).to eq(597.44)
         expect(candle.volume).to eq(76_605_029)
-        expect(candle.datetime).to eq(1_750_222_800_000)
+        expect(candle.datetime).to be_a(Time)
+        expect(candle.datetime.year).to eq(2025)
       end
     end
 
@@ -258,16 +259,16 @@ RSpec.describe SchwabRb::DataObjects::PriceHistory do
       end
     end
 
-    describe "#date_time" do
+    describe "#datetime" do
       it "converts datetime to Time object" do
-        time = candle.date_time
+        time = candle.datetime
         expect(time).to be_a(Time)
         expect(time.year).to eq(2025)
       end
 
-      it "handles nil datetime" do
+      it "handles nil datetime_ms" do
         candle_nil = described_class.new(candle_data.merge(datetime: nil))
-        expect(candle_nil.date_time).to be_nil
+        expect(candle_nil.datetime).to be_nil
       end
     end
 

@@ -124,7 +124,7 @@ module SchwabRb
             low: @low,
             close: @close,
             volume: @volume,
-            datetime: @datetime
+            datetime: @datetime_ms
           }
         end
 
