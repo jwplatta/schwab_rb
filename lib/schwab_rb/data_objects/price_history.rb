@@ -50,7 +50,7 @@ module SchwabRb
         end_timestamp = (end_date.to_time + 24 * 60 * 60 - 1).to_i * 1000
 
         @candles.select do |candle|
-          candle.datetime >= start_timestamp && candle.datetime <= end_timestamp
+          candle.datetime_ms >= start_timestamp && candle.datetime_ms <= end_timestamp
         end
       end
 
@@ -104,7 +104,7 @@ module SchwabRb
       include Enumerable
 
       class Candle
-        attr_reader :open, :high, :low, :close, :volume, :datetime
+        attr_reader :open, :high, :low, :close, :volume, :datetime_ms
 
         def initialize(data)
           # Convert string keys to symbols if needed
@@ -114,7 +114,7 @@ module SchwabRb
           @low = data[:low]
           @close = data[:close]
           @volume = data[:volume]
-          @datetime = data[:datetime]
+          @datetime_ms = data[:datetime]
         end
 
         def to_h
@@ -128,12 +128,12 @@ module SchwabRb
           }
         end
 
-        def date_time
-          Time.at(@datetime / 1000.0) if @datetime
+        def datetime
+          Time.at(@datetime_ms / 1000.0) if @datetime_ms
         end
 
         def date
-          date_time&.to_date
+          datetime&.to_date
         end
 
         def price_change
