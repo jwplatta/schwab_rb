@@ -17,6 +17,37 @@ module SchwabRb
 
     class RedirectServerExitedError < StandardError; end
 
+    class OS
+      def self.windows?
+        (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM) != nil
+      end
+
+      def self.mac?
+        (/darwin/ =~ RUBY_PLATFORM) != nil
+      end
+
+      def self.unix?
+        !windows?
+      end
+
+      def self.linux?
+        unix? && !mac?
+      end
+
+      def self.open_cmd
+        return "open" if mac?
+        return %w[start msedge] if windows?
+
+        "xdg-open"
+      end
+    end
+
+    class BrowserLauncher
+      def self.open(command)
+        `#{command.join(" ")}`
+      end
+    end
+
     # class TokenExchangeError < StandardError
     #   def initialize(msg)
     #     super(msg)
@@ -100,7 +131,7 @@ module SchwabRb
           gets
         end
 
-        `open "#{auth_context.authorization_url}}"`
+        open_browser(requested_browser, auth_context.authorization_url)
 
         timeout_time = Time.now + callback_timeout
         received_url = nil
@@ -125,6 +156,17 @@ module SchwabRb
       ensure
         LoginFlowServer.stop
       end
+    end
+
+    def self.open_browser(browser, url, browser_launcher: BrowserLauncher)
+      open_args = Array(OS.open_cmd)
+      if !browser.nil? && !browser.strip.empty? && OS.mac?
+        open_args << "-a"
+        open_args << browser.gsub(" ", "\\ ")
+      end
+      open_args << %("#{url}")
+      
+      browser_launcher.open open_args
     end
 
     def self.create_ssl_certificate
