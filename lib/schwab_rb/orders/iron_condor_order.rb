@@ -7,7 +7,6 @@ module SchwabRb
     class IronCondorOrder
       class << self
         def build(
-          account_number:,
           put_short_symbol:,
           put_long_symbol:,
           call_short_symbol:,
@@ -18,8 +17,7 @@ module SchwabRb
           quantity: 1
         )
           schwab_order_builder.new.tap do |builder|
-            builder.set_account_number(account_number)
-            builder.set_order_strategy_type('SINGLE')
+            builder.set_order_strategy_type(SchwabRb::Order::OrderStrategyTypes::SINGLE)
             builder.set_session(SchwabRb::Orders::Session::NORMAL)
             builder.set_duration(SchwabRb::Orders::Duration::DAY)
             builder.set_order_type(order_type(credit_debit))
