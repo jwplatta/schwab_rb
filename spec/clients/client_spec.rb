@@ -59,6 +59,36 @@ describe SchwabRb::Client do
       expect(resp.status).to eq(ResponseFactory.account_response.status)
       expect(resp.body).to eq(ResponseFactory.account_response.body)
     end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.account_response.body,
+          status: ResponseFactory.account_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.get_account(account_name: "my_trading", return_data_objects: false)
+      expect(resp.status).to eq(ResponseFactory.account_response.status)
+      expect(resp.body).to eq(ResponseFactory.account_response.body)
+    end
+
+    it "raises error when account_name not found" do
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("nonexistent")
+        .and_return(nil)
+
+      expect do
+        client.get_account(account_name: "nonexistent")
+      end.to raise_error(ArgumentError, /Account name 'nonexistent' not found/)
+    end
   end
 
   describe "#get_accounts" do
@@ -104,6 +134,25 @@ describe SchwabRb::Client do
       expect(resp.status).to eq(ResponseFactory.order_response.status)
       expect(resp.body).to eq(ResponseFactory.order_response.body)
     end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.order_response.body,
+          status: ResponseFactory.order_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.get_order("12345", account_name: "my_trading", return_data_objects: false)
+      expect(resp.status).to eq(ResponseFactory.order_response.status)
+      expect(resp.body).to eq(ResponseFactory.order_response.body)
+    end
   end
 
   describe "#cancel_order" do
@@ -121,6 +170,25 @@ describe SchwabRb::Client do
       expect(resp.status).to eq(ResponseFactory.cancel_order_response.status)
       expect(resp.body).to eq(ResponseFactory.cancel_order_response.body)
     end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:delete).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.cancel_order_response.body,
+          status: ResponseFactory.cancel_order_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.cancel_order("12345", account_name: "my_trading")
+      expect(resp.status).to eq(ResponseFactory.cancel_order_response.status)
+      expect(resp.body).to eq(ResponseFactory.cancel_order_response.body)
+    end
   end
 
   describe "#get_account_orders" do
@@ -134,6 +202,25 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       resp = client.get_account_orders(account_hash, return_data_objects: false)
+      expect(resp.status).to eq(ResponseFactory.account_orders_response.status)
+      expect(resp.body).to eq(ResponseFactory.account_orders_response.body)
+    end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.account_orders_response.body,
+          status: ResponseFactory.account_orders_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.get_account_orders(account_name: "my_trading", return_data_objects: false)
       expect(resp.status).to eq(ResponseFactory.account_orders_response.status)
       expect(resp.body).to eq(ResponseFactory.account_orders_response.body)
     end
@@ -165,7 +252,27 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_spec = double("OrderSpec", build: {})
-      resp = client.place_order(account_hash, order_spec)
+      resp = client.place_order(order_spec, account_hash)
+      expect(resp.status).to eq(ResponseFactory.place_order_response.status)
+      expect(resp.body).to eq(ResponseFactory.place_order_response.body)
+    end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:post).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.place_order_response.body,
+          status: ResponseFactory.place_order_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      order_spec = double("OrderSpec", build: {})
+      resp = client.place_order(order_spec, account_name: "my_trading")
       expect(resp.status).to eq(ResponseFactory.place_order_response.status)
       expect(resp.body).to eq(ResponseFactory.place_order_response.body)
     end
@@ -183,7 +290,27 @@ describe SchwabRb::Client do
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_id = "12345"
       order_spec = double("OrderSpec", build: {})
-      resp = client.replace_order(account_hash, order_id, order_spec)
+      resp = client.replace_order(order_id, order_spec, account_hash)
+      expect(resp.status).to eq(ResponseFactory.replace_order_response.status)
+      expect(resp.body).to eq(ResponseFactory.replace_order_response.body)
+    end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:put).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.replace_order_response.body,
+          status: ResponseFactory.replace_order_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      order_spec = double("OrderSpec", build: {})
+      resp = client.replace_order("12345", order_spec, account_name: "my_trading")
       expect(resp.status).to eq(ResponseFactory.replace_order_response.status)
       expect(resp.body).to eq(ResponseFactory.replace_order_response.body)
     end
@@ -200,7 +327,27 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_spec = double("OrderSpec", build: {})
-      resp = client.preview_order(account_hash, order_spec, return_data_objects: false)
+      resp = client.preview_order(order_spec, account_hash, return_data_objects: false)
+      expect(resp.status).to eq(ResponseFactory.preview_order_response.status)
+      expect(resp.body).to eq(ResponseFactory.preview_order_response.body)
+    end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:post).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.preview_order_response.body,
+          status: ResponseFactory.preview_order_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      order_spec = double("OrderSpec", build: {})
+      resp = client.preview_order(order_spec, account_name: "my_trading", return_data_objects: false)
       expect(resp.status).to eq(ResponseFactory.preview_order_response.status)
       expect(resp.body).to eq(ResponseFactory.preview_order_response.body)
     end
@@ -230,6 +377,29 @@ describe SchwabRb::Client do
       expect(resp.status).to eq(ResponseFactory.transactions_response.status)
       expect(resp.body).to eq(ResponseFactory.transactions_response.body)
     end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.transactions_response.body,
+          status: ResponseFactory.transactions_response.status
+        )
+      )
+      allow(URI).to receive(:encode_www_form).and_call_original
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      start_date = DateTime.new(2024, 11, 19, 2, 35, 31.075)
+      end_date = DateTime.new(2025, 1, 18, 2, 35, 31.075)
+      resp = client.get_transactions(account_name: "my_trading", start_date: start_date, end_date: end_date, return_data_objects: false)
+
+      expect(resp.status).to eq(ResponseFactory.transactions_response.status)
+      expect(resp.body).to eq(ResponseFactory.transactions_response.body)
+    end
   end
   describe "#get_transaction" do
     let(:transaction_resp) { ResponseFactory.transaction_response }
@@ -244,7 +414,27 @@ describe SchwabRb::Client do
 
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_id = "12345"
-      resp = client.get_transaction(account_hash, order_id, return_data_objects: false)
+      resp = client.get_transaction(order_id, account_hash, return_data_objects: false)
+
+      expect(resp.status).to eq(transaction_resp.status)
+      expect(resp.body).to eq(transaction_resp.body)
+    end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: transaction_resp.body,
+          status: transaction_resp.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.get_transaction(nil, "12345", account_name: "my_trading", return_data_objects: false)
 
       expect(resp.status).to eq(transaction_resp.status)
       expect(resp.body).to eq(transaction_resp.body)

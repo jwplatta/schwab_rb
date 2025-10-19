@@ -49,27 +49,33 @@ module SchwabRb
       @token_manager.token_age
     end
 
-    def get_account(account_hash, fields: nil, return_data_objects: true)
-      # Account balances, positions, and orders for a given account hash.
+    def get_account(account_hash = nil, account_name: nil, fields: nil, return_data_objects: true)
+      # Account balances, positions, and orders for a given account.
       #
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      params = {}
-      params[:fields] = fields.join(",") if fields
+        fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
 
-      path = "/trader/v1/accounts/#{account_hash}"
-      response = get(path, params)
+        params = {}
+        params[:fields] = fields.join(",") if fields
 
-      if return_data_objects
-        account_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::Account.build(account_data)
-      else
-        response
+        path = "/trader/v1/accounts/#{resolved_hash}"
+        response = get(path, params)
+
+        if return_data_objects
+          account_data = JSON.parse(response.body, symbolize_names: true)
+          SchwabRb::DataObjects::Account.build(account_data)
+        else
+          response
+        end
       end
     end
 
@@ -109,46 +115,74 @@ module SchwabRb
       path = "/trader/v1/accounts/accountNumbers"
       response = get(path, {})
 
+      account_numbers_data = JSON.parse(response.body, symbolize_names: true)
+
+      begin
+        hash_manager = SchwabRb::AccountHashManager.new
+        hash_manager.update_hashes_from_api_response(account_numbers_data)
+      rescue SchwabRb::AccountHashManager::AccountNamesFileNotFoundError
+        # Silently skip if account names file doesn't exist - not all users will use this feature
+      end
+
       if return_data_objects
-        account_numbers_data = JSON.parse(response.body, symbolize_names: true)
         SchwabRb::DataObjects::AccountNumbers.build(account_numbers_data)
       else
         response
       end
     end
 
-    def get_order(order_id, account_hash, return_data_objects: true)
+    def available_account_names
+      # Returns a list of available account names from account_names.json
+      # Returns empty array if account_names.json doesn't exist
+      #
+      # @return [Array<String>] List of account names
+      hash_manager = SchwabRb::AccountHashManager.new
+      hash_manager.available_account_names
+    end
+
+    def get_order(order_id, account_hash = nil, account_name: nil, return_data_objects: true)
       # Get a specific order for a specific account by its order ID.
       #
       # @param order_id [String] The order ID.
-      # @param account_hash [String] The account hash.
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
-      response = get(path, {})
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      if return_data_objects
-        order_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::Order.build(order_data)
-      else
-        response
+        path = "/trader/v1/accounts/#{resolved_hash}/orders/#{order_id}"
+        response = get(path, {})
+
+        if return_data_objects
+          order_data = JSON.parse(response.body, symbolize_names: true)
+          SchwabRb::DataObjects::Order.build(order_data)
+        else
+          response
+        end
       end
     end
 
-    def cancel_order(order_id, account_hash)
+    def cancel_order(order_id, account_hash = nil, account_name: nil)
       # Cancel a specific order for a specific account.
       #
       # @param order_id [String] The order ID.
-      # @param account_hash [String] The account hash.
-      refresh_token_if_needed
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param account_name [String] The account name from account_names.json (takes priority)
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
-      delete(path)
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
+
+        path = "/trader/v1/accounts/#{resolved_hash}/orders/#{order_id}"
+        delete(path)
+      end
     end
 
     def get_account_orders(
-      account_hash,
+      account_hash = nil,
+      account_name: nil,
       max_results: nil,
       from_entered_datetime: nil,
       to_entered_datetime: nil,
@@ -157,34 +191,40 @@ module SchwabRb
     )
       # Orders for a specific account. Optionally specify a single status on which to filter.
       #
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param max_results [Integer] The maximum number of orders to retrieve.
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      from_entered_datetime = DateTime.now.new_offset(0) - 60 if from_entered_datetime.nil?
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      to_entered_datetime = DateTime.now if to_entered_datetime.nil?
+        from_entered_datetime = DateTime.now.new_offset(0) - 60 if from_entered_datetime.nil?
 
-      status = convert_enum(status, SchwabRb::Order::Statuses) if status
+        to_entered_datetime = DateTime.now if to_entered_datetime.nil?
 
-      path = "/trader/v1/accounts/#{account_hash}/orders"
-      params = make_order_query(
-        max_results: max_results,
-        from_entered_datetime: from_entered_datetime,
-        to_entered_datetime: to_entered_datetime,
-        status: status
-      )
+        status = convert_enum(status, SchwabRb::Order::Statuses) if status
 
-      response = get(path, params)
+        path = "/trader/v1/accounts/#{resolved_hash}/orders"
+        params = make_order_query(
+          max_results: max_results,
+          from_entered_datetime: from_entered_datetime,
+          to_entered_datetime: to_entered_datetime,
+          status: status
+        )
 
-      if return_data_objects
-        orders_data = JSON.parse(response.body, symbolize_names: true)
-        orders_data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
-      else
-        response
+        response = get(path, params)
+
+        if return_data_objects
+          orders_data = JSON.parse(response.body, symbolize_names: true)
+          orders_data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
+        else
+          response
+        end
       end
     end
 
@@ -222,53 +262,79 @@ module SchwabRb
       end
     end
 
-    def place_order(account_hash, order_spec)
+    def place_order(order_spec, account_hash = nil, account_name: nil)
       # Place an order for a specific account. If order creation is successful,
       # the response will contain the ID of the generated order.
       #
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param order_spec [Hash, SchwabRb::Orders::Builder] The order specification
+      # @param account_name [String] The account name from account_names.json (takes priority)
+      #
       # Note: Unlike most methods in this library, successful responses typically
       # do not contain JSON data, and attempting to extract it may raise an exception.
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      path = "/trader/v1/accounts/#{account_hash}/orders"
-      post(path, order_spec)
+        order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
+
+        path = "/trader/v1/accounts/#{resolved_hash}/orders"
+        post(path, order_spec)
+      end
     end
 
-    def replace_order(account_hash, order_id, order_spec)
+    def replace_order(order_id, order_spec, account_hash = nil, account_name: nil)
       # Replace an existing order for an account.
       # The existing order will be replaced by the new order.
       # Once replaced, the old order will be canceled and a new order will be created.
-      refresh_token_if_needed
+      #
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param order_id [String] The order ID to replace
+      # @param order_spec [Hash, SchwabRb::Orders::Builder] The new order specification
+      # @param account_name [String] The account name from account_names.json (takes priority)
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      path = "/trader/v1/accounts/#{account_hash}/orders/#{order_id}"
-      put(path, order_spec)
+        order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
+
+        path = "/trader/v1/accounts/#{resolved_hash}/orders/#{order_id}"
+        put(path, order_spec)
+      end
     end
 
-    def preview_order(account_hash, order_spec, return_data_objects: true)
+    def preview_order(order_spec, account_hash = nil, account_name: nil, return_data_objects: true)
       # Preview an order, i.e., test whether an order would be accepted by the
       # API and see the structure it would result in.
+      #
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param order_spec [Hash, SchwabRb::Orders::Builder] The order specification to preview
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      path = "/trader/v1/accounts/#{account_hash}/previewOrder"
-      response = post(path, order_spec)
+        order_spec = order_spec.build if order_spec.is_a?(SchwabRb::Orders::Builder)
 
-      if return_data_objects
-        preview_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::OrderPreview.build(preview_data)
-      else
-        response
+        path = "/trader/v1/accounts/#{resolved_hash}/previewOrder"
+        response = post(path, order_spec)
+
+        if return_data_objects
+          preview_data = JSON.parse(response.body, symbolize_names: true)
+          SchwabRb::DataObjects::OrderPreview.build(preview_data)
+        else
+          response
+        end
       end
     end
 
     def get_transactions(
-      account_hash,
+      account_hash = nil,
+      account_name: nil,
       start_date: nil,
       end_date: nil,
       transaction_types: nil,
@@ -277,69 +343,78 @@ module SchwabRb
     )
       # Transactions for a specific account.
       #
-      # @param account_hash [String] Account hash corresponding to the account.
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param start_date [Date, DateTime] Start date for transactions (default: 60 days ago).
       # @param end_date [Date, DateTime] End date for transactions (default: now).
       # @param transaction_types [Array] List of transaction types to filter by.
       # @param symbol [String] Filter transactions by the specified symbol.
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      transaction_types = if transaction_types
-                            convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
-      else
-        get_valid_enum_values(SchwabRb::Transaction::Types)
-                          end
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      start_date = if start_date.nil?
-                     format_date_as_iso("start_date", DateTime.now.new_offset(0) - 60)
-      else
-        format_date_as_iso("start_date", start_date)
+        transaction_types = if transaction_types
+                              convert_enum_iterable(transaction_types, SchwabRb::Transaction::Types)
+        else
+          get_valid_enum_values(SchwabRb::Transaction::Types)
+                            end
+
+        start_date = if start_date.nil?
+                       format_date_as_iso("start_date", DateTime.now.new_offset(0) - 60)
+        else
+          format_date_as_iso("start_date", start_date)
+                     end
+
+        end_date = if end_date.nil?
+                     format_date_as_iso("end_date", DateTime.now.new_offset(0))
+        else
+          format_date_as_iso("end_date", end_date)
                    end
 
-      end_date = if end_date.nil?
-                   format_date_as_iso("end_date", DateTime.now.new_offset(0))
-      else
-        format_date_as_iso("end_date", end_date)
-                 end
+        params = {
+          "types" => transaction_types.sort.join(","),
+          "startDate" => start_date,
+          "endDate" => end_date
+        }
+        params["symbol"] = symbol unless symbol.nil?
 
-      params = {
-        "types" => transaction_types.sort.join(","),
-        "startDate" => start_date,
-        "endDate" => end_date
-      }
-      params["symbol"] = symbol unless symbol.nil?
+        path = "/trader/v1/accounts/#{resolved_hash}/transactions"
+        response = get(path, params)
 
-      path = "/trader/v1/accounts/#{account_hash}/transactions"
-      response = get(path, params)
-
-      if return_data_objects
-        transactions_data = JSON.parse(response.body, symbolize_names: true)
-        transactions_data.map do |transaction_data|
-          SchwabRb::DataObjects::Transaction.build(transaction_data)
+        if return_data_objects
+          transactions_data = JSON.parse(response.body, symbolize_names: true)
+          transactions_data.map do |transaction_data|
+            SchwabRb::DataObjects::Transaction.build(transaction_data)
+          end
+        else
+          response
         end
-      else
-        response
       end
     end
 
-    def get_transaction(account_hash, activity_id, return_data_objects: true)
+    def get_transaction(activity_id, account_hash = nil, account_name: nil, return_data_objects: true)
       # Transaction for a specific account.
       #
-      # @param account_hash [String] Account hash corresponding to the account whose
-      #                              transactions should be returned.
-      # @param activity_id [String] ID of the order for which to return data.
+      # @param account_hash [String] The account hash (optional if account_name provided)
+      # @param activity_id [String] ID of the transaction to retrieve
+      # @param account_name [String] The account name from account_names.json (takes priority)
       # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
-      refresh_token_if_needed
+      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
-      path = "/trader/v1/accounts/#{account_hash}/transactions/#{activity_id}"
-      response = get(path, {})
+      with_account_hash_retry(resolved_hash) do
+        refresh_token_if_needed
 
-      if return_data_objects
-        transaction_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::Transaction.build(transaction_data)
-      else
-        response
+        path = "/trader/v1/accounts/#{resolved_hash}/transactions/#{activity_id}"
+        response = get(path, {})
+
+        if return_data_objects
+          transaction_data = JSON.parse(response.body, symbolize_names: true)
+          SchwabRb::DataObjects::Transaction.build(transaction_data)
+        else
+          response
+        end
       end
     end
 
@@ -854,6 +929,47 @@ module SchwabRb
     end
 
     private
+
+    # Resolves account identifier to actual account hash
+    # Accepts either account name (looked up in account_hashes.json) or direct hash
+    # Priority: account_name > account_hash
+    def resolve_account_hash(account_name: nil, account_hash: nil)
+      # If account_name is provided, look it up
+      if account_name
+        hash_manager = SchwabRb::AccountHashManager.new
+        resolved_hash = hash_manager.get_hash_by_name(account_name)
+
+        unless resolved_hash
+          raise ArgumentError,
+                "Account name '#{account_name}' not found in account hashes. " \
+                "Make sure get_account_numbers has been called to populate hashes."
+        end
+
+        return resolved_hash
+      end
+
+      # Fall back to account_hash if provided
+      if account_hash
+        return account_hash
+      end
+
+      # Neither was provided
+      raise ArgumentError, "Either account_name or account_hash must be provided"
+    end
+
+    # Wraps API calls that use account_hash with retry logic for stale hashes
+    def with_account_hash_retry(account_hash)
+      yield
+    rescue StandardError => e
+      # Try refreshing account hashes and retry once
+      begin
+        get_account_numbers
+        yield
+      rescue StandardError => retry_error
+        # If it fails again, raise the retry error
+        raise retry_error
+      end
+    end
 
     def make_order_query(
       max_results: nil,
