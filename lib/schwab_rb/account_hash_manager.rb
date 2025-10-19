@@ -59,18 +59,15 @@ module SchwabRb
       updated_hashes
     end
 
-    # Get account hash by name
     def get_hash_by_name(account_name)
       hashes = load_account_hashes
       hashes[account_name]
     end
 
-    # Get all account hashes
     def get_all_hashes
       load_account_hashes
     end
 
-    # Get list of available account names from account_names.json
     def available_account_names
       begin
         load_account_names.keys
