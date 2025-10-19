@@ -59,6 +59,36 @@ describe SchwabRb::Client do
       expect(resp.status).to eq(ResponseFactory.account_response.status)
       expect(resp.body).to eq(ResponseFactory.account_response.body)
     end
+
+    it "accepts account_name parameter" do
+      allow(session).to receive(:get).and_return(
+        instance_double(
+          OAuth2::Response,
+          body: ResponseFactory.account_response.body,
+          status: ResponseFactory.account_response.status
+        )
+      )
+
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("my_trading")
+        .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
+
+      resp = client.get_account(account_name: "my_trading", return_data_objects: false)
+      expect(resp.status).to eq(ResponseFactory.account_response.status)
+      expect(resp.body).to eq(ResponseFactory.account_response.body)
+    end
+
+    it "raises error when account_name not found" do
+      hash_manager = instance_double(SchwabRb::AccountHashManager)
+      allow(SchwabRb::AccountHashManager).to receive(:new).and_return(hash_manager)
+      allow(hash_manager).to receive(:get_hash_by_name).with("nonexistent")
+        .and_return(nil)
+
+      expect do
+        client.get_account(account_name: "nonexistent")
+      end.to raise_error(ArgumentError, /Account name 'nonexistent' not found/)
+    end
   end
 
   describe "#get_accounts" do
