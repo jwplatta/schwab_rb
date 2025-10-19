@@ -14,12 +14,13 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
       allow(SchwabRb::Orders::IronCondorOrder).to receive(:build).and_return(order_builder)
       allow(SchwabRb::Orders::VerticalOrder).to receive(:build).and_return(order_builder)
       allow(SchwabRb::Orders::SingleOrder).to receive(:build).and_return(order_builder)
+      allow(SchwabRb::Orders::OcoOrder).to receive(:build).and_return(order_builder)
     end
 
     context 'with an iron condor trade' do
       let(:iron_condor_options) do
         {
-          strategy_type: 'ironcondor',
+          strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::IRON_CONDOR,
           account_number: account_number,
           quantity: quantity,
           price: price,
@@ -74,7 +75,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
       end
 
       context 'with call spread' do
-        let(:call_spread_options) { vertical_options.merge(strategy_type: 'vertical') }
+        let(:call_spread_options) { vertical_options.merge(strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL) }
 
         it 'delegates to VerticalOrder.build with explicit parameters' do
           described_class.build(**call_spread_options)
@@ -105,7 +106,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
       end
 
       context 'with put spread' do
-        let(:put_spread_options) { vertical_options.merge(strategy_type: 'vertical') }
+        let(:put_spread_options) { vertical_options.merge(strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL) }
 
         it 'delegates to VerticalOrder.build with explicit parameters' do
           described_class.build(**put_spread_options)
@@ -139,7 +140,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
     context 'with a single option order' do
       let(:single_options) do
         {
-          strategy_type: 'single',
+          strategy_type: SchwabRb::Order::OrderStrategyTypes::SINGLE,
           account_number: account_number,
           quantity: quantity,
           price: price,
@@ -169,6 +170,45 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
           credit_debit: :credit,
           order_instruction: :exit,
           quantity: quantity
+        )
+      end
+    end
+
+    context 'with an OCO order' do
+      let(:child_order_specs) do
+        [
+          {
+            strategy_type: SchwabRb::Order::OrderStrategyTypes::SINGLE,
+            symbol: 'XYZ   240315C00500000',
+            price: 45.97,
+            account_number: account_number,
+            order_instruction: :close,
+            credit_debit: :credit,
+            quantity: 2
+          },
+          {
+            strategy_type: SchwabRb::Order::OrderStrategyTypes::SINGLE,
+            symbol: 'XYZ   240315C00500000',
+            price: 37.00,
+            account_number: account_number,
+            order_instruction: :close,
+            credit_debit: :credit,
+            quantity: 2
+          }
+        ]
+      end
+
+      let(:oco_options) do
+        {
+          strategy_type: SchwabRb::Order::OrderStrategyTypes::OCO,
+          child_order_specs: child_order_specs
+        }
+      end
+
+      it 'delegates to OcoOrder.build with child order specifications' do
+        described_class.build(**oco_options)
+        expect(SchwabRb::Orders::OcoOrder).to have_received(:build).with(
+          child_order_specs: child_order_specs
         )
       end
     end
