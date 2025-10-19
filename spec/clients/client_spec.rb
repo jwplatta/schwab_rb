@@ -252,7 +252,7 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_spec = double("OrderSpec", build: {})
-      resp = client.place_order(account_hash, order_spec)
+      resp = client.place_order(order_spec, account_hash)
       expect(resp.status).to eq(ResponseFactory.place_order_response.status)
       expect(resp.body).to eq(ResponseFactory.place_order_response.body)
     end
@@ -290,7 +290,7 @@ describe SchwabRb::Client do
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_id = "12345"
       order_spec = double("OrderSpec", build: {})
-      resp = client.replace_order(account_hash, order_id, order_spec)
+      resp = client.replace_order(order_id, order_spec, account_hash)
       expect(resp.status).to eq(ResponseFactory.replace_order_response.status)
       expect(resp.body).to eq(ResponseFactory.replace_order_response.body)
     end
@@ -327,7 +327,7 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_spec = double("OrderSpec", build: {})
-      resp = client.preview_order(account_hash, order_spec, return_data_objects: false)
+      resp = client.preview_order(order_spec, account_hash, return_data_objects: false)
       expect(resp.status).to eq(ResponseFactory.preview_order_response.status)
       expect(resp.body).to eq(ResponseFactory.preview_order_response.body)
     end
@@ -414,7 +414,7 @@ describe SchwabRb::Client do
 
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_id = "12345"
-      resp = client.get_transaction(account_hash, order_id, return_data_objects: false)
+      resp = client.get_transaction(order_id, account_hash, return_data_objects: false)
 
       expect(resp.status).to eq(transaction_resp.status)
       expect(resp.body).to eq(transaction_resp.body)

@@ -262,7 +262,7 @@ module SchwabRb
       end
     end
 
-    def place_order(account_hash = nil, order_spec, account_name: nil)
+    def place_order(order_spec, account_hash = nil, account_name: nil)
       # Place an order for a specific account. If order creation is successful,
       # the response will contain the ID of the generated order.
       #
@@ -284,7 +284,7 @@ module SchwabRb
       end
     end
 
-    def replace_order(account_hash = nil, order_id, order_spec, account_name: nil)
+    def replace_order(order_id, order_spec, account_hash = nil, account_name: nil)
       # Replace an existing order for an account.
       # The existing order will be replaced by the new order.
       # Once replaced, the old order will be canceled and a new order will be created.
@@ -305,7 +305,7 @@ module SchwabRb
       end
     end
 
-    def preview_order(account_hash = nil, order_spec, account_name: nil, return_data_objects: true)
+    def preview_order(order_spec, account_hash = nil, account_name: nil, return_data_objects: true)
       # Preview an order, i.e., test whether an order would be accepted by the
       # API and see the structure it would result in.
       #
@@ -394,7 +394,7 @@ module SchwabRb
       end
     end
 
-    def get_transaction(account_hash = nil, activity_id, account_name: nil, return_data_objects: true)
+    def get_transaction(activity_id, account_hash = nil, account_name: nil, return_data_objects: true)
       # Transaction for a specific account.
       #
       # @param account_hash [String] The account hash (optional if account_name provided)
