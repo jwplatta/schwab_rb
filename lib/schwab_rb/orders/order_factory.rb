@@ -19,7 +19,6 @@ module SchwabRb
               call_short_symbol: options[:call_short_symbol],
               call_long_symbol: options[:call_long_symbol],
               price: options[:price],
-              account_number: options[:account_number],
               credit_debit: options[:credit_debit] || :credit,
               order_instruction: options[:order_instruction] || :open,
               quantity: options[:quantity] || 1
@@ -29,7 +28,6 @@ module SchwabRb
               short_leg_symbol: options[:short_leg_symbol],
               long_leg_symbol: options[:long_leg_symbol],
               price: options[:price],
-              account_number: options[:account_number],
               credit_debit: options[:credit_debit] || :credit,
               order_instruction: options[:order_instruction] || :open,
               quantity: options[:quantity] || 1
@@ -38,7 +36,6 @@ module SchwabRb
             SingleOrder.build(
               symbol: options[:symbol],
               price: options[:price],
-              account_number: options[:account_number],
               credit_debit: options[:credit_debit] || :credit,
               order_instruction: options[:order_instruction] || :open,
               quantity: options[:quantity] || 1
