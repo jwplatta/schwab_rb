@@ -39,23 +39,23 @@ module SchwabRb
           end
         end
 
-        def short_leg_instruction(order_instruction, credit_debit)
+        def short_leg_instruction(order_instruction)
           if order_instruction == :open
             SchwabRb::Orders::OptionInstructions::SELL_TO_OPEN
           elsif order_instruction == :close
             SchwabRb::Orders::OptionInstructions::BUY_TO_CLOSE
           else
-            raise "Unsupported order instruction: #{order_instruction} with credit/debit: #{credit_debit}"
+            raise "Unsupported order instruction: #{order_instruction}"
           end
         end
 
-        def long_leg_instruction(order_instruction, credit_debit)
+        def long_leg_instruction(order_instruction)
           if order_instruction == :open
             SchwabRb::Orders::OptionInstructions::BUY_TO_OPEN
           elsif order_instruction == :close
             SchwabRb::Orders::OptionInstructions::SELL_TO_CLOSE
           else
-            raise "Unsupported order instruction: #{order_instruction} with credit/debit: #{credit_debit}"
+            raise "Unsupported order instruction: #{order_instruction}"
           end
         end
 
