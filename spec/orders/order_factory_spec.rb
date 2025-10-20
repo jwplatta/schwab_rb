@@ -39,7 +39,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
           call_short_symbol: 'SPX_CALL_SHORT',
           call_long_symbol: 'SPX_CALL_LONG',
           price: price,
-          account_number: account_number,
+          duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :open,
           quantity: quantity
@@ -55,7 +55,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
           call_short_symbol: 'SPX_CALL_SHORT',
           call_long_symbol: 'SPX_CALL_LONG',
           price: price,
-          account_number: account_number,
+          duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :exit,
           quantity: quantity
@@ -83,7 +83,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
-            account_number: account_number,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :open,
             quantity: quantity
@@ -97,7 +98,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
-            account_number: account_number,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :exit,
             quantity: quantity
@@ -114,7 +116,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
-            account_number: account_number,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :open,
             quantity: quantity
@@ -128,7 +131,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
-            account_number: account_number,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :exit,
             quantity: quantity
@@ -153,7 +157,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
         expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
           symbol: 'SPX_OPTION',
           price: price,
-          account_number: account_number,
+          order_type: nil,
+          duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :open,
           quantity: quantity
@@ -166,7 +171,8 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
         expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
           symbol: 'SPX_OPTION',
           price: price,
-          account_number: account_number,
+          order_type: nil,
+          duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :exit,
           quantity: quantity
