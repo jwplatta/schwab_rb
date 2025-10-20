@@ -45,6 +45,8 @@ oco_order = SchwabRb::Orders::OrderFactory.build(
       strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL,
       short_leg_symbol: "SPXW  251020P06530000",
       long_leg_symbol: "SPXW  251020P06510000",
+      order_type: SchwabRb::Order::Types::STOP_LIMIT,
+      stop:
       price: 0.3,
       order_instruction: :close,
       credit_debit: :debit,
@@ -54,6 +56,7 @@ oco_order = SchwabRb::Orders::OrderFactory.build(
       strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL,
       short_leg_symbol: "SPXW  251020C06770000",
       long_leg_symbol: "SPXW  251020C06790000",
+      order_type: SchwabRb::Order::Types::STOP_LIMIT,
       price: 0.3,
       order_instruction: :close,
       credit_debit: :debit,
