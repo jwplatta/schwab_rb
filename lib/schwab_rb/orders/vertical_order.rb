@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'schwab_rb'
+require "schwab_rb"
 
 module SchwabRb
   module Orders
@@ -8,30 +8,33 @@ module SchwabRb
       class << self
         def build(
           short_leg_symbol:, long_leg_symbol:, price:,
-          credit_debit: :credit, order_instruction: :open, quantity: 1
+          order_type: nil,
+          duration: SchwabRb::Orders::Duration::DAY,
+          credit_debit: :credit,
+          order_instruction: :open, quantity: 1
         )
           schwab_order_builder.new.tap do |builder|
             builder.set_order_strategy_type(SchwabRb::Order::OrderStrategyTypes::SINGLE)
             builder.set_session(SchwabRb::Orders::Session::NORMAL)
-            builder.set_duration(SchwabRb::Orders::Duration::DAY)
-            builder.set_order_type(order_type(credit_debit))
+            builder.set_duration(duration)
+            builder.set_order_type(order_type || determine_order_type(credit_debit))
             builder.set_complex_order_strategy_type(SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL)
             builder.set_quantity(quantity)
             builder.set_price(price)
             builder.add_option_leg(
-              short_leg_instruction(order_instruction, credit_debit),
+              short_leg_instruction(order_instruction),
               short_leg_symbol,
               quantity
             )
             builder.add_option_leg(
-              long_leg_instruction(order_instruction, credit_debit),
+              long_leg_instruction(order_instruction),
               long_leg_symbol,
               quantity
             )
           end
         end
 
-        def order_type(credit_debit)
+        def determine_order_type(credit_debit)
           if credit_debit == :credit
             SchwabRb::Order::Types::NET_CREDIT
           else
