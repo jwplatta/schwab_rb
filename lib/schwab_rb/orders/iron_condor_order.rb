@@ -1,33 +1,33 @@
 # frozen_string_literal: true
 
-require 'schwab_rb'
+require "schwab_rb"
 
 module SchwabRb
   module Orders
     class IronCondorOrder
       class << self
         def build(
-          account_number:,
           put_short_symbol:,
           put_long_symbol:,
           call_short_symbol:,
           call_long_symbol:,
           price:,
+          order_type: nil,
+          duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :open,
           quantity: 1
         )
           schwab_order_builder.new.tap do |builder|
-            builder.set_account_number(account_number)
-            builder.set_order_strategy_type('SINGLE')
+            builder.set_order_strategy_type(SchwabRb::Order::OrderStrategyTypes::SINGLE)
             builder.set_session(SchwabRb::Orders::Session::NORMAL)
-            builder.set_duration(SchwabRb::Orders::Duration::DAY)
-            builder.set_order_type(order_type(credit_debit))
+            builder.set_duration(duration)
+            builder.set_order_type(order_type || determine_order_type(credit_debit))
             builder.set_complex_order_strategy_type(SchwabRb::Order::ComplexOrderStrategyTypes::IRON_CONDOR)
             builder.set_quantity(quantity)
             builder.set_price(price)
 
-            instructions = leg_instructions_for_position(order_instruction, credit_debit)
+            instructions = leg_instructions_for_position(order_instruction)
 
             builder.add_option_leg(
               instructions[:put_short],
@@ -52,7 +52,7 @@ module SchwabRb
           end
         end
 
-        def order_type(credit_debit)
+        def determine_order_type(credit_debit)
           if credit_debit == :credit
             SchwabRb::Order::Types::NET_CREDIT
           else
@@ -60,37 +60,23 @@ module SchwabRb
           end
         end
 
-        def leg_instructions_for_position(order_instruction, credit_debit)
-          if order_instruction == :open && credit_debit == :credit
+        def leg_instructions_for_position(order_instruction)
+          if order_instruction == :open
             {
               put_short: SchwabRb::Orders::OptionInstructions::SELL_TO_OPEN,
               put_long: SchwabRb::Orders::OptionInstructions::BUY_TO_OPEN,
               call_short: SchwabRb::Orders::OptionInstructions::SELL_TO_OPEN,
               call_long: SchwabRb::Orders::OptionInstructions::BUY_TO_OPEN
             }
-          elsif order_instruction == :open && credit_debit == :debit
-            {
-              put_short: SchwabRb::Orders::OptionInstructions::BUY_TO_OPEN,
-              put_long: SchwabRb::Orders::OptionInstructions::SELL_TO_OPEN,
-              call_short: SchwabRb::Orders::OptionInstructions::BUY_TO_OPEN,
-              call_long: SchwabRb::Orders::OptionInstructions::SELL_TO_OPEN
-            }
-          elsif order_instruction == :close && credit_debit == :credit
+          elsif order_instruction == :close
             {
               put_short: SchwabRb::Orders::OptionInstructions::BUY_TO_CLOSE,
               put_long: SchwabRb::Orders::OptionInstructions::SELL_TO_CLOSE,
               call_short: SchwabRb::Orders::OptionInstructions::BUY_TO_CLOSE,
               call_long: SchwabRb::Orders::OptionInstructions::SELL_TO_CLOSE
             }
-          elsif order_instruction == :close && credit_debit == :debit
-            {
-              put_short: SchwabRb::Orders::OptionInstructions::SELL_TO_CLOSE,
-              put_long: SchwabRb::Orders::OptionInstructions::BUY_TO_CLOSE,
-              call_short: SchwabRb::Orders::OptionInstructions::SELL_TO_CLOSE,
-              call_long: SchwabRb::Orders::OptionInstructions::BUY_TO_CLOSE
-            }
           else
-            raise "Unsupported order instruction: #{order_instruction} with credit/debit: #{credit_debit}"
+            raise "Unsupported order instruction: #{order_instruction}"
           end
         end
 

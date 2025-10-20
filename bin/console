@@ -7,12 +7,16 @@ require "schwab_rb"
 
 Dotenv.load
 
+SchwabRb.configure do |config|
+  config.log_level = "DEBUG"
+end
+
 def client
   @client ||= SchwabRb::Auth.init_client_easy(
     ENV.fetch("SCHWAB_API_KEY", nil),
     ENV.fetch("SCHWAB_APP_SECRET", nil),
-    ENV.fetch("APP_CALLBACK_URL", nil),
-    ENV.fetch("TOKEN_PATH", "schwab_token.json")
+    ENV.fetch("SCHWAB_APP_CALLBACK_URL", nil),
+    ENV.fetch("SCHWAB_TOKEN_PATH", "schwab_token.json")
   )
 end
 

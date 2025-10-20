@@ -27,8 +27,6 @@ module SchwabRb
     end
 
     module Types
-      # Execute the order immediately at the best-available price.
-      # More Info <https://www.investopedia.com/terms/m/marketorder.asp>
       MARKET = "MARKET"
       LIMIT = "LIMIT"
       STOP = "STOP"
@@ -43,6 +41,18 @@ module SchwabRb
       NET_CREDIT = "NET_CREDIT"
       NET_ZERO = "NET_ZERO"
       LIMIT_ON_CLOSE = "LIMIT_ON_CLOSE"
+    end
+
+    module OrderStrategyTypes
+      SINGLE = "SINGLE"
+      CANCEL = "CANCEL"
+      RECALL = "RECALL"
+      PAIR = "PAIR"
+      FLATTEN = "FLATTEN"
+      TWO_DAY_SWAP = "TWO_DAY_SWAP"
+      BLAST_ALL = "BLAST_ALL"
+      OCO = "OCO"
+      TRIGGER = "TRIGGER"
     end
 
     module ComplexOrderStrategyTypes
@@ -75,5 +85,38 @@ module SchwabRb
       # A custom multi-leg order strategy.
       CUSTOM = "CUSTOM"
     end
+
+    ALL_ORDER_STRATEGY_TYPES = [
+      OrderStrategyTypes::SINGLE,
+      OrderStrategyTypes::CANCEL,
+      OrderStrategyTypes::RECALL,
+      OrderStrategyTypes::PAIR,
+      OrderStrategyTypes::FLATTEN,
+      OrderStrategyTypes::TWO_DAY_SWAP,
+      OrderStrategyTypes::BLAST_ALL,
+      OrderStrategyTypes::OCO,
+      OrderStrategyTypes::TRIGGER,
+      ComplexOrderStrategyTypes::NONE,
+      ComplexOrderStrategyTypes::COVERED,
+      ComplexOrderStrategyTypes::VERTICAL,
+      ComplexOrderStrategyTypes::BACK_RATIO,
+      ComplexOrderStrategyTypes::CALENDAR,
+      ComplexOrderStrategyTypes::DIAGONAL,
+      ComplexOrderStrategyTypes::STRADDLE,
+      ComplexOrderStrategyTypes::STRANGLE,
+      ComplexOrderStrategyTypes::COLLAR_SYNTHETIC,
+      ComplexOrderStrategyTypes::BUTTERFLY,
+      ComplexOrderStrategyTypes::CONDOR,
+      ComplexOrderStrategyTypes::IRON_CONDOR,
+      ComplexOrderStrategyTypes::VERTICAL_ROLL,
+      ComplexOrderStrategyTypes::COLLAR_WITH_STOCK,
+      ComplexOrderStrategyTypes::DOUBLE_DIAGONAL,
+      ComplexOrderStrategyTypes::UNBALANCED_BUTTERFLY,
+      ComplexOrderStrategyTypes::UNBALANCED_CONDOR,
+      ComplexOrderStrategyTypes::UNBALANCED_IRON_CONDOR,
+      ComplexOrderStrategyTypes::UNBALANCED_VERTICAL_ROLL,
+      ComplexOrderStrategyTypes::MUTUAL_FUND_SWAP,
+      ComplexOrderStrategyTypes::CUSTOM
+    ].freeze
   end
 end

@@ -48,6 +48,7 @@ require_relative "schwab_rb/orders/order_factory"
 require_relative "schwab_rb/orders/iron_condor_order"
 require_relative "schwab_rb/orders/vertical_order"
 require_relative "schwab_rb/orders/single_order"
+require_relative "schwab_rb/orders/oco_order"
 
 module SchwabRb
   class Error < StandardError; end
