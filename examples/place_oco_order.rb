@@ -67,47 +67,4 @@ oco_order = SchwabRb::Orders::OrderFactory.build(
 
 built_order = oco_order.build
 
-
 response = client.place_order(built_order, account_name: CURRENT_ACCT)
-
-binding.pry
-
-exit
-
-all_statuses = [
-  "AWAITING_PARENT_ORDER",
-  "AWAITING_CONDITION",
-  "AWAITING_STOP_CONDITION",
-  "AWAITING_MANUAL_REVIEW",
-  "ACCEPTED",
-  "AWAITING_UR_OUT",
-  "PENDING_ACTIVATION",
-  "QUEUED",
-  "WORKING",
-  "REJECTED",
-  "PENDING_CANCEL",
-  # "CANCELED",
-  "PENDING_REPLACE",
-  "REPLACED",
-  "FILLED",
-  "EXPIRED",
-  "NEW",
-  "AWAITING_RELEASE_TIME",
-  "PENDING_ACKNOWLEDGEMENT",
-  "PENDING_RECALL",
-  "UNKNOWN"
-]
-
-current_orders = nil
-all_statuses.each do |status|
-  current_orders = client.get_account_orders(
-    account_name: CURRENT_ACCT, status: status, from_entered_datetime: (Time.now - 24 * 60 * 60 * 3).to_datetime
-  )
-
-  if current_orders.empty?
-    puts "No orders with status #{status}"
-  else
-    puts "Orders with status #{status}:"
-    break
-  end
-end
