@@ -7,7 +7,9 @@ module SchwabRb
     class VerticalOrder
       class << self
         def build(
-          short_leg_symbol:, long_leg_symbol:, price:,
+          short_leg_symbol:, long_leg_symbol:,
+          price:,
+          stop_price: nil,
           order_type: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
@@ -21,6 +23,7 @@ module SchwabRb
             builder.set_complex_order_strategy_type(SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL)
             builder.set_quantity(quantity)
             builder.set_price(price)
+            builder.set_stop_price(stop_price) if stop_price && order_type == SchwabRb::Order::Types::STOP_LIMIT
             builder.add_option_leg(
               short_leg_instruction(order_instruction),
               short_leg_symbol,

@@ -39,6 +39,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
           call_short_symbol: 'SPX_CALL_SHORT',
           call_long_symbol: 'SPX_CALL_LONG',
           price: price,
+          stop_price: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :open,
@@ -55,9 +56,28 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
           call_short_symbol: 'SPX_CALL_SHORT',
           call_long_symbol: 'SPX_CALL_LONG',
           price: price,
+          stop_price: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :exit,
+          quantity: quantity
+        )
+      end
+
+      it 'handles stop limit orders with stop_price' do
+        stop_price = 1.00
+        stop_limit_options = iron_condor_options.merge(stop_price: stop_price)
+        described_class.build(**stop_limit_options)
+        expect(SchwabRb::Orders::IronCondorOrder).to have_received(:build).with(
+          put_short_symbol: 'SPX_PUT_SHORT',
+          put_long_symbol: 'SPX_PUT_LONG',
+          call_short_symbol: 'SPX_CALL_SHORT',
+          call_long_symbol: 'SPX_CALL_LONG',
+          price: price,
+          stop_price: stop_price,
+          duration: SchwabRb::Orders::Duration::DAY,
+          credit_debit: :credit,
+          order_instruction: :open,
           quantity: quantity
         )
       end
@@ -83,6 +103,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
+            stop_price: nil,
             order_type: nil,
             duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
@@ -98,10 +119,28 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
+            stop_price: nil,
             order_type: nil,
             duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :exit,
+            quantity: quantity
+          )
+        end
+
+        it 'handles stop limit orders with stop_price' do
+          stop_price = 1.00
+          stop_limit_options = call_spread_options.merge(stop_price: stop_price)
+          described_class.build(**stop_limit_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            stop_price: stop_price,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
+            credit_debit: :credit,
+            order_instruction: :open,
             quantity: quantity
           )
         end
@@ -116,6 +155,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
+            stop_price: nil,
             order_type: nil,
             duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
@@ -131,10 +171,28 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
             short_leg_symbol: 'SPX_SHORT_LEG',
             long_leg_symbol: 'SPX_LONG_LEG',
             price: price,
+            stop_price: nil,
             order_type: nil,
             duration: SchwabRb::Orders::Duration::DAY,
             credit_debit: :credit,
             order_instruction: :exit,
+            quantity: quantity
+          )
+        end
+
+        it 'handles stop limit orders with stop_price' do
+          stop_price = 1.00
+          stop_limit_options = put_spread_options.merge(stop_price: stop_price)
+          described_class.build(**stop_limit_options)
+          expect(SchwabRb::Orders::VerticalOrder).to have_received(:build).with(
+            short_leg_symbol: 'SPX_SHORT_LEG',
+            long_leg_symbol: 'SPX_LONG_LEG',
+            price: price,
+            stop_price: stop_price,
+            order_type: nil,
+            duration: SchwabRb::Orders::Duration::DAY,
+            credit_debit: :credit,
+            order_instruction: :open,
             quantity: quantity
           )
         end
@@ -157,6 +215,7 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
         expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
           symbol: 'SPX_OPTION',
           price: price,
+          stop_price: nil,
           order_type: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
@@ -171,10 +230,27 @@ RSpec.describe SchwabRb::Orders::OrderFactory do
         expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
           symbol: 'SPX_OPTION',
           price: price,
+          stop_price: nil,
           order_type: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
           order_instruction: :exit,
+          quantity: quantity
+        )
+      end
+
+      it 'handles stop limit orders with stop_price' do
+        stop_price = 1.00
+        stop_limit_options = single_options.merge(stop_price: stop_price)
+        described_class.build(**stop_limit_options)
+        expect(SchwabRb::Orders::SingleOrder).to have_received(:build).with(
+          symbol: 'SPX_OPTION',
+          price: price,
+          stop_price: stop_price,
+          order_type: nil,
+          duration: SchwabRb::Orders::Duration::DAY,
+          credit_debit: :credit,
+          order_instruction: :open,
           quantity: quantity
         )
       end

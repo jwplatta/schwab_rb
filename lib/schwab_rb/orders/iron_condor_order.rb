@@ -12,6 +12,7 @@ module SchwabRb
           call_short_symbol:,
           call_long_symbol:,
           price:,
+          stop_price: nil,
           order_type: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
@@ -26,6 +27,7 @@ module SchwabRb
             builder.set_complex_order_strategy_type(SchwabRb::Order::ComplexOrderStrategyTypes::IRON_CONDOR)
             builder.set_quantity(quantity)
             builder.set_price(price)
+            builder.set_stop_price(stop_price) if stop_price && order_type == SchwabRb::Order::Types::STOP_LIMIT
 
             instructions = leg_instructions_for_position(order_instruction)
 

@@ -7,7 +7,9 @@ module SchwabRb
     class SingleOrder
       class << self
         def build(
-          symbol:, price:,
+          symbol:,
+          price:,
+          stop_price: nil,
           order_type: nil,
           duration: SchwabRb::Orders::Duration::DAY,
           credit_debit: :credit,
@@ -21,6 +23,7 @@ module SchwabRb
             builder.set_order_type(order_type || determine_order_type(credit_debit))
             builder.set_quantity(quantity)
             builder.set_price(price)
+            builder.set_stop_price(stop_price) if stop_price && order_type == SchwabRb::Order::Types::STOP_LIMIT
             builder.add_option_leg(
               leg_instruction(order_instruction, credit_debit),
               symbol,
