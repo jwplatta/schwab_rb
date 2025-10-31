@@ -63,10 +63,9 @@ module SchwabRb
       end
 
       class OrderStrategy
-        attr_reader :account_number, :status, :price, :quantity, :order_type, :type, :strategy_id, :order_legs
+        attr_reader :status, :price, :quantity, :order_type, :type, :strategy_id, :order_legs
 
         def initialize(attrs)
-          @account_number = attrs[:accountNumber]
           @status = attrs[:status]
           @price = attrs[:price]
           @quantity = attrs[:quantity]
@@ -78,7 +77,6 @@ module SchwabRb
 
         def to_h
           {
-            accountNumber: @account_number,
             status: @status,
             price: @price,
             quantity: @quantity,
