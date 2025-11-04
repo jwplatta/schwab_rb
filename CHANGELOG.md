@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+## [0.5.0] - 2025-11-03
+
+### Added
+- Vertical Roll Orders: Support for vertical roll orders that close an existing vertical spread and open a new one in a single order
+- `VerticalRollOrder` class with 4-leg order structure for rolling positions
+- Comprehensive tests for vertical roll orders including credit rolls, debit rolls, and stop limit orders
+
+### Fixed
+- Fixed typo in `OrderFactory` (SchwabRbL → SchwabRb)
+
 ## [0.4.0] - 2025-10-19
 
 ### Added
