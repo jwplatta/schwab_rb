@@ -47,6 +47,7 @@ require_relative "schwab_rb/data_objects/market_movers"
 require_relative "schwab_rb/orders/order_factory"
 require_relative "schwab_rb/orders/iron_condor_order"
 require_relative "schwab_rb/orders/vertical_order"
+require_relative "schwab_rb/orders/vertical_roll_order"
 require_relative "schwab_rb/orders/single_order"
 require_relative "schwab_rb/orders/oco_order"
 

@@ -2,6 +2,7 @@
 
 require_relative "iron_condor_order"
 require_relative "vertical_order"
+require_relative "vertical_roll_order"
 require_relative "single_order"
 require_relative "oco_order"
 require_relative "order"
@@ -35,6 +36,19 @@ module SchwabRb
               duration: options[:duration] || SchwabRb::Orders::Duration::DAY,
               credit_debit: options[:credit_debit] || :credit,
               order_instruction: options[:order_instruction] || :open,
+              quantity: options[:quantity] || 1
+            )
+          when SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL_ROLL
+            VerticalRollOrder.build(
+              close_short_leg_symbol: options[:close_short_leg_symbol],
+              close_long_leg_symbol: options[:close_long_leg_symbol],
+              open_short_leg_symbol: options[:open_short_leg_symbol],
+              open_long_leg_symbol: options[:open_long_leg_symbol],
+              price: options[:price],
+              stop_price: options[:stop_price],
+              order_type: options[:order_type],
+              duration: options[:duration] || SchwabRb::Orders::Duration::DAY,
+              credit_debit: options[:credit_debit] || :credit,
               quantity: options[:quantity] || 1
             )
           when SchwabRb::Order::OrderStrategyTypes::SINGLE
