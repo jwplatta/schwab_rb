@@ -16,7 +16,6 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       orderId: 12_345,
       orderValue: "100.00",
       orderStrategy: {
-        accountNumber: "ABC123",
         status: "ACCEPTED",
         price: 50.0,
         quantity: 2,
@@ -149,7 +148,6 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       hash = order_preview.to_h
 
       # Test OrderStrategy
-      expect(hash[:orderStrategy][:accountNumber]).to eq("ABC123")
       expect(hash[:orderStrategy][:status]).to eq("ACCEPTED")
       expect(hash[:orderStrategy][:price]).to eq(50.0)
       expect(hash[:orderStrategy][:quantity]).to eq(2)
@@ -185,7 +183,6 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       let(:order_strategy) { order_preview.order_strategy }
 
       it "has correct attributes" do
-        expect(order_strategy.account_number).to eq("ABC123")
         expect(order_strategy.status).to eq("ACCEPTED")
         expect(order_strategy.price).to eq(50.0)
         expect(order_strategy.quantity).to eq(2)
@@ -198,7 +195,6 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
 
       it "converts to hash correctly" do
         hash = order_strategy.to_h
-        expect(hash[:accountNumber]).to eq("ABC123")
         expect(hash[:status]).to eq("ACCEPTED")
         expect(hash[:price]).to eq(50.0)
         expect(hash[:quantity]).to eq(2)
