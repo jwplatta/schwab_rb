@@ -49,7 +49,7 @@ module SchwabRb
       if missing_accounts.any?
         missing_accounts.each do |account|
           SchwabRb::Logger.logger.warn(
-            "Account '#{account[:name]}' (#{account[:number]}) not found in API response. " \
+            "Account '#{account[:name]}' not found in API response. " \
             "This may indicate a closed account or incorrect account number in account_names.json"
           )
         end
