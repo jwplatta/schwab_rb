@@ -1,5 +1,18 @@
 ## [Unreleased]
 
+## [0.6.0] - 2025-12-11
+
+### Breaking Changes
+- **OrderPreview**: Replaced `projected_commission` with `commission_and_fee` structure to match current Schwab API
+- **OrderPreview**: Commission/fee data now uses nested `commissionLegs`/`feeLegs` instead of scalar values
+- **OrderValidationResult**: Changed from `warningMessage` string to `warns` array of objects with `activity_message` and `original_severity`
+- **OrderValidationResult**: Updated `Reject` structure to match `Warn` structure
+- **BaseClient**: Methods with `return_data_objects: false` now return parsed Hash/Array instead of raw `OAuth2::Response` objects
+
+### Changed
+- Removed redundant `strike_price` attribute from option instruments
+- Removed account numbers from log messages for improved security
+
 ## [0.5.0] - 2025-11-03
 
 ### Added
