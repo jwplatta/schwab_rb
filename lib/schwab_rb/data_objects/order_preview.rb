@@ -6,7 +6,7 @@ module SchwabRb
   module DataObjects
     class OrderPreview
       attr_reader :order_id, :order_value, :order_strategy, :order_balance, :order_validation_result,
-                  :projected_commission
+                  :commission_and_fee
 
       class << self
         def build(data)
@@ -20,7 +20,7 @@ module SchwabRb
         @order_strategy = attrs[:orderStrategy] ? OrderStrategy.new(attrs[:orderStrategy]) : nil
         @order_balance = attrs[:orderBalance] ? OrderBalance.new(attrs[:orderBalance]) : nil
         @order_validation_result = attrs[:orderValidationResult] ? OrderValidationResult.new(attrs[:orderValidationResult]) : nil
-        @projected_commission = attrs[:projectedCommission] ? CommissionAndFee.new(attrs[:projectedCommission]) : nil
+        @commission_and_fee = attrs[:commissionAndFee] ? CommissionAndFee.new(attrs[:commissionAndFee]) : nil
       end
 
       def status
@@ -40,15 +40,15 @@ module SchwabRb
       end
 
       def commission
-        return 0.0 unless @projected_commission
+        return 0.0 unless @commission_and_fee
 
-        @projected_commission.commission_value
+        @commission_and_fee.commission
       end
 
       def fees
-        return 0.0 unless @projected_commission
+        return 0.0 unless @commission_and_fee
 
-        @projected_commission.fee_value
+        @commission_and_fee.fee
       end
 
       def to_h
@@ -58,7 +58,7 @@ module SchwabRb
           orderStrategy: @order_strategy&.to_h,
           orderBalance: @order_balance&.to_h,
           orderValidationResult: @order_validation_result&.to_h,
-          projectedCommission: @projected_commission&.to_h
+          commissionAndFee: @commission_and_fee&.to_h
         }
       end
 
@@ -109,75 +109,81 @@ module SchwabRb
       end
 
       class OrderValidationResult
-        attr_reader :is_valid, :warning_message, :rejects
+        attr_reader :is_valid, :warns, :rejects
 
         def initialize(attrs)
           @is_valid = attrs[:isValid]
-          @warning_message = attrs[:warningMessage]
+          @warns = attrs[:warns]&.map { |warn| Warn.new(warn) } || []
           @rejects = attrs[:rejects]&.map { |reject| Reject.new(reject) } || []
         end
 
         def to_h
           {
             isValid: @is_valid,
-            warningMessage: @warning_message,
+            warns: @warns.map(&:to_h),
             rejects: @rejects.map(&:to_h)
           }
         end
 
-        class Reject
-          attr_reader :reject_code, :reject_message
+        class Warn
+          attr_reader :activity_message, :original_severity
 
           def initialize(attrs)
-            @reject_code = attrs[:rejectCode]
-            @reject_message = attrs[:rejectMessage]
+            @activity_message = attrs[:activityMessage]
+            @original_severity = attrs[:originalSeverity]
           end
 
           def to_h
             {
-              rejectCode: @reject_code,
-              rejectMessage: @reject_message
+              activityMessage: @activity_message,
+              originalSeverity: @original_severity
+            }
+          end
+        end
+
+        class Reject
+          attr_reader :activity_message, :original_severity
+
+          def initialize(attrs)
+            @activity_message = attrs[:activityMessage]
+            @original_severity = attrs[:originalSeverity]
+          end
+
+          def to_h
+            {
+              activityMessage: @activity_message,
+              originalSeverity: @original_severity
             }
           end
         end
       end
 
       class CommissionAndFee
-        attr_reader :commission, :commissions, :fee, :fees, :true_commission
+        attr_reader :commissions, :fees, :true_commission_legs
 
         def initialize(attrs)
-          @commission = attrs[:commission]&.to_f
-          @commissions = attrs[:commissions] || []
-          @fee = attrs[:fee]&.to_f
-          @fees = attrs[:fees] || []
-          @true_commission = attrs[:trueCommission]&.to_f
+          @commissions = attrs[:commission][:commissionLegs] || []
+          @fees = attrs[:fee][:feeLegs] || []
+          @true_commission_legs = attrs[:trueCommission][:commissionLegs] || []
         end
 
-        def commission_total
+        def commission
           calculate_total_from_legs(@commissions, "COMMISSION")
         end
 
-        def commission_value
-          @commission || commission_total
-        end
-
-        def fee_total
+        def fee
           calculate_total_from_legs(@fees, %w[OPT_REG_FEE INDEX_OPTION_FEE])
         end
 
-        def fee_value
-          @fee || fee_total
-        end
-
-        def true_commission_value
-          @true_commission || (commission_total * 2)
+        def true_commission
+          calculate_total_from_legs(@true_commission_legs, "COMMISSION")
         end
 
         def to_h
           {
-            commission: @commission,
-            fee: @fee,
-            trueCommission: @true_commission,
+            commission: commission,
+            fee: fee,
+            trueCommission: true_commission,
             commissions: @commissions,
             fees: @fees
           }

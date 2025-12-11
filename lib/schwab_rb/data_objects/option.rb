@@ -42,7 +42,6 @@ module SchwabRb
             theoretical_option_value: data.fetch(:theoreticalOptionValue, nil),
             theoretical_volatility: data.fetch(:theoreticalVolatility, nil),
             option_deliverables_list: data.fetch(:optionDeliverablesList, nil),
-            strike_price: data.fetch(:strikePrice, nil),
             expiration_date: Date.parse(data.fetch(:expirationDate)),
             days_to_expiration: data.fetch(:daysToExpiration, nil),
             expiration_type: data.fetch(:expirationType, nil),
@@ -72,7 +71,7 @@ module SchwabRb
         close_price:, total_volume:, trade_time_in_long:,
         quote_time_in_long:, net_change:, volatility:, delta:,
         gamma:, theta:, vega:, rho:, open_interest:, time_value:,
-        theoretical_option_value:, theoretical_volatility:, option_deliverables_list:, strike_price:,
+        theoretical_option_value:, theoretical_volatility:, option_deliverables_list:,
         expiration_date:, days_to_expiration:, expiration_type:, last_trading_day:, multiplier:,
         settlement_type:, deliverable_note:, percent_change:, mark_change:, mark_percent_change:, intrinsic_value:, extrinsic_value:, option_root:, exercise_type:, high_52_week:, low_52_week:, non_standard:, in_the_money:
       )
@@ -109,7 +108,6 @@ module SchwabRb
         @theoretical_option_value = theoretical_option_value
         @theoretical_volatility = theoretical_volatility
         @option_deliverables_list = option_deliverables_list
-        @strike_price = strike_price
         @expiration_date = expiration_date
         @days_to_expiration = days_to_expiration
         @expiration_type = expiration_type
@@ -136,12 +134,16 @@ module SchwabRb
                   :close_price, :total_volume, :trade_time_in_long, :quote_time_in_long,
                   :net_change, :volatility, :delta, :gamma, :theta, :vega, :rho,
                   :open_interest, :time_value, :theoretical_option_value,
-                  :theoretical_volatility, :option_deliverables_list, :strike_price,
+                  :theoretical_volatility, :option_deliverables_list,
                   :expiration_date, :days_to_expiration, :expiration_type, :last_trading_day,
                   :multiplier, :settlement_type, :deliverable_note, :percent_change,
                   :mark_change, :mark_percent_change, :intrinsic_value, :extrinsic_value,
                   :option_root, :exercise_type, :high_52_week, :low_52_week, :non_standard,
                   :in_the_money
+
+      def strike_price
+        strike
+      end
     end
   end
 end

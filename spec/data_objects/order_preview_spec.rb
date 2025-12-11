@@ -4,11 +4,7 @@ require "spec_helper"
 
 RSpec.describe SchwabRb::DataObjects::OrderPreview do
   let(:accepted_fixture_data) do
-    JSON.parse(File.read("spec/fixtures/orders/accepted_preview.json"), symbolize_names: true)
-  end
-
-  let(:rejected_fixture_data) do
-    JSON.parse(File.read("spec/fixtures/orders/rejected_preview.json"), symbolize_names: true)
+    JSON.parse(File.read("spec/fixtures/orders/accepted_preview_order.json"), symbolize_names: true)
   end
 
   let(:sample_data) do
@@ -42,44 +38,66 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       },
       orderValidationResult: {
         isValid: true,
-        warningMessage: "Test warning",
+        warns: [
+          {
+            activityMessage: "Test warning",
+            originalSeverity: "WARN"
+          }
+        ],
         rejects: [
           {
-            rejectCode: "TEST_CODE",
-            rejectMessage: "Test reject message"
+            activityMessage: "Test reject message",
+            originalSeverity: "REJECT"
           }
         ]
       },
-      projectedCommission: {
-        commission: "1.00",
-        fee: "0.50",
-        trueCommission: "1.50",
-        commissions: [
-          {
-            commissionValues: [
-              { value: 0.5, type: "COMMISSION" },
-              { value: 0.0, type: "BASE_CHARGE" }
-            ]
-          },
-          {
-            commissionValues: [
-              { value: 0.5, type: "COMMISSION" },
-              { value: 0.0, type: "BASE_CHARGE" }
-            ]
-          }
-        ],
-        fees: [
-          {
-            feeValues: [
-              { value: 0.25, type: "OPT_REG_FEE" }
-            ]
-          },
-          {
-            feeValues: [
-              { value: 0.25, type: "INDEX_OPTION_FEE" }
-            ]
-          }
-        ]
+      commissionAndFee: {
+        commission: {
+          commissionLegs: [
+            {
+              commissionValues: [
+                { value: 0.5, type: "COMMISSION" },
+                { value: 0.0, type: "BASE_CHARGE" }
+              ]
+            },
+            {
+              commissionValues: [
+                { value: 0.5, type: "COMMISSION" },
+                { value: 0.0, type: "BASE_CHARGE" }
+              ]
+            }
+          ]
+        },
+        fee: {
+          feeLegs: [
+            {
+              feeValues: [
+                { value: 0.25, type: "OPT_REG_FEE" }
+              ]
+            },
+            {
+              feeValues: [
+                { value: 0.25, type: "INDEX_OPTION_FEE" }
+              ]
+            }
+          ]
+        },
+        trueCommission: {
+          commissionLegs: [
+            {
+              commissionValues: [
+                { value: 0.5, type: "COMMISSION" },
+                { value: 0.0, type: "BASE_CHARGE" }
+              ]
+            },
+            {
+              commissionValues: [
+                { value: 0.5, type: "COMMISSION" },
+                { value: 0.0, type: "BASE_CHARGE" }
+              ]
+            }
+          ]
+        }
       }
     }
   end
@@ -93,7 +111,7 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       expect(order_preview.order_strategy).to be_a(SchwabRb::DataObjects::OrderPreview::OrderStrategy)
       expect(order_preview.order_balance).to be_a(SchwabRb::DataObjects::OrderPreview::OrderBalance)
       expect(order_preview.order_validation_result).to be_a(SchwabRb::DataObjects::OrderPreview::OrderValidationResult)
-      expect(order_preview.projected_commission).to be_a(SchwabRb::DataObjects::OrderPreview::CommissionAndFee)
+      expect(order_preview.commission_and_fee).to be_a(SchwabRb::DataObjects::OrderPreview::CommissionAndFee)
     end
   end
 
@@ -141,7 +159,7 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       expect(hash[:orderStrategy]).to be_a(Hash)
       expect(hash[:orderBalance]).to be_a(Hash)
       expect(hash[:orderValidationResult]).to be_a(Hash)
-      expect(hash[:projectedCommission]).to be_a(Hash)
+      expect(hash[:commissionAndFee]).to be_a(Hash)
     end
 
     it "includes nested object hashes" do
@@ -165,16 +183,19 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
 
       # Test OrderValidationResult
       expect(hash[:orderValidationResult][:isValid]).to eq(true)
-      expect(hash[:orderValidationResult][:warningMessage]).to eq("Test warning")
+      expect(hash[:orderValidationResult][:warns]).to be_an(Array)
+      expect(hash[:orderValidationResult][:warns].first[:activityMessage]).to eq("Test warning")
       expect(hash[:orderValidationResult][:rejects]).to be_an(Array)
-      expect(hash[:orderValidationResult][:rejects].first[:rejectCode]).to eq("TEST_CODE")
+      expect(hash[:orderValidationResult][:rejects].first[:activityMessage]).to eq("Test reject message")
 
       # Test CommissionAndFee
-      expect(hash[:projectedCommission][:commission]).to eq(1.0)
-      expect(hash[:projectedCommission][:fee]).to eq(0.5)
-      expect(hash[:projectedCommission][:trueCommission]).to eq(1.5)
-      expect(hash[:projectedCommission][:commissions]).to be_an(Array)
-      expect(hash[:projectedCommission][:fees]).to be_an(Array)
+      expect(hash[:commissionAndFee][:commission]).to eq(1.0)
+      expect(hash[:commissionAndFee][:fee]).to eq(0.5)
+      expect(hash[:commissionAndFee][:trueCommission]).to eq(1.0)
+      expect(hash[:commissionAndFee][:commissions]).to be_an(Array)
+      expect(hash[:commissionAndFee][:commissions].length).to eq(2)
+      expect(hash[:commissionAndFee][:fees]).to be_an(Array)
+      expect(hash[:commissionAndFee][:fees].length).to eq(2)
     end
   end
 
@@ -229,26 +250,33 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
 
       it "has correct attributes" do
         expect(validation_result.is_valid).to eq(true)
-        expect(validation_result.warning_message).to eq("Test warning")
+        expect(validation_result.warns).to be_an(Array)
+        expect(validation_result.warns.size).to eq(1)
+        expect(validation_result.warns.first.activity_message).to eq("Test warning")
         expect(validation_result.rejects).to be_an(Array)
         expect(validation_result.rejects.size).to eq(1)
+        expect(validation_result.rejects.first.activity_message).to eq("Test reject message")
+        expect(validation_result.rejects.first.original_severity).to eq("REJECT")
       end
 
       it "converts to hash correctly" do
         hash = validation_result.to_h
         expect(hash[:isValid]).to eq(true)
-        expect(hash[:warningMessage]).to eq("Test warning")
+        expect(hash[:warns]).to be_an(Array)
+        expect(hash[:warns].first[:activityMessage]).to eq("Test warning")
         expect(hash[:rejects]).to be_an(Array)
+        expect(hash[:rejects].first[:activityMessage]).to eq("Test reject message")
+        expect(hash[:rejects].first[:originalSeverity]).to eq("REJECT")
       end
     end
 
     describe "CommissionAndFee" do
-      let(:commission_and_fee) { order_preview.projected_commission }
+      let(:commission_and_fee) { order_preview.commission_and_fee }
 
       it "has correct attributes" do
         expect(commission_and_fee.commission).to eq(1.0)
         expect(commission_and_fee.fee).to eq(0.5)
-        expect(commission_and_fee.true_commission).to eq(1.5)
+        expect(commission_and_fee.true_commission).to eq(1.0)
         expect(commission_and_fee.commissions).to be_an(Array)
         expect(commission_and_fee.fees).to be_an(Array)
       end
@@ -257,7 +285,7 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
         hash = commission_and_fee.to_h
         expect(hash[:commission]).to eq(1.0)
         expect(hash[:fee]).to eq(0.5)
-        expect(hash[:trueCommission]).to eq(1.5)
+        expect(hash[:trueCommission]).to eq(1.0)
         expect(hash[:commissions]).to be_an(Array)
         expect(hash[:fees]).to be_an(Array)
       end
@@ -274,7 +302,7 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
         expect(minimal_preview.order_strategy).to be_nil
         expect(minimal_preview.order_balance).to be_nil
         expect(minimal_preview.order_validation_result).to be_nil
-        expect(minimal_preview.projected_commission).to be_nil
+        expect(minimal_preview.commission_and_fee).to be_nil
       end
 
       it "converts to hash with only available data" do
@@ -283,7 +311,7 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
         expect(hash[:orderStrategy]).to be_nil
         expect(hash[:orderBalance]).to be_nil
         expect(hash[:orderValidationResult]).to be_nil
-        expect(hash[:projectedCommission]).to be_nil
+        expect(hash[:commissionAndFee]).to be_nil
       end
     end
 
@@ -309,51 +337,28 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       it "parses accepted fixture data correctly" do
         expect(accepted_preview.order_id).to eq(0)
         expect(accepted_preview.status).to eq("ACCEPTED")
-        expect(accepted_preview.price).to eq(1.25)
+        expect(accepted_preview.price).to eq(1.4)
         expect(accepted_preview.quantity).to eq(1.0)
         expect(accepted_preview.accepted?).to be true
       end
 
       it "handles commission data from fixture correctly" do
         expect(accepted_preview.commission).to eq(2.60)
-        expect(accepted_preview.fees).to eq(2.10)
-        expect(accepted_preview.projected_commission.true_commission).to eq(5.2)
+        expect(accepted_preview.fees).to eq(2.19)
+        expect(accepted_preview.commission_and_fee.true_commission).to eq(2.60)
       end
 
       it "parses order legs correctly" do
         expect(accepted_preview.order_strategy.order_legs.length).to eq(4)
         first_leg = accepted_preview.order_strategy.order_legs[0]
         expect(first_leg.instruction).to eq("SELL_TO_OPEN")
-        expect(first_leg.instrument.symbol).to eq("SPXW  250725P05680000")
+        expect(first_leg.instrument.symbol).to eq("SPXW  251212P06790000")
       end
 
       it "handles validation result correctly" do
         expect(accepted_preview.order_validation_result.rejects).to be_empty
-      end
-    end
-
-    context "using rejected_preview fixture" do
-      let(:rejected_preview) { described_class.new(rejected_fixture_data) }
-
-      it "parses rejected fixture data correctly" do
-        expect(rejected_preview.order_id).to eq(0)
-        expect(rejected_preview.status).to eq("REJECTED")
-        expect(rejected_preview.price).to eq(3.46)
-        expect(rejected_preview.quantity).to eq(1.0)
-        expect(rejected_preview.accepted?).to be false
-      end
-
-      it "handles commission data from fixture correctly" do
-        expect(rejected_preview.commission).to eq(2.60)
-        expect(rejected_preview.fees).to eq(2.10)
-        expect(rejected_preview.projected_commission.true_commission).to eq(5.2)
-      end
-
-      it "handles validation result with rejects" do
-        expect(rejected_preview.order_validation_result.rejects.length).to eq(1)
-        reject = rejected_preview.order_validation_result.rejects[0]
-        expect(reject.reject_code).to be_nil
-        expect(reject.reject_message).to be_nil
+        expect(accepted_preview.order_validation_result.warns.length).to eq(1)
+        expect(accepted_preview.order_validation_result.warns.first.activity_message).to include("non-standard")
       end
     end
 
@@ -361,15 +366,15 @@ RSpec.describe SchwabRb::DataObjects::OrderPreview do
       let(:accepted_preview) { described_class.new(accepted_fixture_data) }
 
       it "calculates commission from detailed legs correctly" do
-        commission_from_legs = accepted_preview.projected_commission.commission_total
+        commission_from_legs = accepted_preview.commission_and_fee.commission
         # Should be 4 legs * 0.65 COMMISSION each = 2.60
         expect(commission_from_legs).to eq(2.60)
       end
 
       it "calculates fees from detailed legs correctly" do
-        fee_from_legs = accepted_preview.projected_commission.fee_total
-        # Should be (0.01 + 0.47) * 2 + (0.01 + 0.56) * 2 = 0.96 + 1.14 = 2.10
-        expect(fee_from_legs).to eq(2.10)
+        fee_from_legs = accepted_preview.commission_and_fee.fee
+        # Should be (0.01 + 0.56) * 3 + (0.01 + 0.47) = 1.71 + 0.48 = 2.19
+        expect(fee_from_legs).to eq(2.19)
       end
     end
   end

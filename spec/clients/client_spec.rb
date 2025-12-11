@@ -56,8 +56,8 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       resp = client.get_account(account_hash, return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.account_response.status)
-      expect(resp.body).to eq(ResponseFactory.account_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.account_response.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -75,8 +75,8 @@ describe SchwabRb::Client do
         .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
 
       resp = client.get_account(account_name: "my_trading", return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.account_response.status)
-      expect(resp.body).to eq(ResponseFactory.account_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.account_response.body, symbolize_names: true))
     end
 
     it "raises error when account_name not found" do
@@ -101,8 +101,8 @@ describe SchwabRb::Client do
         )
       )
       resp = client.get_accounts(return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.accounts_response.status)
-      expect(resp.body).to eq(ResponseFactory.accounts_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.accounts_response.body, symbolize_names: true))
     end
   end
 
@@ -116,8 +116,8 @@ describe SchwabRb::Client do
         )
       )
       resp = client.get_account_numbers(return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.account_numbers_response.status)
-      expect(resp.body).to eq(ResponseFactory.account_numbers_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.account_numbers_response.body, symbolize_names: true))
     end
   end
 
@@ -131,8 +131,8 @@ describe SchwabRb::Client do
         )
       )
       resp = client.get_order("12345", "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1", return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.order_response.status)
-      expect(resp.body).to eq(ResponseFactory.order_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.order_response.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -150,8 +150,8 @@ describe SchwabRb::Client do
         .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
 
       resp = client.get_order("12345", account_name: "my_trading", return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.order_response.status)
-      expect(resp.body).to eq(ResponseFactory.order_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.order_response.body, symbolize_names: true))
     end
   end
 
@@ -202,8 +202,8 @@ describe SchwabRb::Client do
       )
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       resp = client.get_account_orders(account_hash, return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.account_orders_response.status)
-      expect(resp.body).to eq(ResponseFactory.account_orders_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.account_orders_response.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -221,8 +221,8 @@ describe SchwabRb::Client do
         .and_return("1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1")
 
       resp = client.get_account_orders(account_name: "my_trading", return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.account_orders_response.status)
-      expect(resp.body).to eq(ResponseFactory.account_orders_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.account_orders_response.body, symbolize_names: true))
     end
   end
 
@@ -236,8 +236,8 @@ describe SchwabRb::Client do
         )
       )
       resp = client.get_all_linked_account_orders(return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.all_linked_account_orders_response.status)
-      expect(resp.body).to eq(ResponseFactory.all_linked_account_orders_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.all_linked_account_orders_response.body, symbolize_names: true))
     end
   end
 
@@ -328,8 +328,8 @@ describe SchwabRb::Client do
       account_hash = "1111AA111A1111A1A1A1111AA11111A1111A111AA11AA1A1A11A1AA1A1111AA1"
       order_spec = double("OrderSpec", build: {})
       resp = client.preview_order(order_spec, account_hash, return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.preview_order_response.status)
-      expect(resp.body).to eq(ResponseFactory.preview_order_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.preview_order_response.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -348,8 +348,8 @@ describe SchwabRb::Client do
 
       order_spec = double("OrderSpec", build: {})
       resp = client.preview_order(order_spec, account_name: "my_trading", return_data_objects: false)
-      expect(resp.status).to eq(ResponseFactory.preview_order_response.status)
-      expect(resp.body).to eq(ResponseFactory.preview_order_response.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(ResponseFactory.preview_order_response.body, symbolize_names: true))
     end
   end
   describe "#get_transactions" do
@@ -374,8 +374,8 @@ describe SchwabRb::Client do
       resp = client.get_transactions(account_hash, start_date: start_date, end_date: end_date, return_data_objects: false)
 
       expect(URI).to have_received(:encode_www_form).with(expected_params)
-      expect(resp.status).to eq(ResponseFactory.transactions_response.status)
-      expect(resp.body).to eq(ResponseFactory.transactions_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.transactions_response.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -397,8 +397,8 @@ describe SchwabRb::Client do
       end_date = DateTime.new(2025, 1, 18, 2, 35, 31.075)
       resp = client.get_transactions(account_name: "my_trading", start_date: start_date, end_date: end_date, return_data_objects: false)
 
-      expect(resp.status).to eq(ResponseFactory.transactions_response.status)
-      expect(resp.body).to eq(ResponseFactory.transactions_response.body)
+      expect(resp).to be_an(Array)
+      expect(resp).to eq(JSON.parse(ResponseFactory.transactions_response.body, symbolize_names: true))
     end
   end
   describe "#get_transaction" do
@@ -416,8 +416,8 @@ describe SchwabRb::Client do
       order_id = "12345"
       resp = client.get_transaction(order_id, account_hash, return_data_objects: false)
 
-      expect(resp.status).to eq(transaction_resp.status)
-      expect(resp.body).to eq(transaction_resp.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(transaction_resp.body, symbolize_names: true))
     end
 
     it "accepts account_name parameter" do
@@ -436,8 +436,8 @@ describe SchwabRb::Client do
 
       resp = client.get_transaction(nil, "12345", account_name: "my_trading", return_data_objects: false)
 
-      expect(resp.status).to eq(transaction_resp.status)
-      expect(resp.body).to eq(transaction_resp.body)
+      expect(resp).to be_a(Hash)
+      expect(resp).to eq(JSON.parse(transaction_resp.body, symbolize_names: true))
     end
   end
 
@@ -461,13 +461,14 @@ describe SchwabRb::Client do
       expect(result.movers.first.symbol).to eq("NVDA")
     end
 
-    it "returns raw response when return_data_objects is false" do
+    it "returns parsed JSON when return_data_objects is false" do
       mock_response = instance_double(OAuth2::Response, body: movers_response_body, status: 200)
 
       allow(session).to receive(:get).and_return(mock_response)
 
       result = client.get_movers("$SPX", return_data_objects: false)
-      expect(result).to eq(mock_response)
+      expect(result).to be_a(Hash)
+      expect(result).to eq(JSON.parse(movers_response_body, symbolize_names: true))
     end
 
     it "passes sort_order and frequency parameters correctly" do
