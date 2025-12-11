@@ -56,7 +56,7 @@ module SchwabRb
       # @param account_name [String] The account name from account_names.json (takes priority)
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -69,12 +69,12 @@ module SchwabRb
 
         path = "/trader/v1/accounts/#{resolved_hash}"
         response = get(path, params)
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          account_data = JSON.parse(response.body, symbolize_names: true)
-          SchwabRb::DataObjects::Account.build(account_data)
+          SchwabRb::DataObjects::Account.build(data)
         else
-          response
+          data
         end
       end
     end
@@ -86,7 +86,7 @@ module SchwabRb
       #
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Account::Statuses) if fields
@@ -96,12 +96,12 @@ module SchwabRb
 
       path = "/trader/v1/accounts"
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        accounts_data = JSON.parse(response.body, symbolize_names: true)
-        accounts_data.map { |account_data| SchwabRb::DataObjects::Account.build(account_data) }
+        data.map { |account_data| SchwabRb::DataObjects::Account.build(account_data) }
       else
-        response
+        data
       end
     end
 
@@ -109,7 +109,7 @@ module SchwabRb
       # Returns a mapping from account IDs available to this token to the
       # account hash that should be passed whenever referring to that account
       # in API calls.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       path = "/trader/v1/accounts/accountNumbers"
@@ -127,7 +127,7 @@ module SchwabRb
       if return_data_objects
         SchwabRb::DataObjects::AccountNumbers.build(account_numbers_data)
       else
-        response
+        account_numbers_data
       end
     end
 
@@ -146,7 +146,7 @@ module SchwabRb
       # @param order_id [String] The order ID.
       # @param account_hash [String] The account hash (optional if account_name provided)
       # @param account_name [String] The account name from account_names.json (takes priority)
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -154,12 +154,12 @@ module SchwabRb
 
         path = "/trader/v1/accounts/#{resolved_hash}/orders/#{order_id}"
         response = get(path, {})
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          order_data = JSON.parse(response.body, symbolize_names: true)
-          SchwabRb::DataObjects::Order.build(order_data)
+          SchwabRb::DataObjects::Order.build(data)
         else
-          response
+          data
         end
       end
     end
@@ -197,7 +197,7 @@ module SchwabRb
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -218,12 +218,12 @@ module SchwabRb
         )
 
         response = get(path, params)
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          orders_data = JSON.parse(response.body, symbolize_names: true)
-          orders_data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
+          data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
         else
-          response
+          data
         end
       end
     end
@@ -241,7 +241,7 @@ module SchwabRb
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       path = "/trader/v1/orders"
@@ -253,12 +253,12 @@ module SchwabRb
       )
 
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        orders_data = JSON.parse(response.body, symbolize_names: true)
-        orders_data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
+        data.map { |order_data| SchwabRb::DataObjects::Order.build(order_data) }
       else
-        response
+        data
       end
     end
 
@@ -312,7 +312,7 @@ module SchwabRb
       # @param account_hash [String] The account hash (optional if account_name provided)
       # @param order_spec [Hash, SchwabRb::Orders::Builder] The order specification to preview
       # @param account_name [String] The account name from account_names.json (takes priority)
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -322,12 +322,12 @@ module SchwabRb
 
         path = "/trader/v1/accounts/#{resolved_hash}/previewOrder"
         response = post(path, order_spec)
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          preview_data = JSON.parse(response.body, symbolize_names: true)
-          SchwabRb::DataObjects::OrderPreview.build(preview_data)
+          SchwabRb::DataObjects::OrderPreview.build(data)
         else
-          response
+          data
         end
       end
     end
@@ -349,7 +349,7 @@ module SchwabRb
       # @param end_date [Date, DateTime] End date for transactions (default: now).
       # @param transaction_types [Array] List of transaction types to filter by.
       # @param symbol [String] Filter transactions by the specified symbol.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -382,14 +382,14 @@ module SchwabRb
 
         path = "/trader/v1/accounts/#{resolved_hash}/transactions"
         response = get(path, params)
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          transactions_data = JSON.parse(response.body, symbolize_names: true)
-          transactions_data.map do |transaction_data|
+          data.map do |transaction_data|
             SchwabRb::DataObjects::Transaction.build(transaction_data)
           end
         else
-          response
+          data
         end
       end
     end
@@ -400,7 +400,7 @@ module SchwabRb
       # @param account_hash [String] The account hash (optional if account_name provided)
       # @param activity_id [String] ID of the transaction to retrieve
       # @param account_name [String] The account name from account_names.json (takes priority)
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
@@ -408,28 +408,28 @@ module SchwabRb
 
         path = "/trader/v1/accounts/#{resolved_hash}/transactions/#{activity_id}"
         response = get(path, {})
+        data = JSON.parse(response.body, symbolize_names: true)
 
         if return_data_objects
-          transaction_data = JSON.parse(response.body, symbolize_names: true)
-          SchwabRb::DataObjects::Transaction.build(transaction_data)
+          SchwabRb::DataObjects::Transaction.build(data)
         else
-          response
+          data
         end
       end
     end
 
     def get_user_preferences(return_data_objects: true)
       # Get user preferences for the authenticated user.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
       path = "/trader/v1/userPreference"
       response = get(path, {})
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        preferences_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::UserPreferences.build(preferences_data)
+        SchwabRb::DataObjects::UserPreferences.build(data)
       else
-        response
+        data
       end
     end
 
@@ -439,19 +439,19 @@ module SchwabRb
       # @param symbol [String] Single symbol to fetch.
       # @param fields [Array] Fields to request. If unset, return all available
       #                       data (i.e., all fields). See `GetQuote::Field` for options.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       fields = convert_enum_iterable(fields, SchwabRb::Quote::Types) if fields
       params = fields ? { "fields" => fields.join(",") } : {}
       path = "/marketdata/v1/#{symbol}/quotes"
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        quote_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::QuoteFactory.build(quote_data)
+        SchwabRb::DataObjects::QuoteFactory.build(data)
       else
-        response
+        data
       end
     end
 
@@ -463,7 +463,7 @@ module SchwabRb
       # @param fields [Array] Fields to request. If unset, return all available data.
       #                       See `GetQuote::Field` for options.
       # @param indicative [Boolean] If set, fetch indicative quotes. Must be true or false.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       symbols = [symbols] if symbols.is_a?(String)
@@ -481,14 +481,14 @@ module SchwabRb
 
       path = "/marketdata/v1/quotes"
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        quotes_data = JSON.parse(response.body, symbolize_names: true)
-        quotes_data.map do |symbol, quote_data|
+        data.map do |symbol, quote_data|
           SchwabRb::DataObjects::QuoteFactory.build({ symbol => quote_data })
         end
       else
-        response
+        data
       end
     end
 
@@ -531,7 +531,7 @@ module SchwabRb
       # @param exp_month [String] Filter options by expiration month.
       # @param option_type [String] Type of options to include in the chain.
       # @param entitlement [String] Client entitlement.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
 
       refresh_token_if_needed
 
@@ -562,28 +562,28 @@ module SchwabRb
 
       path = "/marketdata/v1/chains"
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        option_chain_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::OptionChain.build(option_chain_data)
+        SchwabRb::DataObjects::OptionChain.build(data)
       else
-        response
+        data
       end
     end
 
     def get_option_expiration_chain(symbol, return_data_objects: true)
       # Get option expiration chain for a symbol.
       # @param symbol [String] The symbol for which to get option expiration dates.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
       path = "/marketdata/v1/expirationchain"
       response = get(path, { symbol: symbol })
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        expiration_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::OptionExpirationChain.build(expiration_data)
+        SchwabRb::DataObjects::OptionExpirationChain.build(data)
       else
-        response
+        data
       end
     end
 
@@ -600,7 +600,7 @@ module SchwabRb
       return_data_objects: true
     )
       # Get price history for a symbol.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       period_type = convert_enum(period_type, SchwabRb::PriceHistory::PeriodTypes) if period_type
@@ -621,12 +621,12 @@ module SchwabRb
       path = "/marketdata/v1/pricehistory"
 
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        price_history_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::PriceHistory.build(price_history_data)
+        SchwabRb::DataObjects::PriceHistory.build(data)
       else
-        response
+        data
       end
     end
 
@@ -847,12 +847,12 @@ module SchwabRb
       params["frequency"] = frequency.to_s if frequency
 
       response = get(path, params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        movers_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::MarketMoversFactory.build(movers_data)
+        SchwabRb::DataObjects::MarketMoversFactory.build(data)
       else
-        response
+        data
       end
     end
 
@@ -862,7 +862,7 @@ module SchwabRb
       # @param markets [Array, String] Markets for which to return trading hours.
       # @param date [Date] Date for which to return market hours. Accepts values up to
       #                    one year from today.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       markets = convert_enum_iterable(markets, SchwabRb::MarketHours::Markets)
@@ -871,12 +871,12 @@ module SchwabRb
       params["date"] = format_date_as_day("date", date) if date
 
       response = get("/marketdata/v1/markets", params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        market_hours_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::MarketHours.build(market_hours_data)
+        SchwabRb::DataObjects::MarketHours.build(data)
       else
-        response
+        data
       end
     end
 
@@ -887,7 +887,7 @@ module SchwabRb
       # @param symbols [String, Array] For "FUNDAMENTAL" projection, the symbols to fetch.
       #                                For other projections, a search term.
       # @param projection [String] Search mode or "FUNDAMENTAL" for instrument fundamentals.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       symbols = [symbols] unless symbols.is_a?(Array)
@@ -898,14 +898,14 @@ module SchwabRb
       }
 
       response = get("/marketdata/v1/instruments", params)
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        instruments_data = JSON.parse(response.body, symbolize_names: true)
-        instruments_data.map do |instrument_data|
+        data.map do |instrument_data|
           SchwabRb::DataObjects::Instrument.build(instrument_data)
         end
       else
-        response
+        data
       end
     end
 
@@ -913,18 +913,18 @@ module SchwabRb
       # Get instrument information for a single instrument by CUSIP.
       #
       # @param cusip [String] CUSIP of the instrument to fetch. Leading zeroes must be preserved.
-      # @param return_data_objects [Boolean] Whether to return data objects or raw JSON
+      # @param return_data_objects [Boolean] Whether to return data objects or Hash
       refresh_token_if_needed
 
       raise ArgumentError, "cusip must be passed as a string" unless cusip.is_a?(String)
 
       response = get("/marketdata/v1/instruments/#{cusip}", {})
+      data = JSON.parse(response.body, symbolize_names: true)
 
       if return_data_objects
-        instrument_data = JSON.parse(response.body, symbolize_names: true)
-        SchwabRb::DataObjects::Instrument.build(instrument_data)
+        SchwabRb::DataObjects::Instrument.build(data)
       else
-        response
+        data
       end
     end
 
