@@ -1,0 +1,297 @@
+{
+  "orderId": 0,
+  "orderStrategy": {
+    "accountNumber": "12345678",
+    "advancedOrderType": "NONE",
+    "enteredTime": "2025-12-11T17:47:00+0000",
+    "orderBalance": {
+      "orderValue": 140.0,
+      "projectedAvailableFund": 136325.86,
+      "projectedBuyingPower": 339639.46,
+      "projectedCommission": 2.6
+    },
+    "orderStrategyType": "SINGLE",
+    "orderVersion": 1,
+    "session": "NORMAL",
+    "status": "ACCEPTED",
+    "discretionary": false,
+    "duration": "DAY",
+    "filledQuantity": 0.0,
+    "orderType": "LIMIT",
+    "orderValue": 140.0,
+    "price": 1.4,
+    "quantity": 1.0,
+    "remainingQuantity": 1.0,
+    "sellNonMarginableFirst": false,
+    "strategy": "IRON_CONDOR",
+    "amountIndicator": "SHARES",
+    "orderLegs": [
+      {
+        "askPrice": 2.05,
+        "bidPrice": 1.95,
+        "lastPrice": 2.08,
+        "markPrice": 2.0,
+        "projectedCommission": 0.65,
+        "legId": 1,
+        "assetType": "OPTION",
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  251212P06790000",
+          "description": "S & P 500 INDEX 12/12/2025 $6790 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      },
+      {
+        "askPrice": 1.35,
+        "bidPrice": 1.25,
+        "lastPrice": 1.29,
+        "markPrice": 1.3,
+        "projectedCommission": 0.65,
+        "legId": 2,
+        "assetType": "OPTION",
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  251212P06770000",
+          "description": "S & P 500 INDEX 12/12/2025 $6770 Put",
+          "type": "VANILLA",
+          "putCall": "PUT",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      },
+      {
+        "askPrice": 1.1,
+        "bidPrice": 1.0,
+        "lastPrice": 1.15,
+        "markPrice": 1.05,
+        "projectedCommission": 0.65,
+        "legId": 3,
+        "assetType": "OPTION",
+        "instruction": "SELL_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  251212C06960000",
+          "description": "S & P 500 INDEX 12/12/2025 $6960 Call",
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      },
+      {
+        "askPrice": 0.35,
+        "bidPrice": 0.3,
+        "lastPrice": 0.35,
+        "markPrice": 0.325,
+        "projectedCommission": 0.65,
+        "legId": 4,
+        "assetType": "OPTION",
+        "instruction": "BUY_TO_OPEN",
+        "positionEffect": "OPENING",
+        "instrument": {
+          "assetType": "OPTION",
+          "symbol": "SPXW  251212C06980000",
+          "description": "S & P 500 INDEX 12/12/2025 $6980 Call",
+          "type": "VANILLA",
+          "putCall": "CALL",
+          "underlyingSymbol": "SPXW",
+          "optionDeliverables": [
+            {
+              "symbol": "$SPX",
+              "deliverableUnits": 100.0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "orderValidationResult": {
+    "warns": [
+      {
+        "activityMessage": "Please note that you have selected a weekly option series with a \"non-standard\" expiration date.",
+        "originalSeverity": "WARN"
+      }
+    ]
+  },
+  "commissionAndFee": {
+    "commission": {
+      "commissionLegs": [
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        }
+      ]
+    },
+    "fee": {
+      "feeLegs": [
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.56,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        },
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.56,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        },
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.56,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        },
+        {
+          "feeValues": [
+            {
+              "value": 0.01,
+              "type": "OPT_REG_FEE"
+            },
+            {
+              "value": 0.47,
+              "type": "INDEX_OPTION_FEE"
+            }
+          ]
+        }
+      ]
+    },
+    "trueCommission": {
+      "commissionLegs": [
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        },
+        {
+          "commissionValues": [
+            {
+              "value": 0.0,
+              "type": "BASE_CHARGE"
+            },
+            {
+              "value": 0.65,
+              "type": "COMMISSION"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
