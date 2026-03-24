@@ -54,7 +54,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       id: check_tag
       run: |
-        if git show-ref --tags "refs/tags/$VERSION" --quiet; then
+        if git show-ref --tags "refs/tags/${{ env.VERSION }}" --quiet; then
           echo "Tag exists"
           echo "TAG_EXISTS=true" >> $GITHUB_ENV
         else
