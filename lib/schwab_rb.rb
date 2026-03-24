@@ -3,6 +3,7 @@
 require_relative "schwab_rb/version"
 require_relative "schwab_rb/configuration"
 require_relative "schwab_rb/account_hash_manager"
+require_relative "schwab_rb/path_support"
 require_relative "schwab_rb/auth/token_manager"
 require_relative "schwab_rb/auth/token"
 require_relative "schwab_rb/auth/init_client_login"
@@ -50,6 +51,7 @@ require_relative "schwab_rb/orders/vertical_order"
 require_relative "schwab_rb/orders/vertical_roll_order"
 require_relative "schwab_rb/orders/single_order"
 require_relative "schwab_rb/orders/oco_order"
+require_relative "schwab_rb/cli"
 
 module SchwabRb
   class Error < StandardError; end

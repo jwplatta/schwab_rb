@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "dotenv/load"
+require "schwab_rb"
+
+exit SchwabRb::CLI::App.new.call(ARGV.dup)

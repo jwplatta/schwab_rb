@@ -33,6 +33,12 @@ SCHWAB_APP_CALLBACK_URL=https://127.0.0.1:8182
 SCHWAB_TOKEN_PATH=~/.schwab_rb/token.json
 ```
 
+Or authenticate with the CLI:
+
+```bash
+schwab_rb login
+```
+
 ## 4. Initialize Client (First Time)
 
 ```ruby
@@ -68,6 +74,13 @@ accounts.each do |account|
   puts "Value: $#{account.balance.total_value}"
   puts "---"
 end
+```
+
+Or download price history directly from the CLI:
+
+```bash
+schwab_rb price-history --symbol AAPL --start-date 2026-03-01
+schwab_rb price-history --symbol VIX --start-date 2026-03-01 --end-date 2026-03-24 --freq 1min --format csv
 ```
 
 ## 6. Set Up Account Names (Optional but Recommended)
