@@ -1,0 +1,3 @@
+interface:
+  display_name: "schwab_rb CLI"
+  short_description: "Run the installed schwab_rb CLI for auth and market data downloads"
