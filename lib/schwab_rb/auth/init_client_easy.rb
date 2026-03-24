@@ -3,6 +3,7 @@
 require "oauth2"
 require_relative "init_client_token_file"
 require_relative "init_client_login"
+require_relative "../path_support"
 
 module SchwabRb
   module Auth
@@ -17,6 +18,7 @@ module SchwabRb
       interactive: true,
       requested_browser: nil
     )
+      token_path = SchwabRb::PathSupport.expand_path(token_path)
 
       raise OAuth2::Error, "No token found" unless File.exist?(token_path)
 

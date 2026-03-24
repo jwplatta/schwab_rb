@@ -5,6 +5,7 @@ require "uri"
 require "net/http"
 require "json"
 require "oauth2"
+require_relative "../path_support"
 # require 'logger'
 
 module SchwabRb
@@ -71,6 +72,7 @@ module SchwabRb
       interactive: true,
       requested_browser: nil
     )
+      token_path = SchwabRb::PathSupport.expand_path(token_path)
 
       callback_timeout = if !callback_timeout
                            0

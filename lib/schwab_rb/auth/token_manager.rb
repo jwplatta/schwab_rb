@@ -2,12 +2,15 @@
 
 require "oauth2"
 require "json"
+require_relative "../constants"
+require_relative "../path_support"
 
 module SchwabRb
   module Auth
     class TokenManager
       class << self
         def from_file(token_path)
+          token_path = SchwabRb::PathSupport.expand_path(token_path)
           token_data = JSON.parse(File.read(token_path))
           token = SchwabRb::Auth::Token.new(
             token: token_data["token"]["access_token"],
@@ -40,7 +43,7 @@ module SchwabRb
       def initialize(token, timestamp, token_path: SchwabRb::Constants::DEFAULT_TOKEN_PATH)
         @token = token
         @timestamp = timestamp
-        @token_path = token_path
+        @token_path = SchwabRb::PathSupport.expand_path(token_path)
       end
 
       attr_reader :token, :timestamp, :token_path
@@ -77,6 +80,7 @@ module SchwabRb
       end
 
       def to_file
+        SchwabRb::PathSupport.ensure_parent_directory(token_path)
         File.write(token_path, to_json)
       end
 

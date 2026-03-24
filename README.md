@@ -18,6 +18,42 @@ gem install schwab_rb
 
 Note: The gem requires Ruby 3.0.0 or higher.
 
+## CLI
+
+Installing the gem also installs a `schwab_rb` executable.
+
+Set these environment variables before using the CLI:
+
+```bash
+export SCHWAB_API_KEY=your_api_key_here
+export SCHWAB_APP_SECRET=your_app_secret_here
+export SCHWAB_APP_CALLBACK_URL=https://127.0.0.1:8182
+```
+
+Authenticate once to create the shared token in `~/.schwab_rb/token.json`:
+
+```bash
+schwab_rb login
+```
+
+Download price history into `~/.schwab_rb/data` as JSON:
+
+```bash
+schwab_rb price-history --symbol AAPL --start-date 2026-03-01
+```
+
+Write CSV output to a custom directory:
+
+```bash
+schwab_rb price-history \
+  --symbol VIX \
+  --start-date 2026-03-01 \
+  --end-date 2026-03-24 \
+  --freq 1min \
+  --format csv \
+  --dir ./tmp/price_history
+```
+
 ## Prerequisites
 
 Before using this gem, you'll need:

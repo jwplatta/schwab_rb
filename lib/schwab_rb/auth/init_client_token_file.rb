@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 require "oauth2"
+require_relative "../path_support"
 
 module SchwabRb
   module Auth
     def self.init_client_token_file(api_key, app_secret, token_path, enforce_enums: true)
+      token_path = SchwabRb::PathSupport.expand_path(token_path)
+
       oauth = OAuth2::Client.new(
         api_key,
         app_secret,
