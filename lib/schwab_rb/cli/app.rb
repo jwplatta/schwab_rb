@@ -158,7 +158,7 @@ module SchwabRb
       end
       # rubocop:enable Metrics/AbcSize
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:disable Metrics/AbcSize
       def handle_price_history(argv)
         options = {
           dir: default_data_dir,
@@ -208,26 +208,34 @@ module SchwabRb
 
         validate_price_history_options!(options)
 
-        client = build_non_interactive_client
-        frequency_config = FREQUENCY_ALIASES.fetch(options[:freq])
-        response = client.get_price_history(
-          options.fetch(:symbol),
-          period_type: options[:period_type] || frequency_config.fetch(:period_type),
-          period: options[:period] || frequency_config.fetch(:period),
-          frequency_type: frequency_config.fetch(:frequency_type),
-          frequency: frequency_config.fetch(:frequency),
-          start_datetime: options.fetch(:start_date),
-          end_datetime: options.fetch(:end_date),
-          need_extended_hours_data: options.fetch(:need_extended_hours_data),
-          need_previous_close: options.fetch(:need_previous_close),
-          return_data_objects: false
-        )
+        _, output_path = resolve_price_history_response(options)
 
-        output_path = write_price_history(response, options)
         stdout.puts("Saved #{options[:symbol]} price history to #{output_path}")
         0
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+      # rubocop:enable Metrics/AbcSize
+
+      # rubocop:disable Metrics/AbcSize
+      def resolve_price_history_response(options)
+        directory = SchwabRb::PathSupport.expand_path(options.fetch(:dir))
+        FileUtils.mkdir_p(directory)
+
+        existing_response = load_cached_price_history(directory, options)
+        response = existing_response
+
+        unless cached_range_covers?(existing_response, options.fetch(:start_date), options.fetch(:end_date))
+          client = build_non_interactive_client
+          missing_ranges(existing_response, options.fetch(:start_date), options.fetch(:end_date)).each do |range|
+            downloaded = fetch_price_history_range(client, options, range.fetch(:start_date), range.fetch(:end_date))
+            response = merge_price_history_responses(response, downloaded, options.fetch(:symbol))
+          end
+        end
+
+        output_path = canonical_output_path(directory, options)
+        write_payload(output_path, response, options.fetch(:format))
+        [response, output_path]
+      end
+      # rubocop:enable Metrics/AbcSize
 
       def write_price_history(response, options)
         directory = SchwabRb::PathSupport.expand_path(options.fetch(:dir))
@@ -245,6 +253,10 @@ module SchwabRb
 
         File.write(output_path, payload)
         output_path
+      end
+
+      def write_payload(output_path, response, format)
+        File.write(output_path, serialized_payload(response, format))
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -271,6 +283,130 @@ module SchwabRb
         end
       end
       # rubocop:enable Metrics/AbcSize
+
+      def load_cached_price_history(directory, options)
+        path = canonical_output_path(directory, options)
+        return unless File.exist?(path)
+
+        parse_price_history_file(path, options.fetch(:format))
+      end
+
+      def parse_price_history_file(path, format)
+        case format
+        when "json"
+          symbolize_price_history_payload(JSON.parse(File.read(path)))
+        when "csv"
+          parse_price_history_csv(path)
+        else
+          raise Error, "Unsupported format `#{format}`."
+        end
+      rescue JSON::ParserError => e
+        raise Error, "Unable to parse cached price history at #{path}: #{e.message}"
+      end
+
+      # rubocop:disable Metrics/AbcSize
+      def parse_price_history_csv(path)
+        candles = CSV.read(path, headers: true).map do |row|
+          {
+            datetime: Time.iso8601(row.fetch("datetime")).to_i * 1000,
+            open: row.fetch("open").to_f,
+            high: row.fetch("high").to_f,
+            low: row.fetch("low").to_f,
+            close: row.fetch("close").to_f,
+            volume: row.fetch("volume").to_i
+          }
+        end
+
+        {
+          symbol: File.basename(path).split("_").first,
+          empty: candles.empty?,
+          candles: candles
+        }
+      end
+      # rubocop:enable Metrics/AbcSize
+
+      def symbolize_price_history_payload(payload)
+        {
+          symbol: payload["symbol"] || payload[:symbol],
+          empty: payload["empty"].nil? ? payload[:empty] : payload["empty"],
+          candles: Array(payload["candles"] || payload[:candles]).map do |candle|
+            candle.transform_keys(&:to_sym)
+          end
+        }
+      end
+
+      def cached_range_covers?(response, start_date, end_date)
+        return false unless response
+
+        dates = candle_dates(response)
+        return false if dates.empty?
+
+        start_date >= dates.first && end_date <= dates.last
+      end
+
+      def missing_ranges(response, start_date, end_date)
+        return [{ start_date: start_date, end_date: end_date }] unless response
+
+        dates = candle_dates(response)
+        return [{ start_date: start_date, end_date: end_date }] if dates.empty?
+
+        ranges = []
+        ranges << { start_date: start_date, end_date: dates.first - 1 } if start_date < dates.first
+        ranges << { start_date: dates.last + 1, end_date: end_date } if end_date > dates.last
+        ranges
+      end
+
+      def candle_dates(response)
+        Array(response[:candles]).map do |candle|
+          Time.at(candle.fetch(:datetime) / 1000.0).utc.to_date
+        end.sort
+      end
+
+      def fetch_price_history_range(client, options, start_date, end_date)
+        frequency_config = FREQUENCY_ALIASES.fetch(options[:freq])
+        client.get_price_history(
+          options.fetch(:symbol),
+          period_type: options[:period_type] || frequency_config.fetch(:period_type),
+          period: options[:period] || frequency_config.fetch(:period),
+          frequency_type: frequency_config.fetch(:frequency_type),
+          frequency: frequency_config.fetch(:frequency),
+          start_datetime: start_date,
+          end_datetime: end_date,
+          need_extended_hours_data: options.fetch(:need_extended_hours_data),
+          need_previous_close: options.fetch(:need_previous_close),
+          return_data_objects: false
+        )
+      end
+
+      # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+      def merge_price_history_responses(left, right, fallback_symbol)
+        return normalize_price_history_response(right, fallback_symbol) unless left
+        return normalize_price_history_response(left, fallback_symbol) unless right
+
+        merged_candles = Array(left[:candles]) + Array(right[:candles])
+        deduped_candles = merged_candles.each_with_object({}) do |candle, by_datetime|
+          by_datetime[candle.fetch(:datetime)] = candle.transform_keys(&:to_sym)
+        end
+
+        {
+          symbol: left[:symbol] || right[:symbol] || fallback_symbol,
+          empty: deduped_candles.empty?,
+          candles: deduped_candles
+            .values
+            .sort_by { |candle| candle.fetch(:datetime) }
+        }
+      end
+      # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+
+      def normalize_price_history_response(response, fallback_symbol)
+        {
+          symbol: response[:symbol] || fallback_symbol,
+          empty: Array(response[:candles]).empty?,
+          candles: Array(response[:candles]).map { |candle| candle.transform_keys(&:to_sym) }.sort_by do |candle|
+            candle.fetch(:datetime)
+          end
+        }
+      end
 
       def build_non_interactive_client
         credentials = load_credentials(require_callback_url: false)
@@ -356,8 +492,7 @@ module SchwabRb
       end
 
       def build_filename(symbol, frequency, start_date, end_date, format)
-        sanitized_symbol = symbol.to_s.gsub(/[^a-zA-Z0-9]+/, "_").gsub(/\A_+|_+\z/, "")
-        sanitized_symbol = "symbol" if sanitized_symbol.empty?
+        sanitized_symbol = sanitize_symbol(symbol)
 
         [
           sanitized_symbol,
@@ -365,6 +500,19 @@ module SchwabRb
           start_date.iso8601,
           end_date.iso8601
         ].join("_") + ".#{format}"
+      end
+
+      def canonical_output_path(directory, options)
+        File.join(
+          directory,
+          "#{sanitize_symbol(options.fetch(:symbol))}_#{options.fetch(:freq)}.#{options.fetch(:format)}"
+        )
+      end
+
+      def sanitize_symbol(symbol)
+        sanitized_symbol = symbol.to_s.gsub(/[^a-zA-Z0-9]+/, "_").gsub(/\A_+|_+\z/, "")
+        sanitized_symbol = "symbol" if sanitized_symbol.empty?
+        sanitized_symbol
       end
 
       def blank?(value)
