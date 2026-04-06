@@ -10,3 +10,5 @@
 *.key
 token.json
 .rspec_status
+.codex/skills
+.claude/skills
