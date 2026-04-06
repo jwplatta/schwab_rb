@@ -36,7 +36,7 @@ Authenticate once to create the shared token in `~/.schwab_rb/token.json`:
 schwab_rb login
 ```
 
-Download price history into `~/.schwab_rb/data` as JSON:
+Download price history into `~/.schwab_rb/data` as JSON. Files are stored per symbol and frequency, for example `AAPL_day.json` or `SPX_5min.csv`, and the CLI reuses and reconciles existing candle files when possible:
 
 ```bash
 schwab_rb price-history --symbol AAPL --start-date 2026-03-01
@@ -53,6 +53,8 @@ schwab_rb price-history \
   --format csv \
   --dir ./tmp/price_history
 ```
+
+That command writes `./tmp/price_history/VIX_1min.csv`.
 
 ## Prerequisites
 

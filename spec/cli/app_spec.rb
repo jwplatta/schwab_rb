@@ -74,7 +74,7 @@ describe SchwabRb::CLI::App do
           return_data_objects: false
         )
 
-        expected_path = File.join(dir, "VIX_1min_2026-03-17_2026-03-24.json")
+        expected_path = File.join(dir, "VIX_1min.json")
         expect(File).to exist(expected_path)
         expect(stdout.string).to include(expected_path)
       end
@@ -112,9 +112,115 @@ describe SchwabRb::CLI::App do
         )
 
         expect(status).to eq(0)
-        output = File.read(File.join(dir, "AAPL_day_2026-03-17_#{Date.today.iso8601}.csv"))
+        output = File.read(File.join(dir, "AAPL_day.csv"))
         expect(output).to include("datetime,open,high,low,close,volume")
         expect(output).to include("2024-03-22T03:33:20Z,100.0,101.0,99.5,100.5,1234")
+      end
+    end
+
+    it "skips the API call when the requested range is already cached" do
+      Dir.mktmpdir do |dir|
+        cached_path = File.join(dir, "SPX_5min.json")
+        File.write(
+          cached_path,
+          JSON.pretty_generate(
+            {
+              symbol: "SPX",
+              candles: [
+                { datetime: Time.utc(2026, 3, 17, 14, 30).to_i * 1000, open: 1, high: 1, low: 1, close: 1, volume: 10 },
+                { datetime: Time.utc(2026, 3, 24, 20, 0).to_i * 1000, open: 2, high: 2, low: 2, close: 2, volume: 20 }
+              ]
+            }
+          )
+        )
+
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history)
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "SPX",
+            "--start-date", "2026-03-17",
+            "--end-date", "2026-03-24",
+            "--freq", "5min",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).not_to have_received(:get_price_history)
+        expect(stdout.string).to include(cached_path)
+      end
+    end
+
+    it "fetches only the missing range and merges it into the cache" do
+      Dir.mktmpdir do |dir|
+        cached_path = File.join(dir, "SPX_5min.json")
+        File.write(
+          cached_path,
+          JSON.pretty_generate(
+            {
+              symbol: "SPX",
+              candles: [
+                { datetime: Time.utc(2026, 3, 20, 14, 30).to_i * 1000, open: 10, high: 11, low: 9, close: 10.5, volume: 100 },
+                { datetime: Time.utc(2026, 3, 24, 20, 0).to_i * 1000, open: 20, high: 21, low: 19, close: 20.5, volume: 200 }
+              ]
+            }
+          )
+        )
+
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(
+          {
+            symbol: "SPX",
+            candles: [
+              { datetime: Time.utc(2026, 3, 17, 14, 30).to_i * 1000, open: 1, high: 2, low: 0.5, close: 1.5, volume: 50 },
+              { datetime: Time.utc(2026, 3, 20, 14, 30).to_i * 1000, open: 99, high: 99, low: 99, close: 99, volume: 999 }
+            ]
+          }
+        )
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "SPX",
+            "--start-date", "2026-03-17",
+            "--end-date", "2026-03-24",
+            "--freq", "5min",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "SPX",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
+          period: SchwabRb::PriceHistory::Periods::ONE_DAY,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
+          frequency: SchwabRb::PriceHistory::Frequencies::EVERY_FIVE_MINUTES,
+          start_datetime: Date.new(2026, 3, 17),
+          end_datetime: Date.new(2026, 3, 19),
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
+
+        merged_output = JSON.parse(File.read(File.join(dir, "SPX_5min.json")))
+        expect(merged_output.fetch("candles").map { |candle| candle.fetch("datetime") }).to eq(
+          [
+            Time.utc(2026, 3, 17, 14, 30).to_i * 1000,
+            Time.utc(2026, 3, 20, 14, 30).to_i * 1000,
+            Time.utc(2026, 3, 24, 20, 0).to_i * 1000
+          ]
+        )
+        expect(
+          merged_output.fetch("candles").find { |candle| candle.fetch("datetime") == Time.utc(2026, 3, 20, 14, 30).to_i * 1000 }
+        ).to include("open" => 99)
       end
     end
 

@@ -83,6 +83,8 @@ schwab_rb price-history --symbol AAPL --start-date 2026-03-01
 schwab_rb price-history --symbol VIX --start-date 2026-03-01 --end-date 2026-03-24 --freq 1min --format csv
 ```
 
+The CLI stores candle files using `SYMBOL_FREQ.format`, such as `AAPL_day.json` or `VIX_1min.csv`, and will reuse an existing file instead of re-downloading ranges it already has.
+
 ## 6. Set Up Account Names (Optional but Recommended)
 
 Create `~/.schwab_rb/account_names.json`:
