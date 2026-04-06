@@ -16,6 +16,9 @@ module SchwabRb
     # rubocop:disable Metrics/ClassLength
     class App
       DEFAULT_DATA_DIR = "~/.schwab_rb/data"
+      INDEX_API_SYMBOLS = %w[
+        COMPX DJX MID NDX OEX RUT SPX VIX VIX9D VIX1D XSP
+      ].freeze
       SUPPORTED_FORMATS = %w[csv json].freeze
       PERIOD_TYPES = {
         "day" => SchwabRb::PriceHistory::PeriodTypes::DAY,
@@ -206,6 +209,7 @@ module SchwabRb
         parser.parse!(argv)
         raise Error, "Unexpected arguments: #{argv.join(' ')}" if argv.any?
 
+        options[:end_date] = normalized_end_date(options.fetch(:end_date))
         validate_price_history_options!(options)
 
         _, output_path = resolve_price_history_response(options)
@@ -223,12 +227,21 @@ module SchwabRb
         existing_response = load_cached_price_history(directory, options)
         response = existing_response
 
-        unless cached_range_covers?(existing_response, options.fetch(:start_date), options.fetch(:end_date))
+        unless cached_range_covers?(
+          existing_response,
+          options.fetch(:start_date),
+          options.fetch(:end_date),
+          options.fetch(:freq)
+        )
           client = build_non_interactive_client
-          missing_ranges(existing_response, options.fetch(:start_date), options.fetch(:end_date)).each do |range|
-            downloaded = fetch_price_history_range(client, options, range.fetch(:start_date), range.fetch(:end_date))
-            response = merge_price_history_responses(response, downloaded, options.fetch(:symbol))
-          end
+          downloaded = fetch_price_history_range(
+            client,
+            options,
+            options.fetch(:start_date),
+            options.fetch(:end_date)
+          )
+
+          response = merge_price_history_responses(response, downloaded, options.fetch(:symbol))
         end
 
         output_path = canonical_output_path(directory, options)
@@ -236,24 +249,6 @@ module SchwabRb
         [response, output_path]
       end
       # rubocop:enable Metrics/AbcSize
-
-      def write_price_history(response, options)
-        directory = SchwabRb::PathSupport.expand_path(options.fetch(:dir))
-        FileUtils.mkdir_p(directory)
-
-        filename = build_filename(
-          options.fetch(:symbol),
-          options.fetch(:freq),
-          options.fetch(:start_date),
-          options.fetch(:end_date),
-          options.fetch(:format)
-        )
-        output_path = File.join(directory, filename)
-        payload = serialized_payload(response, options.fetch(:format))
-
-        File.write(output_path, payload)
-        output_path
-      end
 
       def write_payload(output_path, response, format)
         File.write(output_path, serialized_payload(response, format))
@@ -335,25 +330,15 @@ module SchwabRb
         }
       end
 
-      def cached_range_covers?(response, start_date, end_date)
+      def cached_range_covers?(response, start_date, end_date, frequency)
         return false unless response
 
-        dates = candle_dates(response)
+        dates = requested_candle_dates(response, start_date, end_date)
         return false if dates.empty?
 
+        return daily_range_covered?(dates, start_date, end_date) if frequency == "day"
+
         start_date >= dates.first && end_date <= dates.last
-      end
-
-      def missing_ranges(response, start_date, end_date)
-        return [{ start_date: start_date, end_date: end_date }] unless response
-
-        dates = candle_dates(response)
-        return [{ start_date: start_date, end_date: end_date }] if dates.empty?
-
-        ranges = []
-        ranges << { start_date: start_date, end_date: dates.first - 1 } if start_date < dates.first
-        ranges << { start_date: dates.last + 1, end_date: end_date } if end_date > dates.last
-        ranges
       end
 
       def candle_dates(response)
@@ -362,10 +347,22 @@ module SchwabRb
         end.sort
       end
 
+      def requested_candle_dates(response, start_date, end_date)
+        candle_dates(response).select { |date| date >= start_date && date <= end_date }
+      end
+
+      def daily_range_covered?(cached_dates, start_date, end_date)
+        business_dates_in_range(start_date, end_date).all? { |date| cached_dates.include?(date) }
+      end
+
+      def business_dates_in_range(start_date, end_date)
+        (start_date..end_date).select { |date| (1..5).cover?(date.wday) }
+      end
+
       def fetch_price_history_range(client, options, start_date, end_date)
         frequency_config = FREQUENCY_ALIASES.fetch(options[:freq])
         client.get_price_history(
-          options.fetch(:symbol),
+          api_symbol(options.fetch(:symbol)),
           period_type: options[:period_type] || frequency_config.fetch(:period_type),
           period: options[:period] || frequency_config.fetch(:period),
           frequency_type: frequency_config.fetch(:frequency_type),
@@ -376,6 +373,15 @@ module SchwabRb
           need_previous_close: options.fetch(:need_previous_close),
           return_data_objects: false
         )
+      end
+
+      def api_symbol(symbol)
+        raw_symbol = symbol.to_s.strip
+        return raw_symbol if raw_symbol.start_with?("$", "/")
+
+        return "$#{raw_symbol}" if INDEX_API_SYMBOLS.include?(raw_symbol.upcase)
+
+        raw_symbol
       end
 
       # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
@@ -491,15 +497,10 @@ module SchwabRb
         raise Error, "Invalid #{option_name} `#{value}`. Use YYYY-MM-DD."
       end
 
-      def build_filename(symbol, frequency, start_date, end_date, format)
-        sanitized_symbol = sanitize_symbol(symbol)
+      def normalized_end_date(end_date)
+        return end_date unless end_date == Date.today
 
-        [
-          sanitized_symbol,
-          frequency,
-          start_date.iso8601,
-          end_date.iso8601
-        ].join("_") + ".#{format}"
+        end_date - 1
       end
 
       def canonical_output_path(directory, options)

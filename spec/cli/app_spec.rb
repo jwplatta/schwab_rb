@@ -62,7 +62,7 @@ describe SchwabRb::CLI::App do
 
         expect(status).to eq(0)
         expect(client).to have_received(:get_price_history).with(
-          "VIX",
+          "$VIX",
           period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
           period: SchwabRb::PriceHistory::Periods::ONE_DAY,
           frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
@@ -77,6 +77,75 @@ describe SchwabRb::CLI::App do
         expected_path = File.join(dir, "VIX_1min.json")
         expect(File).to exist(expected_path)
         expect(stdout.string).to include(expected_path)
+      end
+    end
+
+    it "uses the index api symbol but keeps the raw symbol in the file name" do
+      Dir.mktmpdir do |dir|
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(symbol: "$SPX", candles: [])
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "SPX",
+            "--start-date", "2026-03-17",
+            "--end-date", "2026-03-24",
+            "--freq", "day",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "$SPX",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+          period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+          frequency: SchwabRb::PriceHistory::Frequencies::DAILY,
+          start_datetime: Date.new(2026, 3, 17),
+          end_datetime: Date.new(2026, 3, 24),
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
+        expect(File).to exist(File.join(dir, "SPX_day.json"))
+      end
+    end
+
+    it "passes futures symbols through to the api unchanged" do
+      Dir.mktmpdir do |dir|
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(symbol: "/ES", candles: [])
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "/ES",
+            "--start-date", "2026-03-17",
+            "--end-date", "2026-03-24",
+            "--freq", "day",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "/ES",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+          period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+          frequency: SchwabRb::PriceHistory::Frequencies::DAILY,
+          start_datetime: Date.new(2026, 3, 17),
+          end_datetime: Date.new(2026, 3, 24),
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
       end
     end
 
@@ -115,6 +184,39 @@ describe SchwabRb::CLI::App do
         output = File.read(File.join(dir, "AAPL_day.csv"))
         expect(output).to include("datetime,open,high,low,close,volume")
         expect(output).to include("2024-03-22T03:33:20Z,100.0,101.0,99.5,100.5,1234")
+      end
+    end
+
+    it "uses yesterday when end date would otherwise be today" do
+      Dir.mktmpdir do |dir|
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(symbol: "VIX", candles: [])
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "VIX",
+            "--start-date", (Date.today - 5).iso8601,
+            "--freq", "day",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "$VIX",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+          period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+          frequency: SchwabRb::PriceHistory::Frequencies::DAILY,
+          start_datetime: Date.today - 5,
+          end_datetime: Date.today - 1,
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
       end
     end
 
@@ -198,13 +300,13 @@ describe SchwabRb::CLI::App do
 
         expect(status).to eq(0)
         expect(client).to have_received(:get_price_history).with(
-          "SPX",
+          "$SPX",
           period_type: SchwabRb::PriceHistory::PeriodTypes::DAY,
           period: SchwabRb::PriceHistory::Periods::ONE_DAY,
           frequency_type: SchwabRb::PriceHistory::FrequencyTypes::MINUTE,
           frequency: SchwabRb::PriceHistory::Frequencies::EVERY_FIVE_MINUTES,
           start_datetime: Date.new(2026, 3, 17),
-          end_datetime: Date.new(2026, 3, 19),
+          end_datetime: Date.new(2026, 3, 24),
           need_extended_hours_data: false,
           need_previous_close: false,
           return_data_objects: false
@@ -221,6 +323,122 @@ describe SchwabRb::CLI::App do
         expect(
           merged_output.fetch("candles").find { |candle| candle.fetch("datetime") == Time.utc(2026, 3, 20, 14, 30).to_i * 1000 }
         ).to include("open" => 99)
+      end
+    end
+
+    it "fetches missing interior daily dates and merges them into the cache" do
+      Dir.mktmpdir do |dir|
+        cached_path = File.join(dir, "VIX_day.csv")
+        File.write(
+          cached_path,
+          <<~CSV
+            datetime,open,high,low,close,volume
+            2026-04-01T00:00:00Z,10.0,11.0,9.0,10.5,100
+            2026-04-03T00:00:00Z,12.0,13.0,11.0,12.5,120
+          CSV
+        )
+
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(
+          {
+            symbol: "VIX",
+            candles: [
+              { datetime: Time.utc(2026, 4, 2).to_i * 1000, open: 11.0, high: 12.0, low: 10.0, close: 11.5, volume: 110 }
+            ]
+          }
+        )
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "VIX",
+            "--start-date", "2026-04-01",
+            "--end-date", "2026-04-03",
+            "--freq", "day",
+            "--format", "csv",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "$VIX",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+          period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+          frequency: SchwabRb::PriceHistory::Frequencies::DAILY,
+          start_datetime: Date.new(2026, 4, 1),
+          end_datetime: Date.new(2026, 4, 3),
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
+
+        output = File.read(cached_path)
+        expect(output).to include("2026-04-01T00:00:00Z,10.0,11.0,9.0,10.5,100")
+        expect(output).to include("2026-04-02T00:00:00Z,11.0,12.0,10.0,11.5,110")
+        expect(output).to include("2026-04-03T00:00:00Z,12.0,13.0,11.0,12.5,120")
+      end
+    end
+
+    it "treats a requested window with no cached overlap as fully missing" do
+      Dir.mktmpdir do |dir|
+        cached_path = File.join(dir, "VIX_day.csv")
+        File.write(
+          cached_path,
+          <<~CSV
+            datetime,open,high,low,close,volume
+            2026-03-20T00:00:00Z,20.0,21.0,19.0,20.5,100
+            2026-03-23T00:00:00Z,23.0,24.0,22.0,23.5,130
+          CSV
+        )
+
+        client = double("client", session: double("session", expired?: false))
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_price_history).and_return(
+          {
+            symbol: "VIX",
+            candles: [
+              { datetime: Time.utc(2026, 4, 1).to_i * 1000, open: 30.0, high: 31.0, low: 29.0, close: 30.5, volume: 140 },
+              { datetime: Time.utc(2026, 4, 2).to_i * 1000, open: 31.0, high: 32.0, low: 30.0, close: 31.5, volume: 150 }
+            ]
+          }
+        )
+
+        status = app.call(
+          [
+            "price-history",
+            "--symbol", "VIX",
+            "--start-date", "2026-04-01",
+            "--end-date", "2026-04-02",
+            "--freq", "day",
+            "--format", "csv",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_price_history).with(
+          "$VIX",
+          period_type: SchwabRb::PriceHistory::PeriodTypes::YEAR,
+          period: SchwabRb::PriceHistory::Periods::TWENTY_YEARS,
+          frequency_type: SchwabRb::PriceHistory::FrequencyTypes::DAILY,
+          frequency: SchwabRb::PriceHistory::Frequencies::DAILY,
+          start_datetime: Date.new(2026, 4, 1),
+          end_datetime: Date.new(2026, 4, 2),
+          need_extended_hours_data: false,
+          need_previous_close: false,
+          return_data_objects: false
+        )
+
+        output = File.read(cached_path)
+        expect(output).to include("2026-03-20T00:00:00Z,20.0,21.0,19.0,20.5,100")
+        expect(output).to include("2026-03-23T00:00:00Z,23.0,24.0,22.0,23.5,130")
+        expect(output).to include("2026-04-01T00:00:00Z,30.0,31.0,29.0,30.5,140")
+        expect(output).to include("2026-04-02T00:00:00Z,31.0,32.0,30.0,31.5,150")
       end
     end
 
