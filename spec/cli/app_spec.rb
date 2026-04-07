@@ -7,6 +7,7 @@ require "tmpdir"
 describe SchwabRb::CLI::App do
   let(:stdout) { StringIO.new }
   let(:stderr) { StringIO.new }
+  let(:sampled_at) { Time.utc(2025, 12, 29, 17, 24, 33) }
   let(:env) do
     {
       "SCHWAB_API_KEY" => "api-key",
@@ -24,6 +25,7 @@ describe SchwabRb::CLI::App do
       expect(status).to eq(0)
       expect(stdout.string).to include("Usage: schwab_rb COMMAND [options]")
       expect(stdout.string).to include("price-history")
+      expect(stdout.string).to include("sample")
     end
 
     it "passes the shared token path to login" do
@@ -78,6 +80,31 @@ describe SchwabRb::CLI::App do
         expect(File).to exist(expected_path)
         expect(stdout.string).to include(expected_path)
       end
+    end
+
+    it "uses the history directory by default for price history" do
+      client = double("client", session: double("session", expired?: false))
+      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(client).to receive(:refresh!)
+      allow(client).to receive(:get_price_history).and_return(symbol: "AAPL", candles: [])
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:exist?).and_return(false)
+      allow(File).to receive(:write)
+
+      status = app.call(
+        [
+          "price-history",
+          "--symbol", "AAPL",
+          "--start-date", "2026-03-17"
+        ]
+      )
+
+      expect(status).to eq(0)
+      expect(FileUtils).to have_received(:mkdir_p).with(File.expand_path("~/.schwab_rb/data/history"))
+      expect(File).to have_received(:write).with(
+        File.expand_path("~/.schwab_rb/data/history/AAPL_day.json"),
+        kind_of(String)
+      )
     end
 
     it "uses the index api symbol but keeps the raw symbol in the file name" do
@@ -455,6 +482,206 @@ describe SchwabRb::CLI::App do
 
       expect(status).to eq(1)
       expect(stderr.string).to include("Run `schwab_rb login`")
+    end
+
+    it "writes a csv option sample for one expiration" do
+      Dir.mktmpdir do |dir|
+        client = double("client", session: double("session", expired?: false))
+        allow(Time).to receive(:now).and_return(sampled_at)
+        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(client).to receive(:refresh!)
+        allow(client).to receive(:get_option_chain).and_return(
+          {
+            symbol: "$SPX",
+            status: "SUCCESS",
+            callExpDateMap: {
+              "2025-12-29:0" => {
+                "6000.0" => [
+                  {
+                    symbol: "SPX  251229C06000000",
+                    expirationDate: "2025-12-29T06:00:00+0000",
+                    putCall: "CALL",
+                    optionRoot: "SPX",
+                    strikePrice: 6000.0,
+                    bid: 99.0,
+                    bidSize: 1,
+                    ask: 100.0,
+                    askSize: 1,
+                    last: 99.5,
+                    lastSize: 1,
+                    mark: 99.5,
+                    delta: 0.5,
+                    gamma: 0.01,
+                    theta: -0.1,
+                    vega: 0.1,
+                    rho: 0.01,
+                    volatility: 10.0,
+                    theoreticalVolatility: 10.0,
+                    theoreticalOptionValue: 99.5,
+                    intrinsicValue: 0.0,
+                    extrinsicValue: 99.5,
+                    totalVolume: 1,
+                    openInterest: 1,
+                    description: "SPX Dec 29 2025 6000 Call"
+                  },
+                  {
+                    symbol: "SPXW  251229C06000000",
+                    expirationDate: "2025-12-29T06:00:00+0000",
+                    putCall: "CALL",
+                    optionRoot: "SPXW",
+                    strikePrice: 6000.0,
+                    bid: 10.0,
+                    bidSize: 12,
+                    ask: 10.5,
+                    askSize: 14,
+                    last: 10.25,
+                    lastSize: 3,
+                    mark: 10.25,
+                    delta: 0.42,
+                    gamma: 0.01,
+                    theta: -0.2,
+                    vega: 0.15,
+                    rho: 0.03,
+                    volatility: 18.5,
+                    theoreticalVolatility: 19.0,
+                    theoreticalOptionValue: 10.4,
+                    intrinsicValue: 0.0,
+                    extrinsicValue: 10.25,
+                    totalVolume: 100,
+                    openInterest: 200,
+                    quoteTimeInLong: 1_767_029_073_000,
+                    tradeTimeInLong: 1_767_029_000_000,
+                    daysToExpiration: 0,
+                    inTheMoney: false,
+                    description: "SPXW Dec 29 2025 6000 Call"
+                  }
+                ]
+              }
+            },
+            putExpDateMap: {
+              "2025-12-29:0" => {
+                "6000.0" => [
+                  {
+                    symbol: "SPXW  251229P06000000",
+                    expirationDate: "2025-12-29T06:00:00+0000",
+                    putCall: "PUT",
+                    optionRoot: "SPXW",
+                    strikePrice: 6000.0,
+                    bid: 11.0,
+                    bidSize: 8,
+                    ask: 11.5,
+                    askSize: 9,
+                    last: 11.25,
+                    lastSize: 2,
+                    mark: 11.25,
+                    delta: -0.58,
+                    gamma: 0.02,
+                    theta: -0.25,
+                    vega: 0.18,
+                    rho: -0.04,
+                    volatility: 19.1,
+                    theoreticalVolatility: 19.4,
+                    theoreticalOptionValue: 11.3,
+                    intrinsicValue: 3.5,
+                    extrinsicValue: 7.75,
+                    totalVolume: 150,
+                    openInterest: 250,
+                    quoteTimeInLong: 1_767_029_073_000,
+                    tradeTimeInLong: 1_767_029_000_000,
+                    daysToExpiration: 0,
+                    inTheMoney: true,
+                    description: "SPXW Dec 29 2025 6000 Put"
+                  }
+                ]
+              }
+            },
+            underlyingPrice: 5996.5
+          }
+        )
+
+        status = app.call(
+          [
+            "sample",
+            "--symbol", "SPX",
+            "--root", "SPXW",
+            "--expiration-date", "2025-12-29",
+            "--dir", dir
+          ]
+        )
+
+        expect(status).to eq(0)
+        expect(client).to have_received(:get_option_chain).with(
+          "$SPX",
+          contract_type: SchwabRb::Option::ContractTypes::ALL,
+          strike_range: SchwabRb::Option::StrikeRanges::ALL,
+          from_date: Date.new(2025, 12, 29),
+          to_date: Date.new(2025, 12, 29),
+          return_data_objects: false
+        )
+
+        expected_path = File.join(dir, "SPXW_exp2025-12-29_2025-12-29_17-24-33.csv")
+        expect(File).to exist(expected_path)
+        output = File.read(expected_path)
+        expect(output).to include(
+          "contract_type,symbol,description,strike,expiration_date,mark,bid,bid_size,ask,ask_size,last,last_size," \
+          "open_interest,total_volume,delta,gamma,theta,vega,rho,volatility,theoretical_volatility," \
+          "theoretical_option_value,intrinsic_value,extrinsic_value,underlying_price"
+        )
+        expect(output).to include(
+          "CALL,SPXW  251229C06000000,SPXW Dec 29 2025 6000 Call,6000.0,2025-12-29,10.25,10.0,12,10.5,14,10.25,3," \
+          "200,100,0.42,0.01,-0.2,0.15,0.03,18.5,19.0,10.4,0.0,10.25,5996.5"
+        )
+        expect(output).to include(
+          "PUT,SPXW  251229P06000000,SPXW Dec 29 2025 6000 Put,6000.0,2025-12-29,11.25,11.0,8,11.5,9,11.25,2," \
+          "250,150,-0.58,0.02,-0.25,0.18,-0.04,19.1,19.4,11.3,3.5,7.75,5996.5"
+        )
+        expect(output).not_to include("SPX  251229C06000000")
+      end
+    end
+
+    it "writes json option samples to the options directory by default" do
+      client = double("client", session: double("session", expired?: false))
+      allow(Time).to receive(:now).and_return(sampled_at)
+      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(client).to receive(:refresh!)
+      allow(client).to receive(:get_option_chain).and_return(
+        {
+          symbol: "AAPL",
+          status: "SUCCESS",
+          callExpDateMap: {},
+          putExpDateMap: {}
+        }
+      )
+      allow(FileUtils).to receive(:mkdir_p)
+      allow(File).to receive(:write)
+
+      status = app.call(
+        [
+          "sample",
+          "--symbol", "AAPL",
+          "--expiration-date", "2025-12-29",
+          "--format", "json"
+        ]
+      )
+
+      expect(status).to eq(0)
+      expect(FileUtils).to have_received(:mkdir_p).with(File.expand_path("~/.schwab_rb/data/options"))
+      expect(File).to have_received(:write).with(
+        File.expand_path("~/.schwab_rb/data/options/AAPL_exp2025-12-29_2025-12-29_17-24-33.json"),
+        kind_of(String)
+      )
+    end
+
+    it "requires an expiration date for option samples" do
+      status = app.call(
+        [
+          "sample",
+          "--symbol", "SPX"
+        ]
+      )
+
+      expect(status).to eq(1)
+      expect(stderr.string).to include("The `--expiration-date` option is required.")
     end
   end
 end

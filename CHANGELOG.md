@@ -1,5 +1,13 @@
 ## [Unreleased]
 
+### Added
+- CLI `sample` command for saving single-expiration option chain snapshots as CSV or JSON
+- `--root` option for filtering sampled contracts by option root and using that root in output filenames
+
+### Changed
+- CLI history downloads now default to `~/.schwab_rb/data/history`
+- CLI option samples now default to `~/.schwab_rb/data/options`
+
 ## [0.6.0] - 2025-12-11
 
 ### Breaking Changes
