@@ -27,7 +27,7 @@ module SchwabRb
         return null_logger if config.silence_output
         return null_logger unless config.should_create_logger?
 
-        log_destination = config.effective_log_file || $stdout
+        log_destination = config.effective_log_file
 
         return null_logger if [:null, "/dev/null"].include?(log_destination)
 
