@@ -83,7 +83,7 @@ Before using the gem, ensure you have the following environment variables set:
 - `APP_CALLBACK_URL`: The callback URL for your application.
 - `TOKEN_PATH`: Path to store the authentication token.
 - `SCHWAB_ACCOUNT_NUMBER`: Your Schwab account number.
-- `SCHWAB_LOGFILE`: (Optional) Path to the log file. Defaults to `STDOUT`.
+- `SCHWAB_LOGFILE`: (Optional) Path to the log file. Defaults to `~/.schwab_rb/schwab_rb.log`.
 - `SCHWAB_LOG_LEVEL`: (Optional) Log level for the logger. Defaults to `WARN`. Possible values: `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`.
 - `SCHWAB_SILENCE_OUTPUT`: (Optional) Set to `true` to disable logging output. Defaults to `false`.
 
@@ -91,7 +91,7 @@ You can also configure logging programmatically:
 
 ```ruby
 SchwabRb.configure do |config|
-  config.logger = Logger.new(STDOUT)
+  config.logger = Logger.new($stdout)
   config.log_level = 'INFO'
   config.silence_output = false
 end

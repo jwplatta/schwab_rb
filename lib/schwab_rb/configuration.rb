@@ -25,8 +25,14 @@ module SchwabRb
       !has_external_logger? && !@silence_output
     end
 
+    def default_log_file
+      File.join(@schwab_home, "schwab_rb.log")
+    end
+
     def effective_log_file
-      @log_file || (ENV["LOGFILE"] if ENV["LOGFILE"] && !ENV["LOGFILE"].empty?)
+      @log_file ||
+        (ENV["LOGFILE"] if ENV["LOGFILE"] && !ENV["LOGFILE"].empty?) ||
+        default_log_file
     end
   end
 
