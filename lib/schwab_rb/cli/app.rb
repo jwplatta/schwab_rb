@@ -1,12 +1,9 @@
 # frozen_string_literal: true
 
-require "csv"
 require "date"
 require "json"
 require "optparse"
 require "pathname"
-require "fileutils"
-require "time"
 
 module SchwabRb
   module CLI
@@ -18,33 +15,6 @@ module SchwabRb
       DEFAULT_HISTORY_DIR = "~/.schwab_rb/data/history"
       DEFAULT_OPTIONS_DIR = "~/.schwab_rb/data/options"
       SUPPORTED_FORMATS = %w[csv json].freeze
-      OPTION_SAMPLE_CSV_HEADERS = %w[
-        contract_type
-        symbol
-        description
-        strike
-        expiration_date
-        mark
-        bid
-        bid_size
-        ask
-        ask_size
-        last
-        last_size
-        open_interest
-        total_volume
-        delta
-        gamma
-        theta
-        vega
-        rho
-        volatility
-        theoretical_volatility
-        theoretical_option_value
-        intrinsic_value
-        extrinsic_value
-        underlying_price
-      ].freeze
       PERIOD_TYPES = {
         "day" => SchwabRb::PriceHistory::PeriodTypes::DAY,
         "month" => SchwabRb::PriceHistory::PeriodTypes::MONTH,
@@ -221,14 +191,13 @@ module SchwabRb
 
         validate_option_sample_options!(options)
 
-        output_path = resolve_option_sample_response(options)
+        _, output_path = resolve_option_sample_response(options)
 
         stdout.puts("Saved #{options[:symbol]} option sample to #{output_path}")
         0
       end
       # rubocop:enable Metrics/AbcSize
 
-      # rubocop:disable Metrics/AbcSize
       def resolve_price_history_response(options)
         directory = SchwabRb::PathSupport.expand_path(options.fetch(:dir))
         SchwabRb::PriceHistory::Downloader.resolve(
@@ -245,146 +214,18 @@ module SchwabRb
           period: options[:period]
         )
       end
-      # rubocop:enable Metrics/AbcSize
 
       def resolve_option_sample_response(options)
         directory = SchwabRb::PathSupport.expand_path(options.fetch(:dir))
-        response = fetch_option_sample(build_non_interactive_client, options)
-        FileUtils.mkdir_p(directory)
-        output_path = option_sample_output_path(directory, options, response)
-        write_option_sample(output_path, response, options)
-        output_path
-      end
-
-      def write_option_sample(output_path, response, options)
-        File.write(output_path, serialized_option_sample(response, options))
-      end
-
-      def serialized_option_sample(response, options)
-        case options.fetch(:format)
-        when "json"
-          JSON.pretty_generate(response)
-        when "csv"
-          serialized_option_sample_csv(response, options)
-        else
-          raise Error, "Unsupported format `#{options[:format]}`."
-        end
-      end
-
-      def serialized_option_sample_csv(response, options)
-        sample_timestamp = options.fetch(:timestamp).utc.iso8601
-
-        CSV.generate do |csv|
-          csv << OPTION_SAMPLE_CSV_HEADERS
-          option_sample_rows(response).each do |option|
-            csv << option_sample_csv_row(response, option, sample_timestamp)
-          end
-        end
-      end
-
-      # rubocop:disable Metrics/AbcSize
-      def option_sample_csv_row(response, option, _sample_timestamp)
-        [
-          option[:putCall],
-          option[:symbol],
-          option[:description],
-          option[:strikePrice],
-          normalize_option_date(option[:expirationDate]),
-          option[:mark],
-          option[:bid],
-          option[:bidSize],
-          option[:ask],
-          option[:askSize],
-          option[:last],
-          option[:lastSize],
-          option[:openInterest],
-          option[:totalVolume],
-          option[:delta],
-          option[:gamma],
-          option[:theta],
-          option[:vega],
-          option[:rho],
-          option[:volatility],
-          option[:theoreticalVolatility],
-          option[:theoreticalOptionValue],
-          option[:intrinsicValue],
-          option[:extrinsicValue],
-          response[:underlyingPrice]
-        ]
-      end
-      # rubocop:enable Metrics/AbcSize
-
-      def fetch_option_sample(client, options)
-        expiration_date = options.fetch(:expiration_date)
-
-        response = client.get_option_chain(
-          SchwabRb::PriceHistory::Downloader.api_symbol(options.fetch(:symbol)),
-          contract_type: SchwabRb::Option::ContractTypes::ALL,
-          strike_range: SchwabRb::Option::StrikeRanges::ALL,
-          from_date: expiration_date,
-          to_date: expiration_date,
-          return_data_objects: false
+        SchwabRb::OptionSample::Downloader.resolve(
+          client: build_non_interactive_client,
+          symbol: options.fetch(:symbol),
+          root: options[:root],
+          expiration_date: options.fetch(:expiration_date),
+          directory: directory,
+          format: options.fetch(:format),
+          timestamp: options.fetch(:timestamp)
         )
-
-        filter_option_sample_response(response, options[:root])
-      end
-
-      def option_sample_rows(response)
-        rows = [response[:callExpDateMap], response[:putExpDateMap]].compact.flat_map do |date_map|
-          option_rows_from_date_map(date_map)
-        end
-
-        rows.sort_by do |option|
-          [
-            normalize_option_date(option[:expirationDate]).to_s,
-            option[:putCall].to_s,
-            option[:strikePrice].to_f
-          ]
-        end
-      end
-
-      def option_rows_from_date_map(date_map)
-        date_map.values.flat_map do |strikes|
-          strikes.values.flatten.map { |option| option.transform_keys(&:to_sym) }
-        end
-      end
-
-      def filter_option_sample_response(response, option_root)
-        return response if blank?(option_root)
-
-        normalized_root = option_root.to_s.strip.upcase
-        filtered_call_map = filter_option_date_map_by_root(response[:callExpDateMap], normalized_root)
-        filtered_put_map = filter_option_date_map_by_root(response[:putExpDateMap], normalized_root)
-
-        response.merge(
-          callExpDateMap: filtered_call_map,
-          putExpDateMap: filtered_put_map
-        )
-      end
-
-      def filter_option_date_map_by_root(date_map, option_root)
-        return {} unless date_map
-
-        date_map.each_with_object({}) do |(expiration_key, strikes), filtered_dates|
-          filtered_strikes = strikes.each_with_object({}) do |(strike, contracts), filtered_by_strike|
-            matching_contracts = contracts.select { |contract| contract[:optionRoot].to_s.upcase == option_root }
-            filtered_by_strike[strike] = matching_contracts if matching_contracts.any?
-          end
-
-          filtered_dates[expiration_key] = filtered_strikes if filtered_strikes.any?
-        end
-      end
-
-      def normalize_option_date(value)
-        return if value.nil?
-
-        Date.parse(value.to_s).iso8601
-      end
-
-      def normalize_option_timestamp(value)
-        return if value.nil?
-
-        Time.at(value / 1000.0).utc.iso8601
       end
 
       def build_non_interactive_client
@@ -492,24 +333,6 @@ module SchwabRb
           frequency: options.fetch(:freq),
           format: options.fetch(:format)
         )
-      end
-
-      def option_sample_output_path(directory, options, response)
-        File.join(
-          directory,
-          [
-            SchwabRb::PriceHistory::Downloader.sanitize_symbol(
-              options[:root] || option_sample_root(response, options.fetch(:symbol))
-            ),
-            "exp#{options.fetch(:expiration_date).iso8601}",
-            options.fetch(:timestamp).strftime("%Y-%m-%d_%H-%M-%S")
-          ].join("_") + ".#{options.fetch(:format)}"
-        )
-      end
-
-      def option_sample_root(response, fallback_symbol)
-        first_option = option_sample_rows(response).find { |option| !blank?(option[:optionRoot]) }
-        first_option ? first_option[:optionRoot] : fallback_symbol
       end
 
       def blank?(value)
