@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
 module SchwabRb
-  VERSION = "0.9.0"
+  class OptionSample
+  end
 end

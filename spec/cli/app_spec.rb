@@ -639,6 +639,38 @@ describe SchwabRb::CLI::App do
       end
     end
 
+    it "delegates option samples to the public downloader service" do
+      client = double("client", session: double("session", expired?: false))
+      allow(Time).to receive(:now).and_return(sampled_at)
+      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(client).to receive(:refresh!)
+      allow(SchwabRb::OptionSample::Downloader).to receive(:resolve).and_return(
+        [{ symbol: "$SPX" }, "/tmp/SPXW_exp2025-12-29_2025-12-29_17-24-33.csv"]
+      )
+
+      status = app.call(
+        [
+          "sample",
+          "--symbol", "SPX",
+          "--root", "SPXW",
+          "--expiration-date", "2025-12-29",
+          "--dir", "/tmp"
+        ]
+      )
+
+      expect(status).to eq(0)
+      expect(SchwabRb::OptionSample::Downloader).to have_received(:resolve).with(
+        client: client,
+        symbol: "SPX",
+        root: "SPXW",
+        expiration_date: Date.new(2025, 12, 29),
+        directory: "/tmp",
+        format: "csv",
+        timestamp: sampled_at
+      )
+      expect(stdout.string).to include("/tmp/SPXW_exp2025-12-29_2025-12-29_17-24-33.csv")
+    end
+
     it "writes json option samples to the options directory by default" do
       client = double("client", session: double("session", expired?: false))
       allow(Time).to receive(:now).and_return(sampled_at)

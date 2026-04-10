@@ -41,3 +41,4 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*'
+    - 'lib/schwab_rb/option_sample/downloader.rb'
