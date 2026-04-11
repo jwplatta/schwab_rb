@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "stringio"
 
 describe SchwabRb::Auth do
   describe ".build_auth_context" do
@@ -107,6 +108,46 @@ describe SchwabRb::Auth do
         )
         puts client
       end.to_not raise_error
+    end
+  end
+
+  describe ".init_client_login" do
+    it "reads the enter prompt from the provided input instead of ARGF" do
+      cert_file = instance_double(Tempfile, path: "/tmp/cert.pem")
+      key_file = instance_double(Tempfile, path: "/tmp/key.pem")
+      auth_context = instance_double(SchwabRb::Auth::AuthContext, authorization_url: "https://example.com/auth")
+      queue = instance_double(Thread::Queue, empty?: false, pop: "https://127.0.0.1:8182?code=abc")
+      http = instance_double(Net::HTTP)
+      response = Net::HTTPSuccess.new("1.1", "200", "OK")
+      input = StringIO.new("\n")
+
+      allow(described_class).to receive(:create_ssl_certificate).and_return([cert_file, key_file])
+      allow(SchwabRb::Auth::LoginFlowServer).to receive(:run_in_thread)
+      allow(SchwabRb::Auth::LoginFlowServer).to receive(:stop)
+      allow(SchwabRb::Auth::LoginFlowServer).to receive(:queue).and_return(queue)
+      allow(described_class).to receive(:build_auth_context).and_return(auth_context)
+      allow(described_class).to receive(:open_browser)
+      allow(described_class).to receive(:client_from_received_url).and_return(:client)
+      allow(Net::HTTP).to receive(:new).and_return(http)
+      allow(http).to receive(:use_ssl=)
+      allow(http).to receive(:ca_file=)
+      allow(http).to receive(:set_debug_output)
+      allow(http).to receive(:get).and_return(response)
+
+      original_argv = ARGV.dup
+      ARGV.replace(["login"])
+
+      expect(
+        described_class.init_client_login(
+          "api-key",
+          "app-secret",
+          "https://127.0.0.1:8182",
+          "/tmp/token.json",
+          input: input
+        )
+      ).to eq(:client)
+    ensure
+      ARGV.replace(original_argv || [])
     end
   end
 end
