@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+### Fixed
+- CLI `login` no longer reads from `ARGF` at the browser prompt, which prevented `schwab_rb login` from opening the browser when command arguments were present
+
 ### Added
 - CLI `sample` command for saving single-expiration option chain snapshots as CSV or JSON
 - `--root` option for filtering sampled contracts by option root and using that root in output filenames

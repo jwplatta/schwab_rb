@@ -70,6 +70,7 @@ module SchwabRb
       enforce_enums: false,
       callback_timeout: 300.0,
       interactive: true,
+      input: $stdin,
       requested_browser: nil
     )
       token_path = SchwabRb::PathSupport.expand_path(token_path)
@@ -130,7 +131,7 @@ module SchwabRb
 
         if interactive
           puts "Press ENTER to open the browser..."
-          gets
+          input.gets
         end
 
         open_browser(requested_browser, auth_context.authorization_url)
