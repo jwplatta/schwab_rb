@@ -19,6 +19,16 @@ RSpec.describe SchwabRb::DataObjects::OptionExpirationChain do
       expect(expiration_chain.status).to be_nil
     end
 
+    it "accepts symbolized keys from BaseClient JSON parsing" do
+      symbolized_data = JSON.parse(File.read("spec/fixtures/option_expiration_chain.json"), symbolize_names: true)
+
+      chain = described_class.new(symbolized_data)
+
+      expect(chain.expiration_list).not_to be_empty
+      expect(chain.expiration_list.first.expiration_date).to eq("2025-07-21")
+      expect(chain.expiration_list.first.days_to_expiration).to eq(1)
+    end
+
     it "handles missing expiration list gracefully" do
       chain = described_class.new({})
       expect(chain.expiration_list).to eq([])
@@ -193,6 +203,17 @@ RSpec.describe SchwabRb::DataObjects::OptionExpirationChain do
         expect(expiration.settlement_type).to eq("P")
         expect(expiration.option_roots).to eq("SPY")
         expect(expiration.standard).to be(true)
+      end
+
+      it "accepts symbol keys" do
+        symbolized_expiration = described_class.new(expiration_data.transform_keys(&:to_sym))
+
+        expect(symbolized_expiration.expiration_date).to eq("2025-07-21")
+        expect(symbolized_expiration.days_to_expiration).to eq(1)
+        expect(symbolized_expiration.expiration_type).to eq("W")
+        expect(symbolized_expiration.settlement_type).to eq("P")
+        expect(symbolized_expiration.option_roots).to eq("SPY")
+        expect(symbolized_expiration.standard).to be(true)
       end
     end
 

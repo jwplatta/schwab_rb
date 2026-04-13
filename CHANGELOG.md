@@ -2,6 +2,7 @@
 
 ### Fixed
 - CLI `login` no longer reads from `ARGF` at the browser prompt, which prevented `schwab_rb login` from opening the browser when command arguments were present
+- `OptionExpirationChain` now accepts both string-keyed and symbol-keyed hashes, matching `BaseClient#get_option_expiration_chain`
 
 ### Added
 - CLI `sample` command for saving single-expiration option chain snapshots as CSV or JSON

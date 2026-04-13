@@ -12,8 +12,8 @@ module SchwabRb
       end
 
       def initialize(data)
-        @expiration_list = data["expirationList"]&.map { |expiration_data| Expiration.new(expiration_data) } || []
-        @status = data["status"]
+        @expiration_list = Array(fetch_value(data, "expirationList")).map { |expiration_data| Expiration.new(expiration_data) }
+        @status = fetch_value(data, "status")
       end
 
       def to_h
@@ -70,17 +70,25 @@ module SchwabRb
 
       include Enumerable
 
+      private
+
+      def fetch_value(data, key)
+        data[key] || data[key.to_sym]
+      end
+
+      public
+
       class Expiration
         attr_reader :expiration_date, :days_to_expiration, :expiration_type,
                     :settlement_type, :option_roots, :standard
 
         def initialize(data)
-          @expiration_date = data["expirationDate"]
-          @days_to_expiration = data["daysToExpiration"]
-          @expiration_type = data["expirationType"]
-          @settlement_type = data["settlementType"]
-          @option_roots = data["optionRoots"]
-          @standard = data["standard"]
+          @expiration_date = fetch_value(data, "expirationDate")
+          @days_to_expiration = fetch_value(data, "daysToExpiration")
+          @expiration_type = fetch_value(data, "expirationType")
+          @settlement_type = fetch_value(data, "settlementType")
+          @option_roots = fetch_value(data, "optionRoots")
+          @standard = fetch_value(data, "standard")
         end
 
         def to_h
@@ -128,6 +136,12 @@ module SchwabRb
 
         def expires_tomorrow?
           @days_to_expiration == 1
+        end
+
+        private
+
+        def fetch_value(data, key)
+          data[key] || data[key.to_sym]
         end
       end
     end
