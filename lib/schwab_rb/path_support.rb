@@ -8,6 +8,8 @@ module SchwabRb
     module_function
 
     def expand_path(path)
+      raise ArgumentError, "token_path is nil or empty" if path.nil? || path.to_s.strip.empty?
+
       File.expand_path(path.to_s)
     end
 
