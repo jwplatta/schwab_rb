@@ -8,13 +8,12 @@ module SchwabRb
     class AccountNamesFileNotFoundError < StandardError; end
     class InvalidAccountNamesFileError < StandardError; end
 
-    attr_reader :account_names_path, :account_hashes_path, :account_names
+    attr_reader :account_names_path, :account_names
 
-    def initialize(account_names_path = nil, account_hashes_path = nil)
+    def initialize(account_names_path = nil, database: nil)
       @account_names_path = account_names_path || SchwabRb.configuration.account_names_path
-      @account_hashes_path = account_hashes_path || SchwabRb.configuration.account_hashes_path
       @account_names_path = File.expand_path(@account_names_path)
-      @account_hashes_path = File.expand_path(@account_hashes_path)
+      @database = database
       @account_names = []
     end
 
@@ -29,23 +28,24 @@ module SchwabRb
         number_to_hash[account_number] = hash_value
       end
 
-      updated_hashes = {}
+      updated_accounts = []
       missing_accounts = []
 
       account_names.each do |name, account_number|
         if number_to_hash.key?(account_number)
-          updated_hashes[name] = number_to_hash[account_number]
-        elsif current_hashes.key?(name)
-          # Keep existing hash but warn that account wasn't in API response
-          updated_hashes[name] = current_hashes[name]
+          updated_accounts << {
+            account_number: account_number,
+            account_hash: number_to_hash[account_number],
+            nickname: name
+          }
+        elsif (existing = current_hashes.find { |a| a[:nickname] == name })
+          updated_accounts << existing
           missing_accounts << { name: name, number: account_number }
         else
-          # Account name exists but no hash found (new or invalid account)
           missing_accounts << { name: name, number: account_number }
         end
       end
 
-      # Log warnings for accounts that weren't found in API response
       if missing_accounts.any?
         missing_accounts.each do |account|
           SchwabRb::Logger.logger.warn(
@@ -55,44 +55,38 @@ module SchwabRb
         end
       end
 
-      save_account_hashes(updated_hashes)
-      updated_hashes
+      save_account_hashes(updated_accounts)
+      updated_accounts.to_h { |a| [a[:nickname], a[:account_hash]] }
     end
 
     def get_hash_by_name(account_name)
-      hashes = load_account_hashes
-      hashes[account_name]
+      accounts = load_account_hashes
+      match = accounts.find { |a| a[:nickname] == account_name }
+      match&.fetch(:account_hash, nil)
     end
 
     def get_all_hashes
-      load_account_hashes
+      load_account_hashes.to_h { |a| [a[:nickname] || a[:account_number], a[:account_hash]] }
     end
 
     def available_account_names
-      begin
-        load_account_names.keys
-      rescue AccountNamesFileNotFoundError
-        []
-      end
+      load_account_names.keys
+    rescue AccountNamesFileNotFoundError
+      []
     end
 
     private
 
-    def load_account_hashes
-      return {} unless File.exist?(@account_hashes_path)
-
-      begin
-        json_content = File.read(@account_hashes_path)
-        JSON.parse(json_content)
-      rescue JSON::ParserError
-        {}
-      end
+    def effective_database
+      @database || SchwabRb::Storage::Database.new
     end
 
-    def save_account_hashes(hashes_map)
-      FileUtils.mkdir_p(File.dirname(@account_hashes_path))
+    def load_account_hashes
+      effective_database.load_accounts
+    end
 
-      File.write(@account_hashes_path, JSON.pretty_generate(hashes_map))
+    def save_account_hashes(accounts)
+      effective_database.save_accounts(accounts)
     end
 
     def load_account_names

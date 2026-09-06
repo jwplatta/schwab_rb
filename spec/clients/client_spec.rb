@@ -491,7 +491,7 @@ describe SchwabRb::Client do
       api_key = ENV.fetch("SCHWAB_API_KEY", nil)
       app_secret = ENV.fetch("SCHWAB_APP_SECRET", nil)
       token_path = ENV.fetch("TOKEN_PATH", nil)
-      client = SchwabRb::Auth.init_client_token_file(api_key, app_secret, token_path)
+      client = SchwabRb::Auth.init_client_from_database(api_key, app_secret)
       # resp = client.get_option_chain('SPY', exp_month: SchwabRb::Option::ExpirationMonths::JANUARY)
       client.get_option_chain("/ESH25", strike_count: 1)
     end

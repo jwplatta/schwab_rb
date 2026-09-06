@@ -41,6 +41,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rackup", "~> 2.2"
   spec.add_dependency "openssl", "~> 3.1"
   spec.add_dependency "dotenv"
+  spec.add_dependency "sqlite3", "~> 2.0"
+  spec.add_dependency "async-websocket", "~> 0.26"
   spec.add_development_dependency "rspec", "~> 3.13"
   spec.add_development_dependency "async-rspec", "~> 1.17"
   spec.add_development_dependency "rubocop", "~> 1.21"

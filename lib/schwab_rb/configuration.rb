@@ -3,7 +3,8 @@
 module SchwabRb
   class Configuration
     attr_accessor :logger, :log_file, :log_level, :silence_output,
-                  :schwab_home, :account_hashes_path, :account_names_path
+                  :schwab_home, :account_hashes_path, :account_names_path,
+                  :database_path
 
     def initialize
       @logger = nil
@@ -15,6 +16,7 @@ module SchwabRb
       @schwab_home = ENV.fetch("SCHWAB_HOME", default_home)
       @account_hashes_path = ENV.fetch("SCHWAB_ACCOUNT_HASHES_PATH", File.join(@schwab_home, "account_hashes.json"))
       @account_names_path = ENV.fetch("SCHWAB_ACCOUNT_NAMES_PATH", File.join(@schwab_home, "account_names.json"))
+      @database_path = ENV.fetch("SCHWAB_DATABASE_PATH", File.join(@schwab_home, "schwab.db"))
     end
 
     def has_external_logger?

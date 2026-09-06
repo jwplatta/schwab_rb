@@ -9,9 +9,11 @@ module SchwabRb
   module Auth
     class TokenManager
       class << self
-        def from_file(token_path)
-          token_path = SchwabRb::PathSupport.expand_path(token_path)
-          token_data = JSON.parse(File.read(token_path))
+        def from_database(api_key, database: nil)
+          database ||= default_database
+          token_data = database.load_token(api_key)
+          return nil unless token_data
+
           token = SchwabRb::Auth::Token.new(
             token: token_data["token"]["access_token"],
             expires_in: token_data["token"]["expires_in"],
@@ -22,10 +24,10 @@ module SchwabRb
             expires_at: token_data["token"]["expires_at"]
           )
 
-          TokenManager.new(token, token_data["timestamp"], token_path: token_path)
+          TokenManager.new(token, token_data["timestamp"], api_key: api_key, database: database)
         end
 
-        def from_oauth2_token(oauth2_token, timestamp, token_path: SchwabRb::Constants::DEFAULT_TOKEN_PATH)
+        def from_oauth2_token(oauth2_token, timestamp, api_key:, database: nil)
           token = SchwabRb::Auth::Token.new(
             token: oauth2_token.token,
             expires_in: oauth2_token.expires_in,
@@ -36,17 +38,24 @@ module SchwabRb
             expires_at: oauth2_token.expires_at
           )
 
-          TokenManager.new(token, timestamp, token_path: token_path)
+          TokenManager.new(token, timestamp, api_key: api_key, database: database)
+        end
+
+        private
+
+        def default_database
+          SchwabRb::Storage::Database.new
         end
       end
 
-      def initialize(token, timestamp, token_path: SchwabRb::Constants::DEFAULT_TOKEN_PATH)
+      def initialize(token, timestamp, api_key: nil, database: nil)
         @token = token
         @timestamp = timestamp
-        @token_path = SchwabRb::PathSupport.expand_path(token_path)
+        @api_key = api_key
+        @database = database
       end
 
-      attr_reader :token, :timestamp, :token_path
+      attr_reader :token, :timestamp, :api_key, :database
 
       def refresh_token(client)
         new_token = client.session.refresh!
@@ -62,7 +71,7 @@ module SchwabRb
         )
         @timestamp = Time.now.to_i
 
-        to_file
+        save
 
         oauth = OAuth2::Client.new(
           client.api_key,
@@ -79,9 +88,8 @@ module SchwabRb
         )
       end
 
-      def to_file
-        SchwabRb::PathSupport.ensure_parent_directory(token_path)
-        File.write(token_path, to_json)
+      def save
+        effective_database.save_token(api_key, to_h)
       end
 
       def token_age
@@ -103,8 +111,10 @@ module SchwabRb
         }
       end
 
-      def to_json(*_args)
-        to_h.to_json
+      private
+
+      def effective_database
+        @database || self.class.send(:default_database)
       end
     end
   end

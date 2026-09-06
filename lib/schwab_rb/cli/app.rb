@@ -232,22 +232,22 @@ module SchwabRb
         credentials = load_credentials(require_callback_url: false)
         token_path = resolved_token_path
 
-        client = SchwabRb::Auth.init_client_token_file(
+        client = SchwabRb::Auth.init_client_from_database(
           credentials.fetch(:api_key),
-          credentials.fetch(:app_secret),
-          token_path
+          credentials.fetch(:app_secret)
         )
+
+        raise Error, "No valid API token found. Run `schwab_rb login` to authenticate." unless client
+
         client.refresh!
 
         return client unless client.session.expired?
 
-        raise Error, "No valid API token found at #{token_path}. Run `schwab_rb login` to authenticate."
+        raise Error, "Token expired. Run `schwab_rb login` to authenticate."
       rescue Errno::ENOENT
-        raise Error, "No valid API token found at #{token_path}. Run `schwab_rb login` to authenticate."
-      rescue JSON::ParserError
-        raise Error, "The token file at #{token_path} is not valid JSON. Run `schwab_rb login` to recreate it."
+        raise Error, "No valid API token found. Run `schwab_rb login` to authenticate."
       rescue OAuth2::Error => e
-        raise Error, "Unable to use the token at #{token_path}: #{e.message}. Run `schwab_rb login` to refresh it."
+        raise Error, "Unable to use stored token: #{e.message}. Run `schwab_rb login` to refresh it."
       end
 
       # rubocop:disable Metrics/AbcSize
