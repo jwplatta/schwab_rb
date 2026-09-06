@@ -19,32 +19,22 @@ module SchwabRb
       requested_browser: nil,
       database: nil
     )
-      client = SchwabRb::Auth.init_client_from_database(
-        api_key,
-        app_secret,
-        enforce_enums: enforce_enums,
-        database: database
-      )
+      client = begin
+        SchwabRb::Auth.init_client_from_database(
+          api_key,
+          app_secret,
+          enforce_enums: enforce_enums,
+          database: database
+        )
+      rescue StandardError
+        nil
+      end
 
       if client
         client.refresh! if client.session.expired?
-        raise OAuth2::Error, "Token expired" if client.session.expired?
-        return client
+        return client unless client.session.expired?
       end
 
-      SchwabRb::Auth.init_client_login(
-        api_key,
-        app_secret,
-        callback_url,
-        token_path,
-        asyncio: asyncio,
-        enforce_enums: enforce_enums,
-        callback_timeout: callback_timeout,
-        interactive: interactive,
-        requested_browser: requested_browser,
-        database: database
-      )
-    rescue StandardError
       SchwabRb::Auth.init_client_login(
         api_key,
         app_secret,
