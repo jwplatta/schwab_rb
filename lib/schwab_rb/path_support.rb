@@ -3,12 +3,11 @@
 require "fileutils"
 
 module SchwabRb
-  # Common path expansion and directory helpers for token and data files.
   module PathSupport
     module_function
 
     def expand_path(path)
-      raise ArgumentError, "token_path is nil or empty" if path.nil? || path.to_s.strip.empty?
+      raise ArgumentError, "path is nil or empty" if path.nil? || path.to_s.strip.empty?
 
       File.expand_path(path.to_s)
     end

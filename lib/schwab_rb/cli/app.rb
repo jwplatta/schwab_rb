@@ -92,10 +92,6 @@ module SchwabRb
 
         stdout.puts("Authentication succeeded. Token saved to database.")
         0
-      rescue JSON::ParserError
-        raise Error,
-              "The token file at #{resolved_token_path} is not valid JSON. " \
-              "Delete it or run `schwab_rb login` to recreate it."
       rescue OAuth2::Error, SchwabRb::Auth::RedirectTimeoutError, SchwabRb::Auth::RedirectServerExitedError => e
         raise Error, "Authentication failed: #{e.message}"
       end
@@ -277,11 +273,6 @@ module SchwabRb
         raise Error, "The `--expiration-date` option is required." unless options[:expiration_date]
       end
 
-      def resolved_token_path
-        token_path = env["SCHWAB_TOKEN_PATH"] || env["TOKEN_PATH"] || SchwabRb::Constants::DEFAULT_TOKEN_PATH
-        SchwabRb::PathSupport.expand_path(token_path)
-      end
-
       def default_history_dir
         SchwabRb::PathSupport.expand_path(DEFAULT_HISTORY_DIR)
       end
@@ -356,7 +347,7 @@ module SchwabRb
         <<~HELP
           Usage: schwab_rb login
 
-          Authenticates with Schwab in a browser and stores the token at #{resolved_token_path}.
+          Authenticates with Schwab in a browser and stores the token in the database.
           Required environment variables: SCHWAB_API_KEY, SCHWAB_APP_SECRET, SCHWAB_APP_CALLBACK_URL
         HELP
       end
