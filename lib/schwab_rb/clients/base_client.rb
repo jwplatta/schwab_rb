@@ -49,15 +49,14 @@ module SchwabRb
       @token_manager.token_age
     end
 
-    def get_account(account_hash = nil, account_name: nil, fields: nil, return_data_objects: true)
+    def get_account(account_hash: nil, fields: nil, return_data_objects: true)
       # Account balances, positions, and orders for a given account.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param fields [Array] Balances displayed by default, additional fields can be
       # added here by adding values from Account.fields.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -117,13 +116,6 @@ module SchwabRb
 
       account_numbers_data = JSON.parse(response.body, symbolize_names: true)
 
-      begin
-        hash_manager = SchwabRb::AccountHashManager.new
-        hash_manager.update_hashes_from_api_response(account_numbers_data)
-      rescue SchwabRb::AccountHashManager::AccountNamesFileNotFoundError
-        # Silently skip if account names file doesn't exist - not all users will use this feature
-      end
-
       if return_data_objects
         SchwabRb::DataObjects::AccountNumbers.build(account_numbers_data)
       else
@@ -131,23 +123,13 @@ module SchwabRb
       end
     end
 
-    def available_account_names
-      # Returns a list of available account names from account_names.json
-      # Returns empty array if account_names.json doesn't exist
-      #
-      # @return [Array<String>] List of account names
-      hash_manager = SchwabRb::AccountHashManager.new
-      hash_manager.available_account_names
-    end
-
-    def get_order(order_id, account_hash = nil, account_name: nil, return_data_objects: true)
+    def get_order(order_id, account_hash: nil, return_data_objects: true)
       # Get a specific order for a specific account by its order ID.
       #
       # @param order_id [String] The order ID.
-      # @param account_hash [String] The account hash (optional if account_name provided)
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -164,13 +146,12 @@ module SchwabRb
       end
     end
 
-    def cancel_order(order_id, account_hash = nil, account_name: nil)
+    def cancel_order(order_id, account_hash: nil)
       # Cancel a specific order for a specific account.
       #
       # @param order_id [String] The order ID.
-      # @param account_hash [String] The account hash (optional if account_name provided)
-      # @param account_name [String] The account name from account_names.json (takes priority)
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -181,8 +162,7 @@ module SchwabRb
     end
 
     def get_account_orders(
-      account_hash = nil,
-      account_name: nil,
+      account_hash: nil,
       max_results: nil,
       from_entered_datetime: nil,
       to_entered_datetime: nil,
@@ -191,14 +171,13 @@ module SchwabRb
     )
       # Orders for a specific account. Optionally specify a single status on which to filter.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param max_results [Integer] The maximum number of orders to retrieve.
       # @param from_entered_datetime [DateTime] Start of the query date range (default: 60 days ago).
       # @param to_entered_datetime [DateTime] End of the query date range (default: now).
       # @param status [String] Restrict query to orders with this status.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -262,17 +241,16 @@ module SchwabRb
       end
     end
 
-    def place_order(order_spec, account_hash = nil, account_name: nil)
+    def place_order(order_spec, account_hash: nil)
       # Place an order for a specific account. If order creation is successful,
       # the response will contain the ID of the generated order.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
       # @param order_spec [Hash, SchwabRb::Orders::Builder] The order specification
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       #
       # Note: Unlike most methods in this library, successful responses typically
       # do not contain JSON data, and attempting to extract it may raise an exception.
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -284,16 +262,15 @@ module SchwabRb
       end
     end
 
-    def replace_order(order_id, order_spec, account_hash = nil, account_name: nil)
+    def replace_order(order_id, order_spec, account_hash: nil)
       # Replace an existing order for an account.
       # The existing order will be replaced by the new order.
       # Once replaced, the old order will be canceled and a new order will be created.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
       # @param order_id [String] The order ID to replace
       # @param order_spec [Hash, SchwabRb::Orders::Builder] The new order specification
-      # @param account_name [String] The account name from account_names.json (takes priority)
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -305,15 +282,14 @@ module SchwabRb
       end
     end
 
-    def preview_order(order_spec, account_hash = nil, account_name: nil, return_data_objects: true)
+    def preview_order(order_spec, account_hash: nil, return_data_objects: true)
       # Preview an order, i.e., test whether an order would be accepted by the
       # API and see the structure it would result in.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
       # @param order_spec [Hash, SchwabRb::Orders::Builder] The order specification to preview
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -333,8 +309,7 @@ module SchwabRb
     end
 
     def get_transactions(
-      account_hash = nil,
-      account_name: nil,
+      account_hash: nil,
       start_date: nil,
       end_date: nil,
       transaction_types: nil,
@@ -343,14 +318,13 @@ module SchwabRb
     )
       # Transactions for a specific account.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param start_date [Date, DateTime] Start date for transactions (default: 60 days ago).
       # @param end_date [Date, DateTime] End date for transactions (default: now).
       # @param transaction_types [Array] List of transaction types to filter by.
       # @param symbol [String] Filter transactions by the specified symbol.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -394,14 +368,13 @@ module SchwabRb
       end
     end
 
-    def get_transaction(activity_id, account_hash = nil, account_name: nil, return_data_objects: true)
+    def get_transaction(activity_id, account_hash: nil, return_data_objects: true)
       # Transaction for a specific account.
       #
-      # @param account_hash [String] The account hash (optional if account_name provided)
       # @param activity_id [String] ID of the transaction to retrieve
-      # @param account_name [String] The account name from account_names.json (takes priority)
+      # @param account_hash [String] The account hash. If nil, resolved from SCHWAB_ACCOUNT_NUMBER.
       # @param return_data_objects [Boolean] Whether to return data objects or Hash
-      resolved_hash = resolve_account_hash(account_name: account_name, account_hash: account_hash)
+      resolved_hash = resolve_account_hash(account_hash: account_hash)
 
       with_account_hash_retry(resolved_hash) do
         refresh_token_if_needed
@@ -930,31 +903,34 @@ module SchwabRb
 
     private
 
-    # Resolves account identifier to actual account hash
-    # Accepts either account name (looked up in account_hashes.json) or direct hash
-    # Priority: account_name > account_hash
-    def resolve_account_hash(account_name: nil, account_hash: nil)
-      # If account_name is provided, look it up
-      if account_name
-        hash_manager = SchwabRb::AccountHashManager.new
-        resolved_hash = hash_manager.get_hash_by_name(account_name)
+    # Resolves account hash. Uses the provided hash directly, or auto-resolves
+    # from SCHWAB_ACCOUNT_NUMBER via the database (fetching from API if not cached).
+    def resolve_account_hash(account_hash: nil)
+      return account_hash if account_hash
 
-        unless resolved_hash
-          raise ArgumentError,
-                "Account name '#{account_name}' not found in account hashes. " \
-                "Make sure get_account_numbers has been called to populate hashes."
-        end
-
-        return resolved_hash
+      account_number = SchwabRb.configuration.account_number
+      unless account_number
+        raise ArgumentError,
+              "No account_hash provided and SCHWAB_ACCOUNT_NUMBER is not configured"
       end
 
-      # Fall back to account_hash if provided
-      if account_hash
-        return account_hash
-      end
+      db = SchwabRb::Storage::Database.new
+      cached = db.load_account_hash(account_number)
+      return cached if cached
 
-      # Neither was provided
-      raise ArgumentError, "Either account_name or account_hash must be provided"
+      fetch_and_cache_account_hash(account_number, db)
+    end
+
+    def fetch_and_cache_account_hash(account_number, db)
+      refresh_token_if_needed
+      response = get("/trader/v1/accounts/accountNumbers", {})
+      data = JSON.parse(response.body, symbolize_names: true)
+      entry = data.find { |a| a[:accountNumber] == account_number }
+      raise ArgumentError, "Account #{account_number} not found in Schwab API response" unless entry
+
+      hash = entry[:hashValue]
+      db.save_account(account_number, hash)
+      hash
     end
 
     # Wraps API calls that use account_hash with retry logic for stale hashes

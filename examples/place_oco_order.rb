@@ -15,10 +15,9 @@ Dotenv.load
 #
 
 # SchwabRb::Configuration.configure do |config|
+# config.schwab_home = "/path/to/your/schwab_rb_home"
+# config.log_level = "DEBUG"
 # end
-
-CURRENT_ACCT = "TRADING_BROKERAGE_ACCOUNT"
-acct_manager = SchwabRb::AccountHashManager.new
 
 client = SchwabRb::Auth.init_client_easy(
   ENV['SCHWAB_API_KEY'],
@@ -46,25 +45,30 @@ oco_order = SchwabRb::Orders::OrderFactory.build(
       short_leg_symbol: "SPXW  251020P06530000",
       long_leg_symbol: "SPXW  251020P06510000",
       order_type: SchwabRb::Order::Types::STOP_LIMIT,
-      stop:
-      price: 0.3,
+      price: 2.1,
+      stop_price: 2.0,
       order_instruction: :close,
       credit_debit: :debit,
-      quantity: 1
+      quantity: 2
     },
     {
       strategy_type: SchwabRb::Order::ComplexOrderStrategyTypes::VERTICAL,
       short_leg_symbol: "SPXW  251020C06770000",
       long_leg_symbol: "SPXW  251020C06790000",
       order_type: SchwabRb::Order::Types::STOP_LIMIT,
-      price: 0.3,
+      price: 2.1,
+      stop_price: 2.0,
       order_instruction: :close,
       credit_debit: :debit,
-      quantity: 1
+      quantity: 2
     }
   ]
 )
 
 built_order = oco_order.build
 
-response = client.place_order(built_order, account_name: CURRENT_ACCT)
+binding.pry
+
+# response = client.place_order(built_order)
+
+binding.pry

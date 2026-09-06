@@ -97,20 +97,6 @@ describe SchwabRb::Auth do
     end
   end
 
-  describe ".from_login_flow" do
-    xit do
-      expect do
-        client = SchwabRb::Auth.init_client_login(
-          ENV.fetch("SCHWAB_API_KEY", nil),
-          ENV.fetch("SCHWAB_APP_SECRET", nil),
-          ENV.fetch("APP_CALLBACK_URL", nil),
-          ENV.fetch("TOKEN_PATH", nil)
-        )
-        puts client
-      end.to_not raise_error
-    end
-  end
-
   describe ".init_client_login" do
     it "reads the enter prompt from the provided input instead of ARGF" do
       cert_file = instance_double(Tempfile, path: "/tmp/cert.pem")
@@ -142,7 +128,6 @@ describe SchwabRb::Auth do
           "api-key",
           "app-secret",
           "https://127.0.0.1:8182",
-          "/tmp/token.json",
           input: input
         )
       ).to eq(:client)

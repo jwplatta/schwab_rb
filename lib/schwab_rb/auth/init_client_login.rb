@@ -65,16 +65,14 @@ module SchwabRb
       api_key,
       app_secret,
       callback_url,
-      token_path,
       asyncio: false,
       enforce_enums: false,
       callback_timeout: 300.0,
       interactive: true,
       input: $stdin,
-      requested_browser: nil
+      requested_browser: nil,
+      database: nil
     )
-      token_path = SchwabRb::PathSupport.expand_path(token_path)
-
       callback_timeout = if !callback_timeout
                            0
       elsif callback_timeout.negative?
@@ -154,7 +152,7 @@ module SchwabRb
           app_secret,
           auth_context,
           received_url,
-          token_path
+          database: database
         )
       ensure
         LoginFlowServer.stop
@@ -213,7 +211,7 @@ module SchwabRb
     end
 
     def self.client_from_received_url(
-      api_key, app_secret, auth_context, received_url, token_path, enforce_enums: true
+      api_key, app_secret, auth_context, received_url, enforce_enums: true, database: nil
     )
       oauth = OAuth2::Client.new(
         api_key,
@@ -230,9 +228,10 @@ module SchwabRb
       metadata_manager = SchwabRb::Auth::TokenManager.from_oauth2_token(
         token,
         Time.now.to_i,
-        token_path: token_path
+        api_key: api_key,
+        database: database
       )
-      metadata_manager.to_file
+      metadata_manager.save
 
       session = OAuth2::AccessToken.new(
         oauth,

@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 require "oauth2"
-require_relative "../path_support"
 
 module SchwabRb
   module Auth
-    def self.init_client_token_file(api_key, app_secret, token_path, enforce_enums: true)
-      token_path = SchwabRb::PathSupport.expand_path(token_path)
+    def self.init_client_from_database(api_key, app_secret, enforce_enums: true, database: nil)
+      metadata_manager = SchwabRb::Auth::TokenManager.from_database(api_key, database: database)
+      return nil unless metadata_manager
+
+      token = metadata_manager.token
 
       oauth = OAuth2::Client.new(
         api_key,
@@ -14,9 +16,6 @@ module SchwabRb
         site: SchwabRb::Constants::SCHWAB_BASE_URL,
         token_url: "/v1/oauth/token"
       )
-
-      metadata_manager = SchwabRb::Auth::TokenManager.from_file(token_path)
-      token = metadata_manager.token
 
       session = OAuth2::AccessToken.new(
         oauth,

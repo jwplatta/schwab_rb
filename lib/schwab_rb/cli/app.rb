@@ -83,21 +83,15 @@ module SchwabRb
         raise Error, "Unexpected arguments: #{argv.join(' ')}" if argv.any?
 
         credentials = load_credentials(require_callback_url: true)
-        token_path = resolved_token_path
 
         SchwabRb::Auth.init_client_login(
           credentials.fetch(:api_key),
           credentials.fetch(:app_secret),
-          credentials.fetch(:callback_url),
-          token_path
+          credentials.fetch(:callback_url)
         )
 
-        stdout.puts("Authentication succeeded. Token saved to #{token_path}")
+        stdout.puts("Authentication succeeded. Token saved to database.")
         0
-      rescue JSON::ParserError
-        raise Error,
-              "The token file at #{resolved_token_path} is not valid JSON. " \
-              "Delete it or run `schwab_rb login` to recreate it."
       rescue OAuth2::Error, SchwabRb::Auth::RedirectTimeoutError, SchwabRb::Auth::RedirectServerExitedError => e
         raise Error, "Authentication failed: #{e.message}"
       end
@@ -230,24 +224,23 @@ module SchwabRb
 
       def build_non_interactive_client
         credentials = load_credentials(require_callback_url: false)
-        token_path = resolved_token_path
 
-        client = SchwabRb::Auth.init_client_token_file(
+        client = SchwabRb::Auth.init_client_from_database(
           credentials.fetch(:api_key),
-          credentials.fetch(:app_secret),
-          token_path
+          credentials.fetch(:app_secret)
         )
+
+        raise Error, "No valid API token found. Run `schwab_rb login` to authenticate." unless client
+
         client.refresh!
 
         return client unless client.session.expired?
 
-        raise Error, "No valid API token found at #{token_path}. Run `schwab_rb login` to authenticate."
+        raise Error, "Token expired. Run `schwab_rb login` to authenticate."
       rescue Errno::ENOENT
-        raise Error, "No valid API token found at #{token_path}. Run `schwab_rb login` to authenticate."
-      rescue JSON::ParserError
-        raise Error, "The token file at #{token_path} is not valid JSON. Run `schwab_rb login` to recreate it."
+        raise Error, "No valid API token found. Run `schwab_rb login` to authenticate."
       rescue OAuth2::Error => e
-        raise Error, "Unable to use the token at #{token_path}: #{e.message}. Run `schwab_rb login` to refresh it."
+        raise Error, "Unable to use stored token: #{e.message}. Run `schwab_rb login` to refresh it."
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -278,11 +271,6 @@ module SchwabRb
       def validate_option_sample_options!(options)
         raise Error, "The `--symbol` option is required." if blank?(options[:symbol])
         raise Error, "The `--expiration-date` option is required." unless options[:expiration_date]
-      end
-
-      def resolved_token_path
-        token_path = env["SCHWAB_TOKEN_PATH"] || env["TOKEN_PATH"] || SchwabRb::Constants::DEFAULT_TOKEN_PATH
-        SchwabRb::PathSupport.expand_path(token_path)
       end
 
       def default_history_dir
@@ -359,7 +347,7 @@ module SchwabRb
         <<~HELP
           Usage: schwab_rb login
 
-          Authenticates with Schwab in a browser and stores the token at #{resolved_token_path}.
+          Authenticates with Schwab in a browser and stores the token in the database.
           Required environment variables: SCHWAB_API_KEY, SCHWAB_APP_SECRET, SCHWAB_APP_CALLBACK_URL
         HELP
       end

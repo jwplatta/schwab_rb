@@ -28,7 +28,7 @@ describe SchwabRb::CLI::App do
       expect(stdout.string).to include("sample")
     end
 
-    it "passes the shared token path to login" do
+    it "calls init_client_login with credentials on login" do
       allow(SchwabRb::Auth).to receive(:init_client_login).and_return(double("client"))
 
       status = app.call(["login"])
@@ -37,8 +37,7 @@ describe SchwabRb::CLI::App do
       expect(SchwabRb::Auth).to have_received(:init_client_login).with(
         "api-key",
         "app-secret",
-        "https://127.0.0.1:8182",
-        File.expand_path("~/.schwab_rb/token.json")
+        "https://127.0.0.1:8182"
       )
       expect(stdout.string).to include("Authentication succeeded")
     end
@@ -47,7 +46,7 @@ describe SchwabRb::CLI::App do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
         response = { symbol: "VIX", candles: [] }
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(response)
 
@@ -84,7 +83,7 @@ describe SchwabRb::CLI::App do
 
     it "uses the history directory by default for price history" do
       client = double("client", session: double("session", expired?: false))
-      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
       allow(client).to receive(:refresh!)
       allow(client).to receive(:get_price_history).and_return(symbol: "AAPL", candles: [])
       allow(FileUtils).to receive(:mkdir_p)
@@ -110,7 +109,7 @@ describe SchwabRb::CLI::App do
     it "uses the index api symbol but keeps the raw symbol in the file name" do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(symbol: "$SPX", candles: [])
 
@@ -145,7 +144,7 @@ describe SchwabRb::CLI::App do
     it "passes futures symbols through to the api unchanged" do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(symbol: "/ES", candles: [])
 
@@ -179,7 +178,7 @@ describe SchwabRb::CLI::App do
     it "writes CSV candle output" do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(
           {
@@ -217,7 +216,7 @@ describe SchwabRb::CLI::App do
     it "uses yesterday when end date would otherwise be today" do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(symbol: "VIX", candles: [])
 
@@ -264,7 +263,7 @@ describe SchwabRb::CLI::App do
         )
 
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history)
 
@@ -302,7 +301,7 @@ describe SchwabRb::CLI::App do
         )
 
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(
           {
@@ -366,7 +365,7 @@ describe SchwabRb::CLI::App do
         )
 
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(
           {
@@ -423,7 +422,7 @@ describe SchwabRb::CLI::App do
         )
 
         client = double("client", session: double("session", expired?: false))
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_price_history).and_return(
           {
@@ -470,7 +469,7 @@ describe SchwabRb::CLI::App do
     end
 
     it "returns a login hint when the token is missing" do
-      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_raise(Errno::ENOENT)
+      allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(nil)
 
       status = app.call(
         [
@@ -488,7 +487,7 @@ describe SchwabRb::CLI::App do
       Dir.mktmpdir do |dir|
         client = double("client", session: double("session", expired?: false))
         allow(Time).to receive(:now).and_return(sampled_at)
-        allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+        allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
         allow(client).to receive(:refresh!)
         allow(client).to receive(:get_option_chain).and_return(
           {
@@ -642,7 +641,7 @@ describe SchwabRb::CLI::App do
     it "delegates option samples to the public downloader service" do
       client = double("client", session: double("session", expired?: false))
       allow(Time).to receive(:now).and_return(sampled_at)
-      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
       allow(client).to receive(:refresh!)
       allow(SchwabRb::OptionSample::Downloader).to receive(:resolve).and_return(
         [{ symbol: "$SPX" }, "/tmp/SPXW_exp2025-12-29_2025-12-29_17-24-33.csv"]
@@ -674,7 +673,7 @@ describe SchwabRb::CLI::App do
     it "writes json option samples to the options directory by default" do
       client = double("client", session: double("session", expired?: false))
       allow(Time).to receive(:now).and_return(sampled_at)
-      allow(SchwabRb::Auth).to receive(:init_client_token_file).and_return(client)
+      allow(SchwabRb::Auth).to receive(:init_client_from_database).and_return(client)
       allow(client).to receive(:refresh!)
       allow(client).to receive(:get_option_chain).and_return(
         {
