@@ -221,7 +221,8 @@ module SchwabRb
       end
 
       def send_message(json_string)
-        @connection.write(Protocol::WebSocket::TextMessage.generate(json_string))
+        SchwabRb::Logger.logger.debug("Stream sending: #{json_string}")
+        @connection.write(json_string)
         @connection.flush
       end
 
