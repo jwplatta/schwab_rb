@@ -117,11 +117,6 @@ module SchwabRb
 
       account_numbers_data = JSON.parse(response.body, symbolize_names: true)
 
-      db = SchwabRb::Storage::Database.new
-      db.save_accounts(account_numbers_data.map do |a|
-        { account_number: a[:accountNumber], account_hash: a[:hashValue] }
-      end)
-
       begin
         hash_manager = SchwabRb::AccountHashManager.new
         hash_manager.update_hashes_from_api_response(account_numbers_data)
