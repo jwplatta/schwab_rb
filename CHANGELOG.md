@@ -1,16 +1,32 @@
 ## [Unreleased]
 
+## [1.0.0] - 2026-09-05
+
+### Breaking Changes
+- **Token storage**: Tokens are now persisted in SQLite (`~/.schwab_rb/schwab.db`) instead of a JSON file. `init_client_easy` and `init_client_login` no longer accept a `token_path` argument. Use `init_client_from_database` instead of `init_client_token_file`.
+- **Account management**: `AccountHashManager`, `account_names.json`, and `account_hashes.json` are removed. Set `SCHWAB_ACCOUNT_NUMBER` in your environment instead. Account hashes are fetched from the API automatically and cached in SQLite.
+- **Client method signatures**: All account-specific methods (`get_account`, `place_order`, `get_order`, etc.) now use `account_hash:` as a keyword argument instead of a positional argument. The `account_name:` keyword argument is removed.
+
+### Added
+- **WebSocket streaming client**: Real-time market data streaming via `SchwabRb::Stream::Client`
+  - Event-based API: `stream.on(:nyse_book, symbols: ["AAPL"], fields: :all) { |event| ... }`
+  - Supported services: `NYSE_BOOK`, `NASDAQ_BOOK`, `OPTIONS_BOOK`, `LEVELONE_EQUITIES`, `LEVELONE_OPTIONS`, `LEVELONE_FUTURES`, `LEVELONE_FUTURES_OPTIONS`, `LEVELONE_FOREX`, `CHART_EQUITY`, `CHART_FUTURES`, `SCREENER_EQUITY`, `SCREENER_OPTION`, `ACCT_ACTIVITY`
+  - Ruby constant field definitions for all services (e.g. `Fields::Book::BIDS`, `Fields::LevelOneEquity::BID_PRICE`)
+  - Exponential backoff reconnection (2s initial, doubles, 120s cap)
+  - Sync (`Stream::Client`) and async (`Stream::AsyncClient`) wrappers
+- **SQLite storage** (`SchwabRb::Storage::Database`): Single database at `~/.schwab_rb/schwab.db` (configurable via `SCHWAB_DATABASE_PATH`) storing tokens and account hashes
+- **`SCHWAB_ACCOUNT_NUMBER` env var**: Configure your account number once; the gem auto-fetches and caches the account hash on first use
+- **`init_client_from_database`**: New initializer that loads tokens from SQLite (replaces `init_client_token_file`)
+
 ### Fixed
 - CLI `login` no longer reads from `ARGF` at the browser prompt, which prevented `schwab_rb login` from opening the browser when command arguments were present
 - `OptionExpirationChain` now accepts both string-keyed and symbol-keyed hashes, matching `BaseClient#get_option_expiration_chain`
 
-### Added
-- CLI `sample` command for saving single-expiration option chain snapshots as CSV or JSON
-- `--root` option for filtering sampled contracts by option root and using that root in output filenames
-
 ### Changed
 - CLI history downloads now default to `~/.schwab_rb/data/history`
 - CLI option samples now default to `~/.schwab_rb/data/options`
+- CLI `login` success message updated to reflect database storage
+- `PathSupport.expand_path` error message generalized from `"token_path is nil or empty"` to `"path is nil or empty"`
 
 ## [0.6.0] - 2025-12-11
 
