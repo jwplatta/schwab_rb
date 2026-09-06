@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    schwab_rb (0.9.3)
+    schwab_rb (1.0.1)
       async (~> 2.18)
       async-http (~> 0.82)
       async-websocket (~> 0.26)

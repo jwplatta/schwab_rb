@@ -31,7 +31,11 @@ module SchwabRb
 
         return null_logger if [:null, "/dev/null"].include?(log_destination)
 
-        setup_log_file(log_destination) if log_destination.is_a?(String) && log_destination != "STDOUT"
+        if log_destination.is_a?(String) && log_destination.upcase == "STDOUT"
+          log_destination = $stdout
+        else
+          setup_log_file(log_destination)
+        end
 
         ::Logger.new(log_destination, "weekly").tap do |log|
           log.level = parse_log_level(config.log_level)
