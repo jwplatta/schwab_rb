@@ -17,7 +17,7 @@ RSpec.describe SchwabRb::Stream::MessageBuilder do
       expect(result["requestid"]).to eq(1)
       expect(result["SchwabClientCustomerId"]).to eq("customer123")
       expect(result["SchwabClientCorrelId"]).to eq("correl456")
-      expect(result["parameters"]["Authorization"]).to eq("Bearer test_token")
+      expect(result["parameters"]["Authorization"]).to eq("test_token")
       expect(result["parameters"]["SchwabClientChannel"]).to eq("channel1")
       expect(result["parameters"]["SchwabClientFunctionId"]).to eq("func1")
     end
