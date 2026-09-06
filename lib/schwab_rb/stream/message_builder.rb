@@ -19,7 +19,7 @@ module SchwabRb
           "SchwabClientCustomerId" => @customer_id,
           "SchwabClientCorrelId" => @correl_id,
           "parameters" => {
-            "Authorization" => "Bearer #{access_token}",
+            "Authorization" => access_token,
             "SchwabClientChannel" => channel,
             "SchwabClientFunctionId" => function_id
           }
