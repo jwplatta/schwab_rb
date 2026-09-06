@@ -230,7 +230,6 @@ module SchwabRb
 
       def build_non_interactive_client
         credentials = load_credentials(require_callback_url: false)
-        token_path = resolved_token_path
 
         client = SchwabRb::Auth.init_client_from_database(
           credentials.fetch(:api_key),
