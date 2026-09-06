@@ -314,12 +314,6 @@ describe SchwabRb::Client do
   describe "quotes" do
   end
   describe "options" do
-    xit do
-      api_key = ENV.fetch("SCHWAB_API_KEY", nil)
-      app_secret = ENV.fetch("SCHWAB_APP_SECRET", nil)
-      client = SchwabRb::Auth.init_client_from_database(api_key, app_secret)
-      client.get_option_chain("/ESH25", strike_count: 1)
-    end
   end
 
   describe "price history" do

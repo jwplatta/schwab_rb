@@ -83,16 +83,14 @@ module SchwabRb
         raise Error, "Unexpected arguments: #{argv.join(' ')}" if argv.any?
 
         credentials = load_credentials(require_callback_url: true)
-        token_path = resolved_token_path
 
         SchwabRb::Auth.init_client_login(
           credentials.fetch(:api_key),
           credentials.fetch(:app_secret),
-          credentials.fetch(:callback_url),
-          token_path
+          credentials.fetch(:callback_url)
         )
 
-        stdout.puts("Authentication succeeded. Token saved to #{token_path}")
+        stdout.puts("Authentication succeeded. Token saved to database.")
         0
       rescue JSON::ParserError
         raise Error,

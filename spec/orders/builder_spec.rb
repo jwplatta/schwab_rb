@@ -106,11 +106,6 @@ describe SchwabRb::Orders::Builder do
   end
 
   describe "#add_equity_leg" do
-    xit "adds an equity leg" do
-      builder.add_equity_leg(SchwabRb::Orders::EquityInstructions::BUY, "AAPL", 10)
-      expect(builder.instance_variable_get(:@order_leg_collection).first[:instruction]).to eq(SchwabRb::Orders::EquityInstructions::BUY)
-    end
-
     it "raises an error if quantity is not positive" do
       expect { builder.add_equity_leg(SchwabRb::Orders::EquityInstructions::BUY, "AAPL", 0) }.to raise_error("quantity must be positive")
     end
@@ -143,13 +138,5 @@ describe SchwabRb::Orders::Builder do
       expect(order["orderLegCollection"].first["instrument"]["assetType"]).to eq("EQUITY")
     end
 
-    xit "builds a complex order" do
-      builder.set_session(SchwabRb::Orders::Session::NORMAL)
-      builder.set_duration(SchwabRb::Orders::Duration::DAY)
-      builder.set_order_type(SchwabRb::Order::Types::NET_CREDIT)
-      builder.set_quantity(1)
-      builder.set_complex_order_strategy_type(SchwabRb::Orders::ComplexOrderStrategyTypes::CALL_SPREAD)
-      builder.set_price(2.00)
-    end
   end
 end

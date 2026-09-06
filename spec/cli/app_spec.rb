@@ -28,7 +28,7 @@ describe SchwabRb::CLI::App do
       expect(stdout.string).to include("sample")
     end
 
-    it "passes the shared token path to login" do
+    it "calls init_client_login with credentials on login" do
       allow(SchwabRb::Auth).to receive(:init_client_login).and_return(double("client"))
 
       status = app.call(["login"])
@@ -37,8 +37,7 @@ describe SchwabRb::CLI::App do
       expect(SchwabRb::Auth).to have_received(:init_client_login).with(
         "api-key",
         "app-secret",
-        "https://127.0.0.1:8182",
-        File.expand_path("~/.schwab_rb/token.json")
+        "https://127.0.0.1:8182"
       )
       expect(stdout.string).to include("Authentication succeeded")
     end
