@@ -50,6 +50,25 @@ module SchwabRb
         }
       end
 
+      def save_account(account_number, account_hash)
+        synchronize do
+          db.execute(<<~SQL, [account_number, account_hash])
+            INSERT INTO accounts (account_number, account_hash)
+            VALUES (?, ?)
+            ON CONFLICT(account_number) DO UPDATE SET
+              account_hash = excluded.account_hash,
+              updated_at = CURRENT_TIMESTAMP
+          SQL
+        end
+      end
+
+      def load_account_hash(account_number)
+        row = synchronize do
+          db.get_first_row("SELECT account_hash FROM accounts WHERE account_number = ?", [account_number])
+        end
+        row&.fetch("account_hash", nil)
+      end
+
       def close
         synchronize do
           @db&.close
@@ -76,6 +95,16 @@ module SchwabRb
       end
 
       def create_tables(database)
+        database.execute(<<~SQL)
+          CREATE TABLE IF NOT EXISTS accounts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            account_number TEXT NOT NULL UNIQUE,
+            account_hash TEXT NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+          )
+        SQL
+
         database.execute(<<~SQL)
           CREATE TABLE IF NOT EXISTS tokens (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

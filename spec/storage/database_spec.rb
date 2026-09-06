@@ -96,4 +96,21 @@ RSpec.describe SchwabRb::Storage::Database do
       expect(result["token"]["access_token"]).to eq("access_sym")
     end
   end
+
+  describe "account operations" do
+    it "saves and loads an account hash" do
+      database.save_account("12345678", "HASH_ABC")
+      expect(database.load_account_hash("12345678")).to eq("HASH_ABC")
+    end
+
+    it "returns nil for unknown account number" do
+      expect(database.load_account_hash("99999999")).to be_nil
+    end
+
+    it "upserts on duplicate account number" do
+      database.save_account("12345678", "HASH_OLD")
+      database.save_account("12345678", "HASH_NEW")
+      expect(database.load_account_hash("12345678")).to eq("HASH_NEW")
+    end
+  end
 end

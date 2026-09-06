@@ -2,7 +2,6 @@
 
 require_relative "schwab_rb/version"
 require_relative "schwab_rb/configuration"
-require_relative "schwab_rb/account_hash_manager"
 require_relative "schwab_rb/path_support"
 require_relative "schwab_rb/auth/token_manager"
 require_relative "schwab_rb/auth/token"
