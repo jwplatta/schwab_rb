@@ -30,18 +30,12 @@ module SchwabRb
         end
         return nil unless row
 
-        expires_at = row["expires_at"]
-        if expires_at && Time.now.to_i > expires_at
-          synchronize { db.execute("DELETE FROM tokens WHERE api_key = ?", [api_key]) }
-          return nil
-        end
-
         {
           "timestamp" => row["timestamp"],
           "token" => {
             "access_token" => row["access_token"],
             "refresh_token" => row["refresh_token"],
-            "expires_at" => expires_at,
+            "expires_at" => row["expires_at"],
             "expires_in" => row["expires_in"],
             "token_type" => row["token_type"],
             "scope" => row["scope"],

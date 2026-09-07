@@ -40,19 +40,15 @@ RSpec.describe SchwabRb::Storage::Database do
       expect(result["token"]["id_token"]).to eq("id_789")
     end
 
-    it "returns nil and removes the record for an expired token" do
+    it "returns the token even when the access token is expired" do
       expired_data = token_data.merge(
         "token" => token_data["token"].merge("expires_at" => Time.now.to_i - 60)
       )
       database.save_token("my_api_key", expired_data)
 
-      expect(database.load_token("my_api_key")).to be_nil
-
-      # row should be gone
-      database.save_token("my_api_key", token_data.merge(
-        "token" => token_data["token"].merge("expires_at" => Time.now.to_i + 1800)
-      ))
-      expect(database.load_token("my_api_key")).not_to be_nil
+      result = database.load_token("my_api_key")
+      expect(result).not_to be_nil
+      expect(result["token"]["refresh_token"]).to eq("refresh_456")
     end
 
     it "returns nil for unknown api_key" do
