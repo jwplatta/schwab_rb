@@ -1,5 +1,30 @@
 ## [Unreleased]
 
+## [1.0.4] - 2026-09-21
+
+### Added
+- Dynamic symbol unsubscription (`stream.unsub`) using Schwab `UNSUBS` command to remove symbols as market windows close without disconnecting.
+- `stream.add` method (alias for `on`) for explicitly adding subscriptions to active streams.
+
+### Fixed
+- Treat `nil` socket read in `Base#run_receive_loop` as disconnect error instead of clean exit to prevent silent reconnect spin loops.
+- Outbound WebSocket write synchronization using a Mutex to prevent framing issues when subscriptions change dynamically.
+
+## [1.0.3] - 2026-09-19
+
+### Fixed
+- Prevent `load_token` from deleting database row on expired access token (#33).
+
+## [1.0.2] - 2026-09-18
+
+### Fixed
+- Fix WebSocket framing to resolve stream login bad command formatting (#32).
+
+## [1.0.1] - 2026-09-17
+
+### Fixed
+- Fix stream login authorization header formatting and STDOUT logger routing (#30).
+
 ## [1.0.0] - 2026-09-05
 
 ### Breaking Changes
