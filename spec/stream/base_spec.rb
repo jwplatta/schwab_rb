@@ -213,4 +213,76 @@ RSpec.describe SchwabRb::Stream::Base do
       expect(result[:fields]).to eq([0, 1])
     end
   end
+
+  describe "#unsub" do
+    before do
+      stream.on(:nyse_book, symbols: %w[AAPL MSFT], fields: :all) { |_e| }
+      stream.on(:level_one_equities, symbols: %w[SPY QQQ], fields: :all) { |_e| }
+    end
+
+    it "removes specified symbols from subscriptions" do
+      stream.unsub(:nyse_book, symbols: ["AAPL"])
+
+      subscriptions = stream.instance_variable_get(:@subscriptions)
+      expect(subscriptions["NYSE_BOOK"][:symbols]).to eq(["MSFT"])
+      expect(subscriptions["LEVELONE_EQUITIES"][:symbols]).to eq(%w[SPY QQQ])
+    end
+
+    it "removes the service entirely from subscriptions when no symbols remain" do
+      stream.unsub(:nyse_book, symbols: %w[AAPL MSFT])
+
+      subscriptions = stream.instance_variable_get(:@subscriptions)
+      expect(subscriptions).not_to have_key("NYSE_BOOK")
+      expect(subscriptions).to have_key("LEVELONE_EQUITIES")
+    end
+
+    it "removes symbols from handlers and purges empty handlers" do
+      stream.unsub(:nyse_book, symbols: ["AAPL"])
+
+      handlers = stream.instance_variable_get(:@handlers)
+      expect(handlers["NYSE_BOOK"].length).to eq(1)
+      expect(handlers["NYSE_BOOK"].first[:symbols]).to eq(["MSFT"])
+
+      stream.unsub(:nyse_book, symbols: ["MSFT"])
+      expect(handlers).not_to have_key("NYSE_BOOK")
+    end
+
+    it "sends an UNSUBS message when connected" do
+      connection = double("connection", write: nil, flush: nil)
+      stream.instance_variable_set(:@connection, connection)
+      stream.instance_variable_set(:@connected, true)
+      stream.instance_variable_set(
+        :@message_builder,
+        SchwabRb::Stream::MessageBuilder.new("cust1", "correl1")
+      )
+
+      expect(connection).to receive(:write) do |payload|
+        parsed = JSON.parse(payload)
+        req = parsed["requests"].first
+        expect(req["service"]).to eq("NYSE_BOOK")
+        expect(req["command"]).to eq("UNSUBS")
+        expect(req["parameters"]["keys"]).to eq("AAPL")
+      end
+
+      stream.unsub(:nyse_book, symbols: ["AAPL"])
+    end
+
+    it "returns self for chaining" do
+      expect(stream.unsub(:nyse_book, symbols: ["AAPL"])).to eq(stream)
+    end
+  end
+
+  describe "#run_receive_loop" do
+    it "raises when connection.read returns nil" do
+      connection = double("connection")
+      allow(connection).to receive(:read).and_return(nil)
+      stream.instance_variable_set(:@connection, connection)
+      stream.instance_variable_set(:@connected, true)
+      stream.instance_variable_set(:@should_run, true)
+
+      expect {
+        stream.send(:run_receive_loop)
+      }.to raise_error(RuntimeError, /Connection closed by remote host/)
+    end
+  end
 end

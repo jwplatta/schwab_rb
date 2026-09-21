@@ -27,13 +27,14 @@ module SchwabRb
         @connect_time = nil
         @backoff_time = INITIAL_BACKOFF
         @should_run = false
+        @write_mutex = Mutex.new
       end
 
       def on(service_symbol, symbols: nil, fields: nil, &block)
         service_name = Services.lookup(service_symbol)
         resolved_fields = fields ? Fields.resolve(service_name, fields) : nil
 
-        handler = { symbols: Array(symbols), fields: resolved_fields, callback: block }
+        handler = { symbols: Array(symbols).map(&:to_s), fields: resolved_fields, callback: block }
         @handlers[service_name] ||= []
         @handlers[service_name] << handler
 
@@ -43,6 +44,36 @@ module SchwabRb
         )
 
         send_subscription(service_name, handler) if @connected
+
+        self
+      end
+      alias add on
+
+      def unsub(service_symbol, symbols: nil)
+        service_name = Services.lookup(service_symbol)
+        symbols_to_remove = Array(symbols).map(&:to_s)
+        return self if symbols_to_remove.empty?
+
+        if @subscriptions[service_name]
+          @subscriptions[service_name][:symbols] -= symbols_to_remove
+          @subscriptions.delete(service_name) if @subscriptions[service_name][:symbols].empty?
+        end
+
+        if @handlers[service_name]
+          @handlers[service_name].each do |h|
+            h[:symbols] -= symbols_to_remove
+          end
+          @handlers[service_name].reject! { |h| h[:symbols].empty? }
+          @handlers.delete(service_name) if @handlers[service_name].empty?
+        end
+
+        if @connected
+          request = @message_builder.build_request(
+            service_name, Commands::UNSUBS,
+            keys: symbols_to_remove
+          )
+          send_message(@message_builder.wrap_requests(request))
+        end
 
         self
       end
@@ -64,7 +95,7 @@ module SchwabRb
 
       def stop
         @should_run = false
-        disconnect
+        @connected = false
       end
 
       def connected?
@@ -161,7 +192,7 @@ module SchwabRb
       def run_receive_loop
         while @connected && @should_run
           message = @connection.read
-          break if message.nil?
+          raise "Connection closed by remote host" if message.nil?
 
           parsed = JSON.parse(message.to_str)
           dispatch_message(parsed)
@@ -221,9 +252,13 @@ module SchwabRb
       end
 
       def send_message(json_string)
-        SchwabRb::Logger.logger.debug("Stream sending: #{json_string}")
-        @connection.write(json_string)
-        @connection.flush
+        @write_mutex.synchronize do
+          return unless @connection
+
+          SchwabRb::Logger.logger.debug("Stream sending: #{json_string}")
+          @connection.write(json_string)
+          @connection.flush
+        end
       end
 
       def merge_subscription(existing, handler)
