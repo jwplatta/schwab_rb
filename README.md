@@ -164,6 +164,47 @@ price_history = client.get_price_history(
 )
 ```
 
+### Real-Time WebSocket Streaming
+
+Stream Level 1 quotes, Level 2 order books, chart candles, and account activity over a single WebSocket connection:
+
+```ruby
+client = SchwabRb::Auth.init_client_easy(
+  ENV['SCHWAB_API_KEY'],
+  ENV['SCHWAB_APP_SECRET'],
+  ENV['APP_CALLBACK_URL']
+)
+
+stream = SchwabRb::Stream::Client.new(client)
+
+# Subscribe to Level 1 Equities
+stream.on(:level_one_equities, symbols: %w[SPY QQQ], fields: :all) do |event|
+  puts "Equity quote: #{event}"
+end
+
+# Subscribe to Level 1 Futures
+stream.on(:level_one_futures, symbols: ["/ES"], fields: :all) do |event|
+  puts "Futures quote: #{event}"
+end
+
+# Subscribe to Level 2 Order Book
+stream.on(:nyse_book, symbols: ["SPY"], fields: :all) do |event|
+  puts "Order book: #{event}"
+end
+
+# Start async in a background thread
+stream.start_async
+
+# Dynamically add symbols while streaming
+stream.add(:level_one_equities, symbols: ["IWM"])
+
+# Dynamically remove symbols when window closes without dropping stream
+stream.unsub(:level_one_equities, symbols: ["SPY", "QQQ"])
+
+# Stop streaming when finished
+stream.stop
+```
+
 ## Data Objects
 
 The gem includes structured data objects for better handling of API responses. Most API methods support a `return_data_objects` parameter (defaults to `true`) which returns parsed Ruby objects instead of raw JSON responses:
