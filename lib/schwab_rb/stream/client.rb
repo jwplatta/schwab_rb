@@ -15,6 +15,12 @@ module SchwabRb
         @stream.on(service_symbol, symbols: symbols, fields: fields, &block)
         self
       end
+      alias add on
+
+      def unsub(service_symbol, symbols: nil)
+        @stream.unsub(service_symbol, symbols: symbols)
+        self
+      end
 
       def start
         @thread = Thread.new do
@@ -32,6 +38,7 @@ module SchwabRb
 
       def stop
         @stream.stop
+        @thread&.raise(Interrupt)
         @thread&.join(5)
         @thread = nil
       end
