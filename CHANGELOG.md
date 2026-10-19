@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+## [1.0.5] - 2026-10-19
+
+### Added
+- Sanitized stream subscription logging (`SUBS`, `ADD`, `UNSUBS`) at INFO level with service, command, request ID, and keys.
+- Stream subscription acknowledgement response logging at INFO level with service, command, response code, message, and request ID.
+
+### Security
+- Redacted `Authorization` access tokens in WebSocket outbound debug logging.
+
 ## [1.0.4] - 2026-09-21
 
 ### Added
