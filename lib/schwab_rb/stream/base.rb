@@ -72,6 +72,7 @@ module SchwabRb
             service_name, Commands::UNSUBS,
             keys: symbols_to_remove
           )
+          log_subscription_request(request)
           send_message(@message_builder.wrap_requests(request))
         end
 
@@ -176,6 +177,7 @@ module SchwabRb
             keys: sub[:symbols],
             fields: sub[:fields]
           )
+          log_subscription_request(request)
           send_message(@message_builder.wrap_requests(request))
         end
       end
@@ -186,6 +188,7 @@ module SchwabRb
           keys: handler[:symbols],
           fields: handler[:fields]
         )
+        log_subscription_request(request)
         send_message(@message_builder.wrap_requests(request))
       end
 
@@ -213,8 +216,34 @@ module SchwabRb
         return unless parsed.key?("response")
 
         parsed["response"].each do |resp|
-          SchwabRb::Logger.logger.debug("Stream response: #{resp}")
+          log_stream_response(resp)
         end
+      end
+
+      def log_subscription_request(request)
+        service = request["service"]
+        command = request["command"]
+        request_id = request["requestid"]
+        keys = request.dig("parameters", "keys")
+        SchwabRb::Logger.logger.info(
+          "Stream subscription request: service=#{service} command=#{command} " \
+          "request_id=#{request_id} keys=#{keys}"
+        )
+      end
+
+      def log_stream_response(resp)
+        service = resp["service"]
+        command = resp["command"]
+        request_id = resp["requestid"]
+        content = resp["content"] || {}
+        code = content["code"]
+        msg = content["msg"]
+
+        SchwabRb::Logger.logger.info(
+          "Stream response: service=#{service} command=#{command} " \
+          "code=#{code} msg=#{msg.inspect} request_id=#{request_id}"
+        )
+        SchwabRb::Logger.logger.debug("Raw stream response: #{resp}")
       end
 
       def handle_disconnect(error)
@@ -255,7 +284,10 @@ module SchwabRb
         @write_mutex.synchronize do
           return unless @connection
 
-          SchwabRb::Logger.logger.debug("Stream sending: #{json_string}")
+          if SchwabRb::Logger.logger.debug?
+            sanitized = json_string.gsub(/"Authorization"\s*:\s*"[^"]*"/, '"Authorization":"[REDACTED]"')
+            SchwabRb::Logger.logger.debug("Stream sending: #{sanitized}")
+          end
           @connection.write(json_string)
           @connection.flush
         end
