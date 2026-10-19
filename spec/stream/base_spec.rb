@@ -152,6 +152,58 @@ RSpec.describe SchwabRb::Stream::Base do
       expect(events1.length).to eq(1)
       expect(events2.length).to eq(1)
     end
+
+    it "logs subscription acknowledgements with service, command, code, msg, and requestid" do
+      logger = SchwabRb::Logger.logger
+      allow(logger).to receive(:info)
+      allow(logger).to receive(:debug)
+
+      message = {
+        "response" => [
+          {
+            "service" => "LEVELONE_FUTURES",
+            "command" => "SUBS",
+            "requestid" => 42,
+            "content" => {
+              "code" => 0,
+              "msg" => "SUCCESS"
+            }
+          }
+        ]
+      }
+
+      stream.send(:dispatch_message, message)
+
+      expect(logger).to have_received(:info).with(
+        'Stream response: service=LEVELONE_FUTURES command=SUBS code=0 msg="SUCCESS" request_id=42'
+      )
+    end
+  end
+
+  describe "#send_message" do
+    it "redacts authorization token from debug logs" do
+      logger = SchwabRb::Logger.logger
+      allow(logger).to receive(:debug?) { true }
+      allow(logger).to receive(:debug)
+
+      connection = double("connection", write: nil, flush: nil)
+      stream.instance_variable_set(:@connection, connection)
+
+      payload = JSON.dump({
+        "service" => "ADMIN",
+        "command" => "LOGIN",
+        "parameters" => {
+          "Authorization" => "secret_access_token_123"
+        }
+      })
+
+      stream.send(:send_message, payload)
+
+      expect(logger).to have_received(:debug) do |logged_msg|
+        expect(logged_msg).not_to include("secret_access_token_123")
+        expect(logged_msg).to include('"Authorization":"[REDACTED]"')
+      end
+    end
   end
 
   describe "reconnection logic" do
