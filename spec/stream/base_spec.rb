@@ -53,8 +53,7 @@ RSpec.describe SchwabRb::Stream::Base do
 
       handlers = stream.instance_variable_get(:@handlers)
       expect(handlers).to have_key("NYSE_BOOK")
-      expect(handlers["NYSE_BOOK"].length).to eq(1)
-      expect(handlers["NYSE_BOOK"][0][:symbols]).to eq(["AAPL"])
+      expect(handlers["NYSE_BOOK"]).to be_a(Proc)
     end
 
     it "resolves :all fields to the appropriate field list" do
@@ -80,14 +79,6 @@ RSpec.describe SchwabRb::Stream::Base do
       }.to raise_error(ArgumentError, /Unknown service/)
     end
 
-    it "supports multiple handlers for the same service" do
-      stream.on(:nyse_book, symbols: ["AAPL"], fields: :all) { |_e| }
-      stream.on(:nyse_book, symbols: ["MSFT"], fields: :all) { |_e| }
-
-      handlers = stream.instance_variable_get(:@handlers)
-      expect(handlers["NYSE_BOOK"].length).to eq(2)
-    end
-
     it "merges subscriptions for the same service" do
       stream.on(:nyse_book, symbols: ["AAPL"], fields: :all) { |_e| }
       stream.on(:nyse_book, symbols: ["MSFT"], fields: :all) { |_e| }
@@ -103,6 +94,21 @@ RSpec.describe SchwabRb::Stream::Base do
   end
 
   describe "#dispatch_message" do
+    it "calls only the current callback once per entry after additions and partial unsubscribe" do
+      old_events = []
+      events = []
+      stream.on(:nyse_book, symbols: ["AAPL"], fields: :all) { |event| old_events << event }
+      stream.add(:nyse_book, symbols: ["MSFT"]) { |event| events << event }
+      stream.add(:nyse_book, symbols: ["GOOG"])
+      stream.unsub(:nyse_book, symbols: ["AAPL"])
+      entries = [{ "service" => "NYSE_BOOK" }, { "service" => "NYSE_BOOK" }]
+
+      stream.send(:dispatch_message, "data" => entries)
+
+      expect(old_events).to be_empty
+      expect(events).to eq(entries)
+    end
+
     it "dispatches data messages to registered handlers" do
       events = []
       stream.on(:nyse_book, symbols: ["AAPL"], fields: :all) { |e| events << e }
@@ -134,7 +140,7 @@ RSpec.describe SchwabRb::Stream::Base do
       expect(events).to be_empty
     end
 
-    it "dispatches to multiple handlers for the same service" do
+    it "replaces a service callback when a new block is supplied" do
       events1 = []
       events2 = []
 
@@ -149,7 +155,7 @@ RSpec.describe SchwabRb::Stream::Base do
 
       stream.send(:dispatch_message, message)
 
-      expect(events1.length).to eq(1)
+      expect(events1).to be_empty
       expect(events2.length).to eq(1)
     end
 
@@ -236,6 +242,47 @@ RSpec.describe SchwabRb::Stream::Base do
   end
 
   describe "subscription merging" do
+    it "does not send an empty request for callback registration and sends fields with a later ADD" do
+      connection = double("connection", flush: nil)
+      stream.instance_variable_set(:@connection, connection)
+      stream.instance_variable_set(:@connected, true)
+      stream.instance_variable_set(:@message_builder, SchwabRb::Stream::MessageBuilder.new("cust", "correl"))
+      expect(connection).to receive(:write).once do |payload|
+        request = JSON.parse(payload)["requests"].first
+        expect(request["command"]).to eq("ADD")
+        expect(request["parameters"]).to eq("keys" => "AAPL", "fields" => "0,1,2,3")
+      end
+
+      stream.on(:nyse_book, fields: :all) { |_event| }
+      stream.add(:nyse_book, symbols: ["AAPL"])
+    end
+
+    it "registers without an empty subscription and reuses fields on a later addition" do
+      stream.on(:nyse_book, fields: :all) { |_event| }
+      expect(stream.instance_variable_get(:@subscriptions)).to be_empty
+
+      stream.add(:nyse_book, symbols: ["AAPL"])
+      expect(stream.instance_variable_get(:@subscriptions)["NYSE_BOOK"]).to eq(
+        symbols: ["AAPL"], fields: [0, 1, 2, 3]
+      )
+    end
+
+    it "sends only current subscriptions on reconnect" do
+      stream.on(:nyse_book, symbols: ["AAPL"], fields: [0, 1]) { |_event| }
+      stream.add(:nyse_book, symbols: ["MSFT"], fields: [0, 2])
+      stream.unsub(:nyse_book, symbols: ["AAPL"])
+      connection = double("connection", flush: nil)
+      stream.instance_variable_set(:@connection, connection)
+      stream.instance_variable_set(:@message_builder, SchwabRb::Stream::MessageBuilder.new("cust", "correl"))
+      expect(connection).to receive(:write) do |payload|
+        request = JSON.parse(payload)["requests"].first
+        expect(request["command"]).to eq("SUBS")
+        expect(request["parameters"]).to eq("keys" => "MSFT", "fields" => "0,1,2")
+      end
+
+      stream.send(:send_pending_subscriptions)
+    end
+
     it "merges symbols from multiple handlers" do
       result = stream.send(:merge_subscription,
         { symbols: ["AAPL"], fields: [0, 1] },
@@ -288,15 +335,14 @@ RSpec.describe SchwabRb::Stream::Base do
       expect(subscriptions).to have_key("LEVELONE_EQUITIES")
     end
 
-    it "removes symbols from handlers and purges empty handlers" do
+    it "preserves the callback after all symbols are removed and later added again" do
+      events = []
+      stream.on(:nyse_book) { |event| events << event }
       stream.unsub(:nyse_book, symbols: ["AAPL"])
-
-      handlers = stream.instance_variable_get(:@handlers)
-      expect(handlers["NYSE_BOOK"].length).to eq(1)
-      expect(handlers["NYSE_BOOK"].first[:symbols]).to eq(["MSFT"])
-
       stream.unsub(:nyse_book, symbols: ["MSFT"])
-      expect(handlers).not_to have_key("NYSE_BOOK")
+      stream.add(:nyse_book, symbols: ["GOOG"])
+      stream.send(:dispatch_message, "data" => [{ "service" => "NYSE_BOOK" }])
+      expect(events.length).to eq(1)
     end
 
     it "sends an UNSUBS message when connected" do
