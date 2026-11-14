@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+## [1.0.6] - 2026-11-13
+
+### Changed
+- Stream services now retain one callback; registering another block for the same service replaces the previous callback.
+- `Stream::AsyncClient` supports dynamic `add` and `unsub` operations.
+
+### Fixed
+- Prevent duplicate callback invocation on repeated subscription additions and preserve callbacks when symbols are unsubscribed.
+- Allow callback registration before symbols are supplied without sending an empty subscription.
+
 ## [1.0.5] - 2026-10-19
 
 ### Added

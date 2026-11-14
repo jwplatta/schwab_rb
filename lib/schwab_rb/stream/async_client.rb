@@ -13,6 +13,12 @@ module SchwabRb
         @stream.on(service_symbol, symbols: symbols, fields: fields, &block)
         self
       end
+      alias add on
+
+      def unsub(service_symbol, symbols: nil)
+        @stream.unsub(service_symbol, symbols: symbols)
+        self
+      end
 
       def start
         @stream.start

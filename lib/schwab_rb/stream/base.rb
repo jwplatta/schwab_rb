@@ -19,6 +19,7 @@ module SchwabRb
       def initialize(client)
         @client = client
         @handlers = {}
+        @service_fields = {}
         @subscriptions = {}
         @connection = nil
         @message_builder = nil
@@ -34,16 +35,18 @@ module SchwabRb
         service_name = Services.lookup(service_symbol)
         resolved_fields = fields ? Fields.resolve(service_name, fields) : nil
 
-        handler = { symbols: Array(symbols).map(&:to_s), fields: resolved_fields, callback: block }
-        @handlers[service_name] ||= []
-        @handlers[service_name] << handler
+        @handlers[service_name] = block if block
+        @service_fields[service_name] = resolved_fields unless fields.nil?
+        symbol_list = Array(symbols).map(&:to_s)
+        return self if symbol_list.empty?
 
+        subscription = { symbols: symbol_list, fields: resolved_fields || @service_fields[service_name] }
         @subscriptions[service_name] = merge_subscription(
           @subscriptions[service_name],
-          handler
+          subscription
         )
 
-        send_subscription(service_name, handler) if @connected
+        send_subscription(service_name, subscription) if @connected
 
         self
       end
@@ -57,14 +60,6 @@ module SchwabRb
         if @subscriptions[service_name]
           @subscriptions[service_name][:symbols] -= symbols_to_remove
           @subscriptions.delete(service_name) if @subscriptions[service_name][:symbols].empty?
-        end
-
-        if @handlers[service_name]
-          @handlers[service_name].each do |h|
-            h[:symbols] -= symbols_to_remove
-          end
-          @handlers[service_name].reject! { |h| h[:symbols].empty? }
-          @handlers.delete(service_name) if @handlers[service_name].empty?
         end
 
         if @connected
@@ -206,10 +201,7 @@ module SchwabRb
         if parsed.key?("data")
           parsed["data"].each do |data_entry|
             service = data_entry["service"]
-            handlers = @handlers[service]
-            next unless handlers
-
-            handlers.each { |h| h[:callback]&.call(data_entry) }
+            @handlers[service]&.call(data_entry)
           end
         end
 

@@ -205,6 +205,12 @@ stream.unsub(:level_one_equities, symbols: ["SPY", "QQQ"])
 stream.stop
 ```
 
+Each service has one callback. Passing a block to `on` or `add` replaces its
+callback; calls without a block preserve it, including after all symbols are
+unsubscribed. You can register a callback with `on` before supplying symbols;
+fields specified there are used when symbols are later added without fields.
+Both `Stream::Client` and `Stream::AsyncClient` support `on`, `add`, and `unsub`.
+
 ## Data Objects
 
 The gem includes structured data objects for better handling of API responses. Most API methods support a `return_data_objects` parameter (defaults to `true`) which returns parsed Ruby objects instead of raw JSON responses:
